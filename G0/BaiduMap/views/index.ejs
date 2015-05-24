@@ -1,0 +1,85 @@
+<% include header %>
+<div style="background-image:url('/img/head.jpg');padding-bottom:200px;padding-top:100px" class="jumbotron">
+    <h1>Car Location</h1>
+</div>
+<div class="panel-group" id="accordion">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h1>
+                Search
+            </h1>
+        </div>
+        <div id="collapseOne" class="panel-collapse collapse in">
+            <div class="panel-body">
+                <form method="get" action="/map">
+                    <div class="form-group">
+                        <h4>Car ID</h4>
+                        <input class="form-control" name="id" placeholder="Enter Car ID">
+                    </div>
+                    <div class="form-group">
+                        <h4>Start Time</h4>
+                        <span>
+                          <label>Month</label>
+                          <select name="smonth">
+                            <script type="text/javascript">
+                              for (var i=1;i<=12;i++)
+                                document.write("<option value="+i+">"+i+"</option>");
+                            </script>
+                          </select>
+                        </span>
+                        <span>
+                          <label>Day</label>
+                          <select name="sday">
+                            <script type="text/javascript">
+                              for (var i=1;i<=31;i++)
+                                document.write("<option value="+i+">"+i+"</option>");
+                            </script>
+                          </select>
+                        </span>
+                        <span>
+                          <label>Hour</label>
+                          <select name="shour">
+                            <script type="text/javascript">
+                              for (var i=1;i<=23;i++)
+                                document.write("<option value="+i+">"+i+"</option>");
+                            </script>
+                          </select>
+                        </span>
+                      </div>
+                      <div class="form-group">
+                          <h4>End Time</h4>
+                          <span>
+                            <label>Month</label>
+                            <select name="emonth">
+                              <script type="text/javascript">
+                                for (var i=1;i<=12;i++)
+                                  document.write("<option value="+i+">"+i+"</option>");
+                              </script>
+                            </select>
+                          </span>
+                          <span>
+                            <label>Day</label>
+                            <select name="eday">
+                              <script type="text/javascript">
+                                for (var i=1;i<=31;i++)
+                                  document.write("<option value="+i+">"+i+"</option>");
+                              </script>
+                            </select>
+                          </span>
+                          <span>
+                            <label>Hour</label>
+                            <select name="ehour">
+                              <script type="text/javascript">
+                                for (var i=1;i<=24;i++)
+                                  document.write("<option value="+i+">"+i+"</option>");
+                              </script>
+                            </select>
+                          </span>
+                        </div>
+                    <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<% include footer %>
