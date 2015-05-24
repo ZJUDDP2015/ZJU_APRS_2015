@@ -10,7 +10,7 @@ function SendtoDB(object, url){
             'Content-Type':"application/json"
         }
     }, function(res){
-       console.log(url + ' Sent');
+       //console.log(url + ' Sent');
     });
     req.write(JSON.stringify(object));
     req.end();

@@ -14,3 +14,10 @@ app.post("/moving_object", function(req, res) {
   console.log("haha");
   res.send({msg:'Yes, He is handsome!'});
 });
+
+app.post("/weather", function(req, res) {
+  //var str = URLDecoder.decode(res.body,"utf-8");
+  console.log(req.body);
+  console.log("haha");
+  res.send({msg:'Yes, He is handsome!'});
+});

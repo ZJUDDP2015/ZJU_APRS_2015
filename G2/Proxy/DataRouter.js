@@ -1,11 +1,11 @@
 var headerHandler = require("./headerHandler.js");
 var infoHandler = require("./InfoHandler.js");
-var decoder = require('./decode.js');
+var miceDecoder = require('./MicEDecode.js');
 var poster = require("./Poster.js")
 var logger = require("./Logger.js");
 var fs = require("fs");
 
-function Position_without_Timestamp(myDate, header, info) {
+function MvOb_without_Timestamp(myDate, header, info) {
   var object={};
   var com_obj={};
   var symbol="";
@@ -66,18 +66,17 @@ function Position_without_Timestamp(myDate, header, info) {
   }
   if (symbol.localeCompare("/_") != false) //not weather or Mic-E data
   {
-    if(object["Destination"]) infoHandler.setSymbol(com_obj, symbol, object["Destination"]);
-    //console.log(com_obj);
+    if (object["Destination"])
+      infoHandler.setSymbol(com_obj, symbol, object["Destination"]);
     object["Comment"] = JSON.stringify(com_obj);
-    logger.file_write(header + ':' + info + '\r\n' + JSON.stringify(object) + '\r\n', './log/MvOb.log', myDate);
     poster.SendtoDB(object, "/moving_object");
-    //console.log(object);
+    return true;
   } else {
-    logger.file_write('[MvOb] ' + header + ':' + info + '\r\n', './log/Discarded.log', myDate);
+    return false;
   }
 }
 
-function Position_with_Timestamp(myDate, header, info) {
+function MvOb_with_Timestamp(myDate, header, info) {
   var object={};
   var com_obj={};
   var symbol="";
@@ -141,14 +140,14 @@ function Position_with_Timestamp(myDate, header, info) {
     if(object["Destination"])
       infoHandler.setSymbol(com_obj, symbol, object["Destination"]);
     object["Comment"] = JSON.stringify(com_obj);
-    logger.file_write(header + ':' + info + '\r\n' + JSON.stringify(object) + '\r\n', './log/MvOb.log', myDate);
     poster.SendtoDB(object, "/moving_object");
+    return true;
   } else {
-    logger.file_write('[MvOb] ' + header + ':' + info + '\r\n', './log/Discarded.log', myDate);
+    return false;
   }
 }
 
-function Object_Handle(myDate, header, info) {
+function MvOb_Object(myDate, header, info) {
   var object={};
   var com_obj={};
   var symbol="";
@@ -217,17 +216,17 @@ function Object_Handle(myDate, header, info) {
   }
   if (symbol.localeCompare("/_") != false) //not weather or Mic-E data
   {
-    if(object["Destination"]) infoHandler.setSymbol(com_obj, symbol, object["Destination"]);
-    //console.log(com_obj);
+    if (object["Destination"])
+      infoHandler.setSymbol(com_obj, symbol, object["Destination"]);
     object["Comment"] = JSON.stringify(com_obj);
-    logger.file_write(header + ':' + info + '\r\n' + JSON.stringify(object) + '\r\n', './log/MvOb.log', myDate);
     poster.SendtoDB(object, "/moving_object");
+    return true;
   } else {
-    logger.file_write('[MvOb] ' + header + ':' + info + '\r\n', './log/Discarded.log', myDate);
+    return false;
   }
 }
 
-function Item_Handle(myDate, header, info) {
+function MvOb_Item(myDate, header, info) {
   var object={};
   var com_obj={};
   var symbol="";
@@ -292,30 +291,363 @@ function Item_Handle(myDate, header, info) {
   }
   if (symbol.localeCompare("/_") != false) //not weather or Mic-E data
   {
-    if(object["Destination"]) infoHandler.setSymbol(com_obj, symbol, object["Destination"]);
-    //console.log(com_obj);
+    if (object["Destination"])
+      infoHandler.setSymbol(com_obj, symbol, object["Destination"]);
     object["Comment"] = JSON.stringify(com_obj);
-    logger.file_write(header + ':' + info + '\r\n' + JSON.stringify(object) + '\r\n', './log/MvOb.log', myDate);
     poster.SendtoDB(object, "/moving_object");
-    //console.log(object);
+    return true;
   } else {
-    logger.file_write('[MvOb] ' + header + ':' + info + '\r\n', './log/Discarded.log', myDate);
+    return false;
   }
 }
 
 function MicE_Handle(myDate, d_msg){
-    var haha = decoder.decode(d_msg, myDate);
+    var haha = miceDecoder.decode(d_msg, myDate);
     if (JSON.stringify(haha) != undefined) {
-      logger.file_write(d_msg + '\r\n' + JSON.stringify(haha) + '\r\n', './log/MicE.log', myDate);
       poster.SendtoDB(haha, "/moving_object");
+      return true;
     }
     else {
-      logger.file_write(d_msg + '\r\n', './log/Discarded.log', myDate);
+      return false;
     }
 }
 
-exports.Position_without_Timestamp = Position_without_Timestamp;
-exports.Position_with_Timestamp = Position_with_Timestamp;
-exports.Object_Handle = Object_Handle;
-exports.Item_Handle = Item_Handle;
+function Wthr_with_Timestamp(myDate, header, info) {
+  var ObjName;
+  var time;
+  var latitute;
+  var longitude;
+  var windInfo;
+  var compressedWindInfo;
+  var WeatherData;
+  var SoftwareIdentifier;
+  var MachineIdentifier;
+
+  if (info.charAt(16) == '/') {
+    //Complete Weather data with Lat/Long and Time Stamp
+    time = info.substring(1, 8);
+    latitute = info.substring(8, 16);
+    longitude = info.substring(17, 26);
+    windInfo = info.substring(27, 34);
+    compressedWindInfo = '';
+    WeatherData = info.substring(34, info.length);
+  } else {
+    //Complete Weather data with Compressed Lat/Long and Time Stamp
+    time = info.substring(1, 8);
+    latitute = info.substring(9, 13);
+    longitude = info.substring(13, 17);
+    compressedWindInfo = info.substring(18, 20);
+    windInfo = '';
+    WeatherData = info.substring(21, info.length);
+  }
+
+  //Deal with Identifier
+  infoHandler.Wthr_dealWithSoftIdentifier(WeatherData);
+
+  //Deal with data to be returned
+  var newObj = infoHandler.Wthr_dealWithSoftIdentifier(WeatherData);
+  WeatherData = newObj.weather;
+  MachineIdentifier = newObj.machine;
+
+  var weatherDataGroup = {
+    objNameConverted: ObjName,
+    TimeConverted: time,
+    latituteConverted: latitute,
+    longitudeConverted: longitude,
+    windInfoConverted: windInfo,
+    compressedWindInfoConverted: compressedWindInfo,
+    WeatherDataConverted: WeatherData,
+    SoftwareIdentifierConverted: SoftwareIdentifier,
+    MachineIdentifierConverted: MachineIdentifier
+  }
+
+  var receivedObject = infoHandler.Wthr_dataDecoding(myDate, weatherDataGroup);
+  if (JSON.stringify(receivedObject) != undefined) {
+    receivedObject.Path = headerHandler.getPath(header);
+    poster.SendtoDB(receivedObject, "/weather");
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+function Wthr_without_Timestamp_no_Message(myDate, header, info) {
+  var ObjName;
+  var time;
+  var latitute;
+  var longitude;
+  var windInfo;
+  var compressedWindInfo;
+  var WeatherData;
+  var SoftwareIdentifier;
+  var MachineIdentifier;
+
+  var newWeatherData;
+  if (info.charAt(2) != '!') {
+    if (info.charAt(9) == '/') {
+      //Complete Weather data with Lat/Long and NO Time Stamp
+      time = '';
+      ObjName = '';
+      latitute = info.substring(1, 9);
+      longitude = info.substring(10, 19);
+      windInfo = info.substring(21, 28);
+      compressedWindInfo = '';
+      WeatherData = info.substring(28, info.length);
+    } else {
+      //Complete Weather data with Compressed Lat/Long and NO Time Stamp
+      time = '';
+      ObjName = '';
+      latitute = info.substring(2, 6);
+      longitude = info.substring(6, 10);
+      compressedWindInfo = info.substring(11, 13);
+      windInfo = '';
+      WeatherData = info.substring(14, info.length);
+    }
+
+    infoHandler.Wthr_dealWithSoftIdentifier(WeatherData);
+    var newObj = infoHandler.Wthr_dealWithSoftIdentifier(WeatherData);
+    WeatherData = newObj.weather;
+    MachineIdentifier = newObj.machine;
+  } else {
+    var rawWeatherData = info.substring(1, info.length);
+  }
+
+  var weatherDataGroup = {
+    objNameConverted: ObjName,
+    TimeConverted: time,
+    latituteConverted: latitute,
+    longitudeConverted: longitude,
+    windInfoConverted: windInfo,
+    compressedWindInfoConverted: compressedWindInfo,
+    WeatherDataConverted: WeatherData,
+    SoftwareIdentifierConverted: SoftwareIdentifier,
+    MachineIdentifierConverted: MachineIdentifier
+  }
+
+  var receivedObject = infoHandler.Wthr_dataDecoding(myDate, weatherDataGroup);
+  if (JSON.stringify(receivedObject) != undefined) {
+    receivedObject.Path = headerHandler.getPath(header);
+    poster.SendtoDB(receivedObject, "/weather");
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+function Wthr_without_Timestamp_with_Message(myDate, header, info) {
+  var ObjName;
+  var time;
+  var latitute;
+  var longitude;
+  var windInfo;
+  var compressedWindInfo;
+  var WeatherData;
+  var SoftwareIdentifier;
+  var MachineIdentifier;
+
+  var newWeatherData;
+  if (info.charAt(9) == '/') {
+      //Complete Weather data with Lat/Long and NO Time Stamp
+      time = '';
+      ObjName = '';
+      latitute = info.substring(1, 9);
+      longitude = info.substring(10, 19);
+      windInfo = info.substring(20, 27);
+      compressedWindInfo = '';
+      WeatherData = info.substring(27, info.length);
+  } else {
+      //Complete Weather data with Compressed Lat/Long and NO Time Stamp
+      time = '';
+      ObjName = '';
+      latitute = info.substring(2, 6);
+      longitude = info.substring(6, 10);
+      compressedWindInfo = info.substring(11, 13);
+      windInfo = '';
+      WeatherData = info.substring(14, info.length);
+  }
+
+  infoHandler.Wthr_dealWithSoftIdentifier(WeatherData);
+  var newObj = infoHandler.Wthr_dealWithSoftIdentifier(WeatherData);
+  WeatherData = newObj.weather;
+  MachineIdentifier = newObj.machine;
+
+  var weatherDataGroup = {
+    objNameConverted: ObjName,
+    TimeConverted: time,
+    latituteConverted: latitute,
+    longitudeConverted: longitude,
+    windInfoConverted: windInfo,
+    compressedWindInfoConverted: compressedWindInfo,
+    WeatherDataConverted: WeatherData,
+    SoftwareIdentifierConverted: SoftwareIdentifier,
+    MachineIdentifierConverted: MachineIdentifier
+  }
+
+  var receivedObject = infoHandler.Wthr_dataDecoding(myDate, weatherDataGroup);
+  if (JSON.stringify(receivedObject) != undefined) {
+    receivedObject.Path = headerHandler.getPath(header);
+    poster.SendtoDB(receivedObject, "/weather");
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+function Wthr_Object(myDate, header, info) {
+  var ObjName;
+  var time;
+  var latitute;
+  var longitude;
+  var windInfo;
+  var compressedWindInfo;
+  var WeatherData;
+  var SoftwareIdentifier;
+  var MachineIdentifier;
+
+  var newWeatherData;
+  ObjName = info.substring(1, 10);
+  if (info.charAt(17) == 'z') {
+      time = info.substring(11, 18);
+      latitute = info.substring(18, 26);
+      longitude = info.substring(27, 36);
+      windInfo = info.substring(37, 44);
+      compressedWindInfo = '';
+      WeatherData = info.substring(44, info.length);
+  } else {
+      time = '';
+      latitute = info.substring(11, 19);
+      longitude = info.substring(20, 29);
+      windInfo = info.substring(30, 37);
+      compressedWindInfo = '';
+      WeatherData = info.substring(37, info.length);
+  }
+
+  var newObj = infoHandler.Wthr_dealWithSoftIdentifier(WeatherData);
+  WeatherData = newObj.weather;
+  MachineIdentifier = newObj.machine;
+
+  var weatherDataGroup = {
+    objNameConverted: ObjName,
+    TimeConverted: time,
+    latituteConverted: latitute,
+    longitudeConverted: longitude,
+    windInfoConverted: windInfo,
+    compressedWindInfoConverted: compressedWindInfo,
+    WeatherDataConverted: WeatherData,
+    SoftwareIdentifierConverted: SoftwareIdentifier,
+    MachineIdentifierConverted: MachineIdentifier
+  }
+
+  var receivedObject = infoHandler.Wthr_dataDecoding(myDate, weatherDataGroup);
+  if (JSON.stringify(receivedObject) != undefined) {
+    receivedObject.Path = headerHandler.getPath(header);
+    poster.SendtoDB(receivedObject, "/weather");
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+function Wthr_Peet_Bros_or_rawGPS(myDate, header, info) {
+  var ObjName;
+  var time;
+  var latitute;
+  var longitude;
+  var windInfo;
+  var compressedWindInfo;
+  var WeatherData;
+  var SoftwareIdentifier;
+  var MachineIdentifier;
+
+  var rawWeatherData = info.substring(1, info.length);
+
+  time = '';
+  ObjName = '';
+  latitute = '';
+  longitude = '';
+  compressedWindInfo = '';
+  windInfo = '';
+  WeatherData = '';
+
+  var weatherDataGroup = {
+    objNameConverted: ObjName,
+    TimeConverted: time,
+    latituteConverted: latitute,
+    longitudeConverted: longitude,
+    windInfoConverted: windInfo,
+    compressedWindInfoConverted: compressedWindInfo,
+    WeatherDataConverted: WeatherData,
+    SoftwareIdentifierConverted: SoftwareIdentifier,
+    MachineIdentifierConverted: MachineIdentifier
+  }
+
+  var receivedObject = infoHandler.Wthr_dataDecoding(myDate, weatherDataGroup);
+  if (JSON.stringify(receivedObject) != undefined) {
+    receivedObject.Path = headerHandler.getPath(header);
+    poster.SendtoDB(receivedObject, "/weather");
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+function Wthr_Weather_Report(myDate, header, info) {
+  var ObjName;
+  var time;
+  var latitute;
+  var longitude;
+  var windInfo;
+  var compressedWindInfo;
+  var WeatherData;
+  var SoftwareIdentifier;
+  var MachineIdentifier;
+
+  var rawWeatherData = info.substring(10, info.length);
+
+  time = rawWeatherData.substring(0, 7);
+  ObjName = '';
+  latitute = '';
+  longitude = '';
+  compressedWindInfo = '';
+  windInfo = '';
+  WeatherData = rawWeatherData.substring(8, rawWeatherData.length);
+
+  var weatherDataGroup = {
+    objNameConverted: ObjName,
+    TimeConverted: time,
+    latituteConverted: latitute,
+    longitudeConverted: longitude,
+    windInfoConverted: windInfo,
+    compressedWindInfoConverted: compressedWindInfo,
+    WeatherDataConverted: WeatherData,
+    SoftwareIdentifierConverted: SoftwareIdentifier,
+    MachineIdentifierConverted: MachineIdentifier
+  }
+
+  var receivedObject = infoHandler.Wthr_dataDecoding(myDate, weatherDataGroup);
+  if (JSON.stringify(receivedObject) != undefined) {
+    receivedObject.Path = headerHandler.getPath(header);
+    poster.SendtoDB(receivedObject, "/weather");
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+exports.MvOb_without_Timestamp = MvOb_without_Timestamp;
+exports.MvOb_with_Timestamp = MvOb_with_Timestamp;
+exports.MvOb_Object = MvOb_Object;
+exports.MvOb_Item = MvOb_Item;
 exports.MicE_Handle = MicE_Handle;
+exports.Wthr_with_Timestamp = Wthr_with_Timestamp;
+exports.Wthr_without_Timestamp_no_Message = Wthr_without_Timestamp_no_Message;
+exports.Wthr_without_Timestamp_with_Message = Wthr_without_Timestamp_with_Message;
+exports.Wthr_Object = Wthr_Object;
+exports.Wthr_Peet_Bros_or_rawGPS = Wthr_Peet_Bros_or_rawGPS;
+exports.Wthr_Weather_Report = Wthr_Weather_Report;

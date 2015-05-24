@@ -14,7 +14,7 @@ function file_write(content, file, myDate) {
       fileposition,
       function wrote(err,written){
         if(err) {throw err;}
-        console.log('wrote'+written+'byte');
+        //console.log('wrote'+written+'byte');
         fs.closeSync(fd);
       });
   });

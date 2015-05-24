@@ -17,7 +17,6 @@ function decode(rec, myDate){
       comma=rec.search(":");
     }
     var digi=rec.substr(j+1,comma-j-1);
-    console.log(digi);
     if(!regexp1.test(digi)){
       var astic=digi.indexOf("*",0);
       if(astic==-1)   Path.push(digi);
@@ -25,7 +24,6 @@ function decode(rec, myDate){
         digi=digi.substr(0,astic);
         Path.push(digi);
       }
-      console.log(Path);
     }
     else j=comma;
     j=comma;
