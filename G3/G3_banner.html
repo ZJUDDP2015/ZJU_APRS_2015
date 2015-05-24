@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Banner</title>
+	<meta charset="utf-8">
+	<style>
+	body{position:relative;}
+	filter:alpha(opacity=30); -moz-opacity:0.3; -khtml-opacity:0.3; opacity:0.3; z-index:0; position:absolute;}
+	.nr{width:100%;height:150px; position:relative; overflow:hidden;}
+	.nr div{position:absolute; line-height:150px; position: absolute; text-align:center;}  
+	#text{
+	  	width:100%;
+	  	height:150px;
+	  	margin:0px auto;
+	}
+	</style>
+</head>
+
+<body>
+<div class="nr">           
+	<div id="text"></div>
+	<img src="?" style="width:100%;height:150px;" id='banner'/>
+</div>
+	
+<table>
+  	<tr>
+		<td><input type="file" id="pic" accept="image/*"></td>
+		<td><input type="button" value="保存图片" onclick="changeImage();"></td>
+	</tr>
+	<tr>
+		<td><input type="text" id="name"></td>
+		<td><input type="button" value="保存文字" onclick="changeText();"></td>
+	</tr>
+	<tr>
+		<td><input type="text" id="color"></td>
+		<td><input type="button" value="保存颜色" onclick="changeColor();"></td>
+	</tr>
+	<tr>
+		<td><input type="text" id="family"></td>
+		<td><input type="button" value="保存字体" onclick="changeFamily();"></td>
+	</tr>
+	<tr>
+		<td><input type="button" value="字号变大" onclick="fontBigger();">
+			<input type="button" value="字号变小" onclick="fontSmaller();"></td>
+	</tr>
+</table>
+
+<script language=javascript>
+function changeImage(){
+  	var file = document.getElementById('pic').files[0];
+ 	var reader = new FileReader();
+  	reader.readAsDataURL(file);
+  	reader.onload = function(e)
+  	{
+	 	document.getElementById('banner').src = this.result;
+  	};
+  	reader.onerror = function(e){
+     	alert(e.message);
+  	}
+  	reader.onloadstart = function(e){
+  	}
+}
+function changeText(){
+	var text = document.getElementById('text');
+	var name = document.getElementById('name').value;
+	text.innerText = name;
+}
+function fontBigger(){
+    var text = document.getElementById('text');
+    text.style.fontSize = Number(text.style.fontSize.match(/^[\d]+/i))+2+"px";
+}
+function fontSmaller(){
+    var text = document.getElementById('text');
+    text.style.fontSize = Number(text.style.fontSize.match(/^[\d]+/i))-2+"px";
+}
+function changeFamily(){
+    var text = document.getElementById('text');
+	var family = document.getElementById('family').value;
+    text.style.fontFamily = family;
+}
+function changeColor(){
+    var text = document.getElementById('text');
+	var color = document.getElementById('color').value;
+    text.style.color = color;
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,3 @@
+[submodule "WeatherWeb"]
+	path = WeatherWeb
+	url = https://github.com/asynte/WeatherWeb
