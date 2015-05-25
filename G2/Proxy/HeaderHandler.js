@@ -15,7 +15,7 @@ function getPath(header) {
         }
       }
   }
-  return Path;
+  return JSON.stringify(Path);
 }
 
 exports.getPath = getPath;

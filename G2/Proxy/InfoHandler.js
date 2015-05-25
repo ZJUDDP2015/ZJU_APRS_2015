@@ -258,16 +258,16 @@ function Wthr_dataDecoding(myDate, DataConvertedGroup) {
 				//x3 = (tLong.charCodeAt(2)-33) * (91);
 				//x4 = (tLong.charCodeAt(3)-33) * (1);
 				//tarData.Long =  -180 + (x1 + x2 + x3 + x4) / 190463;
-				tarData.Long = decodeLong(tLong);
+				tarData.Longi = decodeLong(tLong);
 		} else {
 				if (tLong.slice(8, 9) == 'E') {
 						correct = parseInt(tLong.slice(0, 3));
 						correct = correct + parseFloat(tLong.slice(3, 8)) / 60;
-						tarData.Long = correct;
+						tarData.Longi = correct;
 				} else {
 						correct = 0 - tLong.slice(0, 3);
 						correct = correct - parseFloat(tLong.slice(3, 8)) / 60;
-						tarData.Long = correct;
+						tarData.Longi = correct;
 				}
 		}
 
