@@ -28,7 +28,7 @@ function decode(rec, myDate){
     else j=comma;
     j=comma;
   }
-  Info.Path = Path;
+  Info.Path = JSON.stringify(Path);
 
   if (mic.length != 6)
     return;
@@ -89,7 +89,7 @@ function decode(rec, myDate){
   var WE = map[mic[5]].WE;
   if(NS == "South")Latitude = -Latitude;
   Info.Latitude = Latitude;
-  Info.LongOff = map[mic[4]].LongOff;
+  //Info.LongOff = map[mic[4]].LongOff;
 
   // mic-e message
   var msgIdx = parseInt(map[mic[0]].Msg[0]) * 4 + parseInt(map[mic[1]].Msg[0]) * 2 + parseInt(map[mic[2]].Msg[0]);
