@@ -1,0 +1,3 @@
+1.if you have not initiate MySql, $mysql -u "User"<G5/init.sql
+2.node G5/app.js
+3.node G2/Proxy/Proxy.js
