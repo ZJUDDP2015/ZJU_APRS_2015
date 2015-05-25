@@ -7,7 +7,7 @@
 	</tr>
 	<tr>
 		<td>id</td>
-		<td>long</td>
+		<td>int</td>
 		<td>An auto-increasing id as primary key</td>
 	</tr>
 	<tr>
@@ -61,7 +61,7 @@
 	</tr>
 	<tr>
 		<td>id</td>
-		<td>long</td>
+		<td>int</td>
 		<td>An auto-increasing id as primary key</td>
 	</tr>
 	<tr>
