@@ -1,0 +1,17 @@
+{
+  "name": "exp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.12.3",
+    "express": "^4.12.3",
+    "mongo": "^0.1.0",
+    "mongoose": "^4.0.2"
+  }
+}
