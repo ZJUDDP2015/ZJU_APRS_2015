@@ -106,17 +106,17 @@
 	</tr>
 	<tr>
 		<td>WindDirection</td>
-		<td>int</td>
+		<td>float</td>
 		<td>Wind Direction</td>
 	</tr>
 	<tr>
 		<td>WindSpeed</td>
-		<td>int</td>
+		<td>float</td>
 		<td>The Speed of the wind</td>
 	</tr>
 	<tr>
 		<td>WeatherUnit</td>
-		<td>varchar(100)</td>
+		<td>string</td>
 		<td>The description of weather device</td>
 	</tr>
 	<tr>
@@ -135,7 +135,7 @@
 		<td>The amount of the rain fallen down in the last hour</td>
 	</tr>
 	<tr>
-		<td>RainLast25Hr</td>
+		<td>RainLast24Hr</td>
 		<td>int</td>
 		<td>The amount of the rain fallen down in the last 25 hour</td>
 	</tr>
