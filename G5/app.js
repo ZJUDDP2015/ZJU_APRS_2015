@@ -63,10 +63,10 @@ app.post('/weather', function(req, res) {
         req.body.Barometric + '", "' +
         req.body.Luminosity + '", "' +
         req.body.Path.replace(/"/g,"\\\"") + '")';
-    /*wsql.query(insert,function(err, rows, fields) {
+    wsql.query(insert,function(err, rows, fields) {
             if (err) console.log(insert);
             else console.log('weather_save_cnt:' + (++w_save_cnt));
-        });*/
+        });
 
     res.send("Success");
 });
