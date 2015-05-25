@@ -112,8 +112,8 @@ function decode(rec, myDate){
     Message = MicMsg[msgIdx].S;
   else if (msgTyp == "C")
     Message = MicMsg[msgIdx].C;
-  var Comments = {};
-  Comments.MicMsg = Message;
+  var Comment = {};
+  Comment.MicMsg = Message;
 
   //to find where the Infomation field starts
   while((i<rec.length) && ((rec[i - 1] != ':') || ((rec[i]!='`') && (rec[i] != '\''))))
@@ -172,8 +172,8 @@ function decode(rec, myDate){
     }
   }
 
-  if(flag = 1){Comments.Type = Symbol};
-  Info.Comments = JSON.stringify(Comments);
+  if(flag = 1){Comment.Type = Symbol};
+  Info.Comment = JSON.stringify(Comment);
 
   //to find where the status text ends
   //var i = 0;
