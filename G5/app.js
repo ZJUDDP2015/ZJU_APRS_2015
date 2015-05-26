@@ -25,7 +25,7 @@ app.use(bodyParser.urlencoded({
 var saved = 0
 var w_save_cnt = 0
 var o_save_cnt = 0
-var received = 0 
+var received = 0
 
 wsql.connect(function(err) {
     if (err)
