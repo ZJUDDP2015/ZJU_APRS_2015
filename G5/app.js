@@ -22,8 +22,10 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
+var saved = 0
 var w_save_cnt = 0
 var o_save_cnt = 0
+var received = 0 
 
 wsql.connect(function(err) {
     if (err)
@@ -42,6 +44,9 @@ osql.connect(function(err) {
 app.post('/weather', function(req, res) {
     //console.log(req.body)
     //console.log(req.body.data);
+    ++received
+    if (req.body.WeatherUnit != undefined) 
+    	req.body.WeatherUnit = req.body.WeatherUnit.replace(/"/g,"\\\"")
     var insert = 'insert into weather (Type,Month,Day,Hour,Min,Sec,Lat,Longi,WindDirection,WindSpeed,WeatherUnit,Gust,Temp,RainLastHr,RainLast24Hr,RainSinceMid,Humidity,Barometric,Luminosity,Path) values("' +
         req.body.Type + '", "' +
         req.body.Month + '", "' +
@@ -65,7 +70,7 @@ app.post('/weather', function(req, res) {
         req.body.Path.replace(/"/g,"\\\"") + '")';
     wsql.query(insert,function(err, rows, fields) {
             if (err) console.log(insert);
-            else console.log('weather_save_cnt:' + (++w_save_cnt));
+            else ++saved// console.log('weather_save_cnt:' + (++w_save_cnt));
         });
 
     res.send("Success");
@@ -73,7 +78,7 @@ app.post('/weather', function(req, res) {
 
 
 app.post('/moving_object', function(req, res) {
-    try{
+	++received
     var insert = 'insert into moving_object (Path,Source,Destination,Name,Time,Latitude,Longitude,Comment) values("' +
         req.body.Path.replace(/"/g,"\\\"") + '", "' +
         req.body.Source + '", "' +
@@ -83,13 +88,10 @@ app.post('/moving_object', function(req, res) {
         req.body.Latitude + '", "' +
         req.body.Longitude + '", "' +
         req.body.Comment.replace(/\\/g,"\\\\").replace(/"/g,"\\\"") + '")';
-    }catch(e){
-        console.log(req.body)
-    }
-    
+
     osql.query(insert, function(err, rows, fields) {
             if (err) console.log(insert);
-            else console.log('MovingObject_save_cnt:' + (++o_save_cnt))
+            else ++saved//console.log('MovingObject_save_cnt:' + (++o_save_cnt))
         });
 
     res.send("Success");
@@ -104,3 +106,19 @@ wsql.on('error', function(err) {
 osql.on('error', function(err) {
     console.log(err);
 });
+
+var on_stock = 0
+
+setInterval(function(){
+	console.log("receive speed:"+received+"/s")
+	on_stock += received
+	received = 0
+}, 1000)
+setInterval(function(){
+	console.log("save speed:"+saved+"/s")
+	on_stock -= saved
+	saved = 0
+}, 1000)
+setInterval(function(){
+	console.log("on stock:"+on_stock)
+}, 1000)
