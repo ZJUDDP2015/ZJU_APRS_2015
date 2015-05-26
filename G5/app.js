@@ -45,29 +45,27 @@ app.post('/weather', function(req, res) {
     //console.log(req.body)
     //console.log(req.body.data);
     ++received
-    if (req.body.WeatherUnit != undefined) 
-    	req.body.WeatherUnit = req.body.WeatherUnit.replace(/"/g,"\\\"")
     var insert = 'insert into weather (Type,Month,Day,Hour,Min,Sec,Lat,Longi,WindDirection,WindSpeed,WeatherUnit,Gust,Temp,RainLastHr,RainLast24Hr,RainSinceMid,Humidity,Barometric,Luminosity,Path) values("' +
-        req.body.Type + '", "' +
-        req.body.Month + '", "' +
-        req.body.Day + '", "' +
-        req.body.Hour + '", "' +
-        req.body.Min + '", "' +
-        req.body.Sec + '", "' +
-        req.body.Lat + '", "' +
-        req.body.Longi + '", "' +
-        req.body.WindDirection + '", "' +
-        req.body.WindSpeed + '", "' +
-        req.body.WeatherUnit + '", "' +
-        req.body.Gust + '", "' +
-        req.body.Temp + '", "' +
-        req.body.RainLastHr + '", "' +
-        req.body.RainLast24Hr + '", "' +
-        req.body.RainSinceMid + '", "' +
-        req.body.Humidity + '", "' +
-        req.body.Barometric + '", "' +
-        req.body.Luminosity + '", "' +
-        req.body.Path.replace(/"/g,"\\\"") + '")';
+        mysql.escape(req.body.Type) + '", "' +
+        mysql.escape(req.body.Month) + '", "' +
+        mysql.escape(req.body.Day) + '", "' +
+        mysql.escape(req.body.Hour) + '", "' +
+        mysql.escape(req.body.Min) + '", "' +
+        mysql.escape(req.body.Sec) + '", "' +
+        mysql.escape(req.body.Lat) + '", "' +
+        mysql.escape(req.body.Longi) + '", "' +
+        mysql.escape(req.body.WindDirection) + '", "' +
+        mysql.escape(req.body.WindSpeed) + '", "' +
+        mysql.escape(req.body.WeatherUnit) + '", "' +
+        mysql.escape(req.body.Gust) + '", "' +
+        mysql.escape(req.body.Temp) + '", "' +
+        mysql.escape(req.body.RainLastHr) + '", "' +
+        mysql.escape(req.body.RainLast24Hr) + '", "' +
+        mysql.escape(req.body.RainSinceMid) + '", "' +
+        mysql.escape(req.body.Humidity) + '", "' +
+        mysql.escape(req.body.Barometric) + '", "' +
+        mysql.escape(req.body.Luminosity) + '", "' +
+        mysql.escape(req.body.Path) + '")';
     wsql.query(insert,function(err, rows, fields) {
             if (err) console.log(insert);
             else ++saved// console.log('weather_save_cnt:' + (++w_save_cnt));
@@ -80,14 +78,14 @@ app.post('/weather', function(req, res) {
 app.post('/moving_object', function(req, res) {
 	++received
     var insert = 'insert into moving_object (Path,Source,Destination,Name,Time,Latitude,Longitude,Comment) values("' +
-        req.body.Path.replace(/"/g,"\\\"") + '", "' +
-        req.body.Source + '", "' +
-        req.body.Destination + '", "' +
-        req.body.Name + '", "' +
-        req.body.Time + '", "' +
-        req.body.Latitude + '", "' +
-        req.body.Longitude + '", "' +
-        req.body.Comment.replace(/\\/g,"\\\\").replace(/"/g,"\\\"") + '")';
+        mysql.escape(req.body.Path) + '", "' +
+        mysql.escape(req.body.Source) + '", "' +
+        mysql.escape(req.body.Destination) + '", "' +
+        mysql.escape(req.body.Name) + '", "' +
+        mysql.escape(req.body.Time) + '", "' +
+        mysql.escape(req.body.Latitude) + '", "' +
+        mysql.escape(req.body.Longitude) + '", "' +
+        mysql.escape(req.body.Comment) + '")';
 
     osql.query(insert, function(err, rows, fields) {
             if (err) console.log(insert);
