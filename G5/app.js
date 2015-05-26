@@ -107,18 +107,18 @@ osql.on('error', function(err) {
     console.log(err);
 });
 
-var on_stock = 0
+var in_buffer = 0
 
 setInterval(function(){
 	console.log("receive speed:"+received+"/s")
-	on_stock += received
+	in_buffer += received
 	received = 0
 }, 1000)
 setInterval(function(){
 	console.log("save speed:"+saved+"/s")
-	on_stock -= saved
+	in_buffer -= saved
 	saved = 0
 }, 1000)
 setInterval(function(){
-	console.log("on stock:"+on_stock)
+	console.log("in buffer:"+in_buffer)
 }, 1000)
