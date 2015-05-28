@@ -1,4 +1,4 @@
-var headerHandler = require("./headerHandler.js");
+var headerHandler = require("./HeaderHandler.js");
 var infoHandler = require("./InfoHandler.js");
 var miceDecoder = require('./MicEDecode.js');
 var poster = require("./Poster.js")
