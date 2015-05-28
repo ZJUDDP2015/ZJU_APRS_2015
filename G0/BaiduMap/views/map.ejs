@@ -7,20 +7,25 @@
     <title>
         <%= title %>
     </title>
-    <link rel="stylesheet" href="../public/css/map_style.css" type="text/css" />
+    <link rel="stylesheet" href="/css/map_style.css" type="text/css" />
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=1.5&ak=xYBeNeqobNOPgiofCkvp1Ln6"></script>
     <script type="text/javascript" charset="utf-8">
+         var points = [
+            <% car.forEach(function(e, i) { %>
+                new BMap.Point( <%= e.lat %>, <%= e.lon %> ),
+            <% }); %>
+        ];
         var map; //百度地图对象
         function init() {
-            //初始化地图
-            map = new BMap.Map("container");
-            map.centerAndZoom(points[0], 15);
-            map.enableScrollWheelZoom();
-            map.addControl(new BMap.NavigationControl());
-            map.addControl(new BMap.ScaleControl());
-            map.addControl(new BMap.OverviewMapControl({
-                isOpen: true
-        }));
+                //初始化地图
+                map = new BMap.Map("container");
+                map.centerAndZoom(points[0], 15);
+                map.enableScrollWheelZoom();
+                map.addControl(new BMap.NavigationControl());
+                map.addControl(new BMap.ScaleControl());
+                map.addControl(new BMap.OverviewMapControl({
+                    isOpen: true
+                }));
     </script>
 </head>
 
