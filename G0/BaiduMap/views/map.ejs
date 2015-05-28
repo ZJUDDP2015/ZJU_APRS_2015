@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="/css/map_style.css" type="text/css" />
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=1.5&ak=xYBeNeqobNOPgiofCkvp1Ln6"></script>
     <script type="text/javascript" charset="utf-8">
-         var points = [
+        var points = [
             <% car.forEach(function(e, i) { %>
                 new BMap.Point( <%= e.lat %>, <%= e.lon %> ),
             <% }); %>
@@ -26,10 +26,12 @@
                 map.addControl(new BMap.OverviewMapControl({
                     isOpen: true
                 }));
+        }
     </script>
 </head>
 
 <body onload="init();">
+    <div id="container"></div>
 </body>
 
 </html>

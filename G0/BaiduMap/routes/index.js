@@ -3,18 +3,83 @@ var router = express.Router();
 var url = require('url');
 var mysql = require('mysql');
 
-var getFormatedTime = function(month, day, hour) {
-    var stime = '2015';
-    stime += '-' + (month < 10 ? '0' + month : month);
-    stime += '-' + (day < 10 ? '0' + day : day);
-    stime += ' ' + (hour < 10 ? '0' + hour : hour);
-    return stime;
-}
+var starttime;
+var endtime;
+var current;
 
+
+var dbclient = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "jrc950926",
+    database: "moving_object"
+});
+
+var getFormatedTime = function(month, day, hour) {
+  var stime = {};
+  stime.day=(day<10 ? '0'+day:day);
+  stime.month=month;
+  stime.hour=(hour<10 ? '0'+hour:hour);
+  return stime;
+}
+var compare = function(time,str){
+  var day;
+  var month;
+  var hour;
+  day=str.substr(5,2);
+  hour=str.substr(17,2);
+  switch (str.substr(8,3))
+  {
+    case 'Jan':month=1;break;
+    case 'Feb':month=2;break;
+    case 'Mar':month=3;break;
+    case 'Apr':month=4;break;
+    case 'May':month=5;break;
+    case 'Jun':month=6;break;
+    case 'Jul':month=7;break;
+    case 'Aug':month=8;break;
+    case 'Sep':month=9;break;
+    case 'Oct':month=10;break;
+    case 'Nov':month=11;break;
+    case 'Dec':month=12;break;
+  }
+  if (time.month>month)
+    return 1;
+  else if (time.month==month&&time.day>day)
+    return 1;
+  else if (time.month==month&&time.day==day&&time.hour>hour)
+    return 1;
+  else
+    return 0;
+}
 router.get('/', function(req, res) {
     res.render('index', {
         title: 'Car'
     })
+});
+
+router.get('/data',function(req,res){
+  dbclient.connect(function(err,results){
+    dbclient.query("select * from moving_object",function(err,rows){
+      var car=[];
+      rows.forEach(function(e){
+        if (e.Time!=null&&e.id>current){
+          var start=compare(starttime,e.Time);
+          var end=compare(endtime,e.Time);
+          if (start==0&&end==1){
+            car.push({
+              id:e.Source,
+              time:e.Time,
+              lat:e.Latitude,
+              lon:e.Longitude
+            });
+            current=e.id;
+          }
+        }
+      });
+      return res.JSON(car);
+    });
+  });
 });
 
 router.get('/map', function(req, res) {
@@ -25,28 +90,33 @@ router.get('/map', function(req, res) {
         emonth = req.query.emonth || 0,
         eday = req.query.eday || 0,
         ehour = req.query.ehour || 0;
+
     var stime = getFormatedTime(smonth, sday, shour),
         etime = getFormatedTime(emonth, eday, ehour);
-    var dbclient = mysql.createConnection({
-        host: "XXX",
-        user: "XXX",
-        password: "XXX",
-        database: "XXX"
-    });
+
+        starttime=stime;
+        endtime=etime;
     dbclient.connect(function(err, results) {
-        dbclient.query("select * from car", function(err, rows) {
+        dbclient.query("select * from moving_object", function(err, rows) {
             var car = [];
             rows.forEach(function(e) {
-                if (e.ID == carid && JSON.stringify(stime) < JSON.stringify(e.time) && JSON.stringify(etime) > JSON.stringify(e.time)) {
-                    car.push({
-                        id: e.ID,
-                        time: JSON.stringify(e.time),
-                        lat: e.lat,
-                        lon: e.lon
-                    });
+              if (e.Time!=null&&e.Longitude>0){
+                console.log(e.Time);
+                var start=compare(stime,e.Time);
+                var end=compare(etime,e.Time);
+                  if (start==0&&end==1) {
+                      car.push({
+                          id: e.Source,
+                          time: e.Time,
+                          lat: e.Latitude,
+                          lon: e.Longitude
+                      });
+                      current=e.id;
+                      console.log(e);
+                  }
                 }
             });
-            console.log(car);
+            //console.log(car);
             res.render('map', {
                 title: 'Map',
                 car: car
