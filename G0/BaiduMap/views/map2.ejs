@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title><%= title %></title>
+<style type="text/css">
+html{height:100%}
+body{height:100%;margin:0px;padding:0px}
+#controller{width:100%; border-bottom:3px outset; height:30px; filter:alpha(Opacity=100); -moz-opacity:1; opacity:1; z-index:10000; background-color:lightblue;}
+#container{height:100%; width:100%;}
+</style>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=1.5&ak=xYBeNeqobNOPgiofCkvp1Ln6"></script>
+<script type="text/javascript">
+    var points = [
+        <% car.forEach(function (e, i) { %>
+            new BMap.Point(<%= e.lon %>, <%= e.lat %>),
+        <% }); %>
+    ];
+
+
+  var markerinfo = {};
+  markerinfo.path = <%= e.Path %>;
+  markerinfo.source = <%= e.Source %>;
+
+	var sline;
+	var slindex = 0;
+    var map; //百度地图对象
+    var centerPoint;
+
+function init() {
+
+    //初始化地图,选取第一个点为起始点
+    map = new BMap.Map("container");
+    map.centerAndZoom(points[0], 15);
+    map.enableScrollWheelZoom();
+    map.addControl(new BMap.NavigationControl());
+    map.addControl(new BMap.ScaleControl());
+    map.addControl(new BMap.OverviewMapControl({isOpen: true}));
+
+    centerPoint = new BMap.Point((points[0].lng + points[points.length - 1].lng) / 2, (points[0].lat + points[points.length - 1].lat) / 2);
+    map.panTo(centerPoint);
+
+    //连接所有点
+   var click_lng;
+	var click_lat;
+	var line=new BMap.Polyline(points, {strokeColor: "black", strokeWeight: 5, strokeOpacity: 1});
+	//sline[slindex++] = { line, markerinfo };
+	map.addOverlay(line);
+
+	//点击轨迹显示详细数据
+/*	map.addEventListener("mousemove",function(e){
+		//获取鼠标当前经纬度
+        click_lng =  e.point.lng ;
+        click_lat =  e.point.lat;
+	});
+  */
+	var m;	//点击产生的标记
+	var loop;
+/*	line.onclick = function(){
+		map.removeOverlay(m);
+        var p = new BMap.Point(click_lng,click_lat);
+        m = new BMap.Marker(p);
+        var l = new BMap.Label("", {offset: new BMap.Size(-20, -20)});
+		for (loop = 0; sline[loop] != NULL; loop++)
+		{
+			if (line === sline[loop].line) break;
+		}
+        l.setContent("经度: " + p.lng + "<br>纬度: " + p.lat + "<br>Path: " + sline[loop].markerinfo.path + "<br>Source: ", sline[loop].markerinfo.source);
+        m.setLabel(l);
+        map.addOverlay(m);
+        //alert(click_lng + ' ' + click_lat);
+	}*/
+}
+
+/*function freshRoute() {
+    map.clearOverlays();
+    points += [
+        <% car.forEach(function (e, i) { %>
+            new BMap.Point(<%= e.lat %>, <%= e.lon %>),
+        <% }); %>
+    ];
+
+	markerinfo = [
+		<% car.forEach(function (e,i) {%>
+			markerinfo.path = <%= e.Path %>;
+			markerinfo.source = <%= e.Source %>;
+		<% }); %>
+	];
+
+    centerPoint = new BMap.Point((points[0].lng + points[points.length - 1].lng) / 2, (points[0].lat + points[points.length - 1].lat) / 2);
+    map.panTo(centerPoint);
+
+    //连接所有点
+   var click_lng;
+	var click_lat;
+	var line=new BMap.Polyline(points, {strokeColor: "black", strokeWeight: 5, strokeOpacity: 1});
+	sline[slindex++] = { line, markerinfo };
+	map.addOverlay(line);
+
+	//点击轨迹显示详细数据
+	map.addEventListener("mousemove",function(e){
+		//获取鼠标当前经纬度
+        click_lng =  e.point.lng ;
+        click_lat =  e.point.lat;
+	});
+	var m;	//点击产生的标记
+	var loop;
+	line.onclick = function(){
+		map.removeOverlay(m);
+        var p = new BMap.Point(click_lng,click_lat);
+        m = new BMap.Marker(p);
+        var l = new BMap.Label("", {offset: new BMap.Size(-20, -20)});
+		for (loop = 0; sline[loop] != NULL; loop++)
+		{
+			if (line === sline[loop].line) break;
+		}
+        l.setContent("经度: " + p.lng + "<br>纬度: " + p.lat + "<br>Path: " + sline[loop].markerinfo.path + "<br>Source: ", sline[loop].markerinfo.source);
+        m.setLabel(l);
+        map.addOverlay(m);
+        //alert(click_lng + ' ' + click_lat);
+	}
+
+
+}
+*/
+</script>
+</head>
+
+<body onload="init();">
+    <div id="container"></div>
+</body>
+</html>

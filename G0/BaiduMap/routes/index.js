@@ -11,7 +11,7 @@ var current;
 var dbclient = mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "jrc950926",
+    password: "12345",
     database: "moving_object"
 });
 
@@ -100,23 +100,22 @@ router.get('/map', function(req, res) {
         dbclient.query("select * from moving_object", function(err, rows) {
             var car = [];
             rows.forEach(function(e) {
-              if (e.Time!=null&&e.Longitude>0){
-                console.log(e.Time);
+              if (e.Time!=null&&e.Longitude>73&&e.Longitude<135&&e.Latitude>20&&e.Latitude<53){
+                //console.log(e.Time);
                 var start=compare(stime,e.Time);
                 var end=compare(etime,e.Time);
                   if (start==0&&end==1) {
                       car.push({
                           id: e.Source,
                           time: e.Time,
-                          lat: e.Latitude,
-                          lon: e.Longitude
+                          lat: e.Longitude,
+                          lon: e.Latitude
                       });
                       current=e.id;
                       console.log(e);
                   }
                 }
             });
-            //console.log(car);
             res.render('map', {
                 title: 'Map',
                 car: car
