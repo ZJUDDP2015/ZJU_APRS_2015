@@ -1,6 +1,7 @@
 var express = require('express');
 var http = require('http');
 var bodyParser = require('body-parser');
+var fs = require('fs');
 
 var path = require('path');
 var childProcess = require('child_process');
@@ -8,10 +9,15 @@ var phantomjs = require('phantomjs');
 var binPath = phantomjs.path;
 var ServerList = new Array();
 
-//console.log(binPath);
+var CallSignList = new Array;
+var CallSignCount = 0;
+
+console.log(binPath);
 var childArgs = [
   path.join(__dirname, '/phantomScript.js'),
-  'http://status.aprs2.net'
+  'http://status.aprs2.net' //,
+  //'–load-images=false',
+  //'–disk-cache=true'
 ];
 
 childProcess.execFile(binPath, childArgs, function(err, stdout, stderr) {
@@ -75,56 +81,48 @@ app.post('/searchCallSign', function(req, res) {
   console.log(req.url);
   console.log(req.body);
 
-  process.on('uncaughtException', function(err) {
-    console.error('Error caught in uncaughtException event:', err);
-  });
+  var count = 0;
+  var Found = false;
+  for (var i = 0; i < ServerList.length; i++) {
+    var T2Server = ServerList[i];
+    var Cmd = binPath + ' phantomScript.js ' + T2Server;
+    var option = {
+      timeout: 115000,
+      killSignal: 'SIGTERM'
+    }
 
-  try {
-    searchSeverLists(0, req.body.CallSign, res);
-  } catch (e) {
-    console.error(e);
+    childProcess.exec(Cmd, option, function(err, stdout, stderr) {
+      count++;
+      console.log('we got shit here: ' + count + '/' + ServerList.length);
+      if (!Found && count == ServerList.length) {
+        res.json({
+          succ: false
+        });
+        console.log('false->res sent');
+      }
+      if (err) {
+        console.error(err);
+      }
+      if (stderr) {
+        console.error(stderr);
+      }
+      if (stdout) {
+        //console.log(stdout);
+        if (!Found && stdout.search(req.body.CallSign) != -1) {
+          Found = true;
+          res.json({
+            succ: true,
+            ServerLocation: T2Server
+          });
+        }
+      }
+    });
+
   }
 
 });
 
-function searchSeverLists(ServerItr, CallSign, response) {
-    //console.log(response);
-    if (ServerItr == ServerList.length) {
-      console.log('notFound');
-      res.json({
-        succ: false
-      });
-      return;
-    }
-    console.log(ServerItr + ': ' + ServerList[ServerItr]);
-    http.get(ServerList[ServerItr++], function(res) {
-      var body = '';
-      res.on('data', function(data) {
-        console.log(data);
-        body += data;
-        //console.log(body);
-        if (body.search(RegExp('</[Hh][tT][mM][lL]>')) != -1) {
-          console.log(body);
-          console.log('end of </html>');
-          if (body.search(CallSign) == -1)
-            searchSeverLists(ServerItr, CallSign, response);
-          else {
-            console.log('shit found here')
-            response.json({
-              succ: true,
-              ServerLocation: ServerList[ServerItr]
-            });
-            return;
-          }
-        }
-      });
-    }).on('error', function(err) {
-      console.error(err);
-      searchSeverLists(++ServerItr, CallSign, response);
-    });
-  }
-  //error handler
-
+//error handler
 app.use(function(req, res) {
   console.log(req.url);
   res.type('text/plain');
