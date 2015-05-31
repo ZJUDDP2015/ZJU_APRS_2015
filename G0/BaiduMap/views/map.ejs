@@ -24,6 +24,7 @@ body{height:100%;margin:0px;padding:0px}
     var points = new Array();
     var symbol = new Array();
     var line = new Array();
+    var pointpaths = new Array();
 
     var m;  //点击产生的标记
     var click_lng;
@@ -40,12 +41,15 @@ body{height:100%;margin:0px;padding:0px}
         if (typeof(points[data[i].id]) == "undefined") {
             points[data[i].id] = new Array();
             points[data[i].id][0] = new BMap.Point(data[i].lat, data[i].lon);
+            pointpaths[data[i].id] = new Array();
+            pointpaths[data[i].id][0] = data[i].path;
             countColor = (countColor + 1) % 7;
             lineColor[data[i].id] = color[countColor];
             lineInfo[data[i].id] = {"source": data[i].id, "path": data[i].path, "time": data[i].time, "des": data[i].des };
         }
         else {
             points[data[i].id][points[data[i].id].length] = new BMap.Point(data[i].lat, data[i].lon);
+            pointpaths[data[i].id][pointpaths[data[i].id].length] = data[i].path;
         }
 
         if (typeof(symbol[data[i].id]) == "undefined") {
@@ -126,6 +130,37 @@ function init() {
         //alert(click_lng + ' ' + click_lat);
         }
     }
+
+//鼠标移动到轨迹的点上显示path
+//  var markers = [];
+//  var coresps = [];
+//  var myIcon = new BMap.Icon("/1.png", new BMap.Size(20,20));
+//  for (var i in points){
+//    for(var j in points[i]){
+//      var nmk = new BMap.Marker(points[i][j],{
+//        icon: myIcon
+//      });
+//      map.addOverlay(nmk);
+//      markers.push(nmk);
+//      coresps.push(pointpaths[i][j]);
+//    }
+//  }
+//  var digipeater, curve;
+//  for(var i in markers){
+//    markers[i].addEventListener('mouseover',function(e){
+//      digipeater = [];
+//      // add points of paths
+//      for(j in coresps[i]){
+//        var pp = new BMap.Point(callsign(coresps[i][j]).lat, callsign(coreps[i][j]).lon);
+//        digipeater.push(pp);
+//      }
+//      curve = new BMapLib.Curveline(digipeater,{strokeColor:"blue", strokeWeight:3, strokeOpacity:0.5});
+//      map.addOverlay(curve); // add curve into the map
+//    });
+//    markers[i].addEventListener('mouseout',function(e){
+//    map.removeOverlay(curve); //remove curve from the map
+//    });
+//  }
 
     setTimeout(function(){
       setInterval(refreshRoute, 2000);
