@@ -4,14 +4,14 @@ var mysql = require('mysql');
 
 var wsql = mysql.createConnection({
     host: 'localhost',
-    user: 'root',
-    password: '12345',
+    user: 'orz',
+    password: '123456',
     database: 'weather'
 });
 var osql = mysql.createConnection({
     host: 'localhost',
-    user: 'root',
-    password: '12345',
+    user: 'orz',
+    password: '123456',
     database: 'moving_object'
 });
 var app = express();

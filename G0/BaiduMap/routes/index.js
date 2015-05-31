@@ -10,8 +10,8 @@ var current;
 
 var dbclient = mysql.createConnection({
     host: "localhost",
-    user: "root",
-    password: "12345",
+    user: "orz",
+    password: "123456",
     database: "moving_object"
 });
 
@@ -128,6 +128,8 @@ router.get('/map', function(req, res) {
                       //console.log(symbol[0]!='\\'&&symbol[0]!='/');
                       car.push({
                           id: e.Source,
+//                          id: e.id,
+//                          source: e.Source,
                           time: e.Time,
                           lat: e.Longitude,
                           lon: e.Latitude,

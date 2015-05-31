@@ -17,7 +17,7 @@ body{height:100%;margin:0px;padding:0px}
 
     var data = [
         <% car.forEach(function (e, i) { %>
-            { "lat": <%= e.lat %>, "lon": <%= e.lon %>, "id": '<%= e.id %>', "path": '<%= e.path %>', 
+            { "lat": <%= e.lat %>, "lon": <%= e.lon %>, "id": '<%= e.id %>', "path": '<%= e.path %>',
               "des": '<%= e.des %>', "time": '<%= e.time %>', "symbol": '<%= e.symbol %>'},
         <% }); %>
     ];
@@ -113,7 +113,7 @@ function init() {
     map.addEventListener("mousemove",function(e){
         //获取鼠标当前经纬度
         click_lng =  e.point.lng ;
-        click_lat =  e.point.lat;  
+        click_lat =  e.point.lat;
     });
 
     for (var i in points){
