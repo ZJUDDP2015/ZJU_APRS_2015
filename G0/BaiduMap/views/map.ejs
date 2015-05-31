@@ -22,7 +22,12 @@ body{height:100%;margin:0px;padding:0px}
         <% }); %>
     ];
     var points = new Array();
-	var symbol = new Array();
+    var symbol = new Array();
+    var line = new Array();
+
+    var m;  //点击产生的标记
+    var click_lng;
+    var click_lat;
 
     var map; //百度地图对象
     var centerPoint;
@@ -47,8 +52,8 @@ body{height:100%;margin:0px;padding:0px}
             symbol[data[i].id] = data[i].symbol;
         }
     }
-    console.log(points)
-    console.log(symbol);
+    //console.log(points)
+    //console.log(symbol);
 
 function init() {
 
@@ -64,7 +69,6 @@ function init() {
 
     //连接所有点
     //map.addOverlay(new BMap.Polyline(points, {strokeColor: "black", strokeWeight: 5, strokeOpacity: 1}));
-	var line = new Array();
 
     for (var i in points) {
         //console.log(lineColor[i]);
@@ -101,34 +105,31 @@ function init() {
     }
 
 
-	var click_lng;
-	var click_lat;
-
-	//点击轨迹显示详细数据
-	map.addEventListener("mousemove",function(e){
-		//获取鼠标当前经纬度
+    //点击轨迹显示详细数据
+    map.addEventListener("mousemove",function(e){
+        //获取鼠标当前经纬度
         click_lng =  e.point.lng ;
         click_lat =  e.point.lat;  
-	});
-	var m;	//点击产生的标记
-	for (var i in points){
-        line[i].info = lineInfo[i];
-		line[i].onclick = function(){
-			map.removeOverlay(m);
-        	var p = new BMap.Point(click_lng,click_lat);
-        	m = new BMap.Marker(p);
-        	var l = new BMap.Label("", {offset: new BMap.Size(-20, -20)});
-        	l.setContent("Longitude: " + p.lng + "<br>Latitude: " + p.lat
-                + "<br>source:" + this.info.source + "<br>path:" + this.info.path + "<br>time:" + this.info.time + "<br>des:" + this.info.des);
-        	m.setLabel(l);
-        	map.addOverlay(m);
-        //alert(click_lng + ' ' + click_lat);
-		}
-	}
+    });
 
-    //setTimeout(function(){
-      //setInterval(refreshRoute, 2000);
-    //},5000);
+    for (var i in points){
+        line[i].info = lineInfo[i];
+        line[i].onclick = function(){
+            map.removeOverlay(m);
+            var p = new BMap.Point(click_lng,click_lat);
+            m = new BMap.Marker(p);
+            var l = new BMap.Label("", {offset: new BMap.Size(-20, -20)});
+            l.setContent("Longitude: " + p.lng + "<br>Latitude: " + p.lat
+                + "<br>source:" + this.info.source + "<br>path:" + this.info.path + "<br>time:" + this.info.time + "<br>des:" + this.info.des);
+            m.setLabel(l);
+            map.addOverlay(m);
+        //alert(click_lng + ' ' + click_lat);
+        }
+    }
+
+    setTimeout(function(){
+      setInterval(refreshRoute, 2000);
+    },5000);
 }
 
 function refreshRoute() {
@@ -140,16 +141,60 @@ function refreshRoute() {
                 points[result[i].id][0] = new BMap.Point(result[i].lat, result[i].lon);
                 countColor = (countColor + 1) % 7;
                 lineColor[result[i].id] = color[countColor];
+                lineInfo[result[i].id] = {"source": result[i].id, "path": result[i].path, "time": result[i].time, "des": result[i].des };
             }
             else {
                 points[result[i].id][points[result[i].id].length] = new BMap.Point(result[i].lat, result[i].lon);
-                map.addOverlay(
-                    new BMap.Polyline(
-                        [ points[result[i].id][points[result[i].id].length - 2],
-                        points[result[i].id][points[result[i].id].length - 1] ],
-                        {strokeColor: lineColor[result[i].id], strokeWeight: 5, strokeOpacity: 1}
-                    )
-                );
+
+                line[result[i].id] = new BMap.Polyline(
+                                            [ points[result[i].id][points[result[i].id].length - 2],
+                                            points[result[i].id][points[result[i].id].length - 1] ],
+                                            {strokeColor: lineColor[result[i].id], strokeWeight: 5, strokeOpacity: 1}
+                                        );
+
+                //console.log(line[result[i].id]);
+                map.addOverlay(line[result[i].id]);
+
+                line[result[i].id].info = lineInfo[result[i].id];
+                line[result[i].id].onclick = function(){
+                    map.removeOverlay(m);
+                    var p = new BMap.Point(click_lng,click_lat);
+                    m = new BMap.Marker(p);
+                    var l = new BMap.Label("", {offset: new BMap.Size(-20, -20)});
+                    l.setContent("Longitude: " + p.lng + "<br>Latitude: " + p.lat
+                        + "<br>source:" + this.info.source + "<br>path:" + this.info.path + "<br>time:" + this.info.time + "<br>des:" + this.info.des);
+                    m.setLabel(l);
+                    map.addOverlay(m);
+                }
+
+
+                if (typeof(symbol[result[i].id]) == "undefined") {
+                    symbol[result[i].id] = result[i].symbol;
+                    var pt = points[result[i].id][0];
+                    var s=Symbol[symbol[result[i].id]];
+
+                    if (typeof(s)!="undefined")
+                    {
+                        var pic=s[0];
+                        console.log(s);
+                        console.log(i);
+                        var x=s[1];
+                        var y=s[2];
+
+                        if (pic==1) {
+                             var myIcon = new BMap.Icon("/1.png", new BMap.Size(22,22),{
+                             imageOffset: new BMap.Size(0-x, y)
+                           });
+                        }
+                        else {
+                            var myIcon = new BMap.Icon("/2.png", new BMap.Size(22,22),{
+                             imageOffset: new BMap.Size(0-x, y)
+                           });
+                        }
+                        var marker2 = new BMap.Marker(pt,{icon:myIcon});  // 创建标注
+                        map.addOverlay(marker2);
+                    }
+                }
             }
         }
     });
