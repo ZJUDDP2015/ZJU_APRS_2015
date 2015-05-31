@@ -67,19 +67,11 @@ router.get('/data',function(req,res){
           var start=compare(starttime,e.Time);
           var end=compare(endtime,e.Time);
           if (start==0&&end==1){
-            var symbol=JSON.parse(e.Comment).Symbol;
-            if (symbol[0]!='\\'&&symbol[0]!='/') 
-              symbol[0]='\\';
-            //console.log(symbol);
-            //console.log(symbol[0]!='\\'&&symbol[0]!='/');
             car.push({
-                id: e.Source,
-                time: e.Time,
-                lat: e.Longitude,
-                lon: e.Latitude,
-                symbol:symbol,
-                des: e.Destination,
-                path: e.Path
+              id:e.Source,
+              time:e.Time,
+              lat:e.Latitude,
+              lon:e.Longitude
             });
             current=e.id;
           }
@@ -113,27 +105,17 @@ router.get('/map', function(req, res) {
                 var start=compare(stime,e.Time);
                 var end=compare(etime,e.Time);
                   if (start==0&&end==1) {
-                      var symbol=JSON.parse(e.Comment).Symbol;
-                      if (symbol != "" && symbol[0]!='\\'&&symbol[0]!='/') {
-                        symbol = "\\\\" + symbol[1];
-                      }
-                      console.log(symbol);
-                      //console.log(symbol[0]!='\\'&&symbol[0]!='/');
                       car.push({
                           id: e.Source,
                           time: e.Time,
                           lat: e.Longitude,
-                          lon: e.Latitude,
-                          symbol:symbol,
-                          des: e.Destination,
-                          path: e.Path
+                          lon: e.Latitude
                       });
                       current=e.id;
-                      //console.log(e);
+                      console.log(e);
                   }
                 }
             });
-            //console.log(car);
             res.render('map', {
                 title: 'Map',
                 car: car

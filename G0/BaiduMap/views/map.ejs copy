@@ -47,7 +47,7 @@ body{height:100%;margin:0px;padding:0px}
             symbol[data[i].id] = data[i].symbol;
         }
     }
-    console.log(points)
+    //console.log(points)
     console.log(symbol);
 
 function init() {
@@ -75,27 +75,22 @@ function init() {
         //console.log(i);
         console.log(symbol[i]);
         var s=Symbol[symbol[i]];
-
         if (typeof(s)!="undefined")
         {
-            var pic=s[0];
-            console.log(s);
-            console.log(i);
-            var x=s[1];
-            var y=s[2];
-
-            if (pic==1) {
-                 var myIcon = new BMap.Icon("/1.png", new BMap.Size(22,22),{
-                 imageOffset: new BMap.Size(0-x, y)
-               });
-            }
-            else {
-                var myIcon = new BMap.Icon("/2.png", new BMap.Size(22,22),{
-                 imageOffset: new BMap.Size(0-x, y)
-               });
-            }
-            var marker2 = new BMap.Marker(pt,{icon:myIcon});  // 创建标注
-            map.addOverlay(marker2);
+        var pic=s[0];
+        console.log(s);
+        var x=s[1];
+        var y=s[2];
+        if (pic==1)
+             var myIcon = new BMap.Icon("/1.png", new BMap.Size(21,21),{
+             imageOffset: new BMap.Size(0-x, y)
+           });
+        else
+           var myIcon = new BMap.Icon("/2.png", new BMap.Size(21,21),{
+             imageOffset: new BMap.Size(0-x, y)
+           });
+          var marker2 = new BMap.Marker(pt,{icon:myIcon});  // 创建标注
+          map.addOverlay(marker2);
                  // 将标注添加到地图中
         }
     }
@@ -112,14 +107,13 @@ function init() {
 	});
 	var m;	//点击产生的标记
 	for (var i in points){
-        line[i].info = lineInfo[i];
 		line[i].onclick = function(){
 			map.removeOverlay(m);
         	var p = new BMap.Point(click_lng,click_lat);
         	m = new BMap.Marker(p);
         	var l = new BMap.Label("", {offset: new BMap.Size(-20, -20)});
         	l.setContent("Longitude: " + p.lng + "<br>Latitude: " + p.lat
-                + "<br>source:" + this.info.source + "<br>path:" + this.info.path + "<br>time:" + this.info.time + "<br>des:" + this.info.des);
+                + "<br>source:" + i + "<br>path:" + lineInfo[i].path + "<br>time:" + lineInfo[i].time + "<br>des:" + lineInfo[i].des);
         	m.setLabel(l);
         	map.addOverlay(m);
         //alert(click_lng + ' ' + click_lat);
