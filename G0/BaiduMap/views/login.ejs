@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>
+        <%= title %>
+    </title>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+
+    <script src="/components/jquery/dist/jquery.min.js"></script>
+
+    <!-- Bootstrap -->
+
+    <script type="text/javascript" src="/components/bootstrap/dist/js/bootstrap.js"></script>
+
+    <!-- Custom Styles -->
+
+    <link rel="stylesheet" href="/css/login.css">
+    <link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.css">
+    <link href='http://fonts.googleapis.com/css?family=Bree+Serif' rel='stylesheet' type='text/css'>
+
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script>
+        $(document).ready(function() {
+            $("#btn").click(function() {
+                //alert(JSON.stringify($("#user").serialize()));
+                $.post("/users/login",
+                    $("#user").serialize(),
+                    function(data, status) {
+                        //alert(JSON.stringify(data));
+                        if (data.code === 5) alert("Wrong password");
+                        else if (data.code === 1) alert("Empty email");
+                        else if (data.code === 7) alert("Email does not exist");
+                        else if (data.code === 6) {
+                            alert("Login success");
+                            window.location = "/";
+                        }
+                    });
+            });
+
+            $.get("/users/sessionVerify", function(res) {
+                //Code 7 means logged in
+                if (res.code === 7) {
+                    $('#signup_btn').hide();
+                    $('#login_btn').hide();
+                    $('#logout_btn').show();
+                }
+                //Code 8 means not logged in
+                else if (res.code === 8) {
+                    $('#signup_btn').show();
+                    $('#login_btn').show();
+                    $('#logout_btn').hide();
+                }
+            });
+
+        });
+    </script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+    <!-- Static navbar -->
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand">Weather Web</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/users">Home</a>
+                    </li>
+                    <li><a href="/weatherMap">Map</a>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/users/login" class="btn btn-lg btn-primary btn-block btn-link" role="button" id="signup_btn">Sign Up</a>
+                    </li>
+                    <li><a href="/users/login" class="btn btn-lg btn btn-block btn-link" role="button" id="login_btn">Login</a>
+                    </li>
+                    <li><a href="/users" class="btn btn-lg btn btn-block btn-link" role="button" id="logout_btn">Logout</a>
+                    </li>
+                </ul>
+            </div>
+            <!--/.nav-collapse -->
+        </div>
+    </nav>
+    <!-- End of Static Navbar -->
+    <!-- Start of LoginSignup Container -->
+    <div class="LoginSignupContainer">
+        <!-- Start of Login Form and Stuff Container -->
+        <div class="myContainer">
+            <!-- Start of Tab Panel -->
+            <div class="formtab" role="tabpanel">
+                <ul id="myTab" class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a href="#login" id="login-tab" role="tab" data-toggle="tab" aria-controls="login">
+                Login
+                </a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#signup" id="signup-tab" role="tab" aria-controls="signup" data-toggle="tab">
+                Sign Up
+                </a>
+                    </li>
+                </ul>
+                <!-- Tab Pane Content -->
+                <div id="myTabContent" class="tab-content">
+                    <!-- First Tab -->
+                    <div role="tabpanel" class="tab-pane fade in active" id="login">
+                        <form class="form-login">
+                            <h2 class="form-login-heading">Please Login</h2>
+                            <label for="inputEmail" class="sr-only">Email address</label>
+                            <input type="email" id="email" class="form-control" placeholder="Email address" required="true" autofocus="">
+                            <label for="inputPassword" class="sr-only">Password</label>
+                            <input type="password" id="pw" class="form-control" placeholder="Password" required="true">
+                            <button class="btn btn-lg btn-primary btn-block" id="login_btn">Login</button>
+                        </form>
+                    </div>
+                    <!-- End of First Tab -->
+                    <!-- Second Tab -->
+                    <div role="tabpanel" class="tab-pane fade" id="signup">
+                        <form class="form-signup">
+                            <h2 class="form-signup-heading">Please Sign Up</h2>
+                            <label for="inputEmail" class="sr-only">Email address</label>
+                            <input type="email" id="email" class="form-control" placeholder="Email address" required="true" autofocus="">
+                            <label for="inputPassword" class="sr-only">Password</label>
+                            <input type="password" id="pw" class="form-control" placeholder="Password" required="true">
+                            <label for="inputPassword" class="sr-only">Re-Enter Password</label>
+                            <input type="password" id="repw" class="form-control" placeholder="Re-Enter Password" required="true">
+                            <button class="btn btn-lg btn-primary btn-block" id="signup_btn">Sign up</button>
+                        </form>
+                    </div>
+                    <!-- End of Second Tab -->
+                </div>
+                <!-- End of Tab Content -->
+            </div>
+            <!-- End of Tab Panel -->
+        </div>
+        <!-- End of Login Form and Stuff Container -->
+    </div>
+    <!-- End of LoginSignup Container -->
+</body>
+
+</html>
