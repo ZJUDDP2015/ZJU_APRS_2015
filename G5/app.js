@@ -1,19 +1,17 @@
 var express = require('express');
 var bodyParser = require('body-parser')
 var mysql = require('mysql');
+var fs = require('fs');
 
-var wsql = mysql.createConnection({
-    host: 'localhost',
-    user: 'orz',
-    password: '123456',
-    database: 'weather'
-});
-var osql = mysql.createConnection({
-    host: 'localhost',
-    user: 'orz',
-    password: '123456',
-    database: 'moving_object'
-});
+var config = fs.readFileSync('config.js','utf8');
+
+config = JSON.parse(config);
+
+config['database'] = 'weather';
+var wsql = mysql.createConnection(config);
+config['database'] = 'moving_object';
+var osql = mysql.createConnection(config);
+
 var app = express();
 var port = 3000;
 
