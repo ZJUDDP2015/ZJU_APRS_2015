@@ -7,7 +7,12 @@
 
 2.create a directory G2/Proxy/log
 
-3.change the database username and password in G5/config.js
+3.create G5/config.js in this format:
+{
+    "host": "localhost",
+    "user": "your username",
+    "password": "your password"
+}
 
 4.node G5/app.js
 
