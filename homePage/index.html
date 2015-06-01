@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>APRS Map</title>
+        <style>
+            * { margin:0; padding:0; z-index:1}
+            html { height:100%; }
+            p { padding:10px 0; }
+            body {
+                min-height:100%;
+                font-family:arial;
+            }
+            body.sideMenu {
+                margin:0;
+                -webkit-transform:none;
+                transform:none;
+            }
+            #sideToggle {
+                display:none;
+            }
+            #sideToggle:checked + aside {
+                right:0;
+            }
+            #sideToggle:checked ~ #wrap {
+                padding-right:420px;
+            }
+            body > aside {
+                position:absolute;
+                top:0; bottom:0; right:-400px;
+                width:400px;
+                background:#297bb2;
+                transition:0.2s ease-out;
+                -webkit-transition:0.2s ease-out;
+            }
+            body > aside > h2 {
+                color:#FFF;
+                text-align:center;
+                font-weight:normal;
+                padding:10px;
+            }
+            #banner {
+                margin-left:110px;
+                margin-top:20px;
+            }
+            #icon {
+                margin-left:150px;
+                margin-top:20px;
+            }
+            #userName {
+                background:#297bb2;
+                color:#FFF;
+                text-align:center;
+                font-size:25px;
+                border: none;
+                padding:10px;
+            }
+            .button {
+                margin: auto;
+                margin-bottom:20px;
+                background:#3399cc;
+                width: 150px;
+                padding:10px;
+                color: white;
+                text-align:center;
+                border-radius:5px;
+            }
+            .button:hover{ background:#336699; }
+            #wrap {
+                position:absolute;
+                top:10px; right:30px;
+                transition:0.25s ease-out;
+                -webkit-transition:0.25s ease-out;
+            }
+            #wrap > label{
+                display:inline-block;
+            }
+            #wrap > label{
+                background:#297bb2;
+                border-radius:50px;
+                color: #FFF;
+                cursor: pointer;
+                display: block;
+                font-family: Courier New;
+                font-size: 25px;
+                font-weight: bold;
+                width: 30px;
+                height: 30px;
+                line-height: 35px;
+                text-align: center;
+                text-shadow: 0 -4px;
+            }
+            #wrap > label:hover{ background:#000; }
+        </style>
+    </head>
+    <body style="overflow:hidden">
+        <input type='checkbox' id='sideToggle'>
+        <aside>
+            <div id='banner'>
+                <!--Please Replace this part with BANNER-->
+                <img src="Res/batman.png" width="180" alt="Sample Logo" />
+            </div>
+            <p></p>
+            <hr width=80% style="margin:auto">
+            <p></p>
+            <h2>Function Panel</h2>
+            <p></p>
+            <hr width=80% style="margin:auto">
+            <!--User Panel-->
+                <div id='icon'>
+                    <img src="Res/joker.jpeg" width="100" alt="Sample Logo" style="position:absolute; z-index:2"/>
+                    <img src="Res/maskLogOut.png" width="100" alt="Log-out" style="position:absolute; z-index:4;
+                                opacity:0;filter:alpha(opacity=0)"
+                                onmouseover="this.style.opacity=0.8;this.filters.alpha.opacity=80"
+                                onmouseout="this.style.opacity=0;this.filters.alpha.opacity=0"/>
+                    <img src="Res/mask.png" width="100" style="position:relative; z-index:3"/>
+                </div>
+                <div id='userName'>
+                    <input id='userName' type="text" name="Meow" width="200px" value="哥谭市蝙蝠侠粉丝团团长">
+                </div>
+                <div class='button'>Change Banner</div>
+                <div class='button'>Change Password</div>
+            <hr width=80% style="margin:auto">
+            <!--Please add the user control and date/time/function select panel here-->
+        </aside>
+        <div id='wrap'>
+            <label id='sideMenuControl' for='sideToggle'>=</label>
+        </div>
+        <iframe style="position: absolute; top:0; width:100%; height:100%; border:none; z-index:0" src="http://localhost:3001" seamless=seamless></iframe>
+    </body>
+</html>
