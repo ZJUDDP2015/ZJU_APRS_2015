@@ -4,7 +4,15 @@ var userController = require('../controllers/user.js');
 
 /* GET users listing. */
 router.get('/', function(req, res) {
-    res.send('respond with a resource');
+    res.render('user', {
+        title: 'User'
+    });
+});
+
+router.get('/login', function(req, res) {
+    res.render('login', {
+        title: 'login'
+    });
 });
 
 router.post('/register', userController.register);

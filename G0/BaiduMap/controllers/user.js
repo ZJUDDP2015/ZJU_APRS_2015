@@ -2,7 +2,10 @@ var mysql = require('mysql');
 var request = require('request');
 
 var client = mysql.createConnection({
-    // write your mysql config here 
+    host: "localhost",
+    user: "orz",
+    password: "123456",
+    database: "moving_object"
 });
 
 exports.register = function (req, res) {
