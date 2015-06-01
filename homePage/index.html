@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>APRS Map</title>
+        <style>
+            * { margin:0; padding:0; z-index:1}
+            html { height:100%; }
+            p { padding:10px 0; }
+            body {
+                min-height:100%;
+                font-family:arial;
+            }
+            body.sideMenu {
+                margin:0;
+                -webkit-transform:none;
+                transform:none;
+            }
+            #sideToggle {
+                display:none;
+            }
+            #sideToggle:checked + aside {
+                right:0;
+            }
+            #sideToggle:checked ~ #wrap {
+                padding-right:420px;
+            }
+            body > aside {
+                position:absolute;
+                top:0; bottom:0; right:-400px;
+                width:400px;
+                background:#0000ff;
+                transition:0.2s ease-out;
+                -webkit-transition:0.2s ease-out;
+            }
+            body > aside > h2 {
+                color:#FFF;
+                text-align:center;
+                font-weight:normal;
+                padding:10px;
+            }
+            body > aside > div {
+                margin-left:110px;
+                margin-top:20px;
+            }
+            #wrap {
+                position:absolute;
+                top:10px; right:30px;
+                transition:0.25s ease-out;
+                -webkit-transition:0.25s ease-out;
+            }
+            #wrap > label{
+                display:inline-block;
+            }
+            #wrap > label{
+                background:#0000ff;
+                border-radius:50px;
+                color: #FFF;
+                cursor: pointer;
+                display: block;
+                font-family: Courier New;
+                font-size: 25px;
+                font-weight: bold;
+                width: 30px;
+                height: 30px;
+                line-height: 35px;
+                text-align: center;
+                text-shadow: 0 -4px;
+            }
+            #wrap > label:hover{ background:#000; }
+        </style>
+    </head>
+    <body>
+        <input type='checkbox' id='sideToggle'>
+        <aside>
+            <div>
+                <!--Please Replace this part with BANNER-->
+                <img src="Res/batman.png" width="180" alt="Sample Logo" />
+            </div>
+            <p></p>
+            <hr width=80% style="margin:auto">
+            <!--Please add the user control and date/time/function select panel here-->
+        </aside>
+        <div id='wrap'>
+            <label id='sideMenuControl' for='sideToggle'>=</label>
+        </div>
+        <iframe style="position: absolute; top:0; width:100%; height:100%; border:none; z-index:0" src="http://localhost:3001" seamless=seamless></iframe>
+    </body>
+</html>

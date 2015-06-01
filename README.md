@@ -22,3 +22,7 @@ The assignments for this week:
 11. 可查询某台站的最后位置和最后60分钟数据
 12. 采用get方式获得某站台的最后位置和最后60分钟数据
 13. 数据显示中的呼号为链接，指向12的URL
+
+###Update 000
+
+The index.html for homepage has been uploaded to homePage. Please add the **user control panel** ,  **banner control panel**,  and **function control panel**.  
