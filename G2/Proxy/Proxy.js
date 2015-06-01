@@ -12,7 +12,11 @@ var proxy = net.connect({port:14580,host:'hangzhou.aprs2.net'},function() {
 proxy.on("error",function(err){
     console.log(err.message);
     proxy.end();
-    proxy = net.connect({port:14580,host:'hangzhou.aprs2.net'},function() {
+    /*proxy = net.connect({port:14580,host:'hangzhou.aprs2.net'},function() {
+      console.log("connection to server!");
+      proxy.write("user BG5ZZZ-85 pass 24229 ver MY185\n#filter t/poi\n");
+    });*/
+    proxy.connect({port:14580,host:'hangzhou.aprs2.net'},function() {
       console.log("connection to server!");
       proxy.write("user BG5ZZZ-85 pass 24229 ver MY185\n#filter t/poi\n");
     });
@@ -20,7 +24,7 @@ proxy.on("error",function(err){
 
 proxy.on('end',function(){
   console.log('proxy unconnected.');
-  proxy = net.connect({port:14580,host:'hangzhou.aprs2.net'},function() {
+  proxy.connect({port:14580,host:'hangzhou.aprs2.net'},function() {
       console.log("connection to server!");
       proxy.write("user BG5ZZZ-85 pass 24229 ver MY185\n#filter t/poi\n");
   });
