@@ -7,12 +7,7 @@
 
 2.create a directory G2/Proxy/log
 
-3.create G5/config.js in this format:
-{
-    "host": "localhost",
-    "user": "your username",
-    "password": "your password"
-}
+3.copy G5/config_default.js to G5/config.js
 
 4.node G5/app.js
 
