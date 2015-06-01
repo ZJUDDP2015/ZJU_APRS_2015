@@ -1,4 +1,4 @@
-var headerHandler = require("./HeaderHandler.js");
+var headerHandler = require("./headerHandler.js");
 var infoHandler = require("./InfoHandler.js");
 var miceDecoder = require('./MicEDecode.js');
 var poster = require("./Poster.js")
@@ -12,6 +12,7 @@ function MvOb_without_Timestamp(myDate, header, info) {
   var message="";
   var c="";
   var s="";
+  var Rtn = {};
 
   object["Path"] = headerHandler.getPath(header);
   object["Source"] = header.split('>')[0]; //source of the report
@@ -70,10 +71,12 @@ function MvOb_without_Timestamp(myDate, header, info) {
       infoHandler.setSymbol(com_obj, symbol, object["Destination"]);
     object["Comment"] = JSON.stringify(com_obj);
     poster.SendtoDB(object, "/moving_object");
-    return true;
+    Rtn.handle = true;
+    Rtn.res = object;
   } else {
-    return false;
+    Rtn.handle = false;
   }
+  return Rtn;
 }
 
 function MvOb_with_Timestamp(myDate, header, info) {
@@ -83,6 +86,7 @@ function MvOb_with_Timestamp(myDate, header, info) {
   var message="";
   var c="";
   var s="";
+  var Rtn = {};
 
   object["Path"] = headerHandler.getPath(header);
   object["Source"] = header.split('>')[0]; //source of the report
@@ -141,10 +145,12 @@ function MvOb_with_Timestamp(myDate, header, info) {
       infoHandler.setSymbol(com_obj, symbol, object["Destination"]);
     object["Comment"] = JSON.stringify(com_obj);
     poster.SendtoDB(object, "/moving_object");
-    return true;
+    Rtn.handle = true;
+    Rtn.res = object;
   } else {
-    return false;
+    Rtn.handle = false;
   }
+  return Rtn;
 }
 
 function MvOb_Object(myDate, header, info) {
@@ -154,6 +160,7 @@ function MvOb_Object(myDate, header, info) {
   var message="";
   var c="";
   var s="";
+  var Rtn = {};
 
   object["Path"] = headerHandler.getPath(header);
   object["Source"] = header.split('>')[0]; //source of the report
@@ -220,10 +227,12 @@ function MvOb_Object(myDate, header, info) {
       infoHandler.setSymbol(com_obj, symbol, object["Destination"]);
     object["Comment"] = JSON.stringify(com_obj);
     poster.SendtoDB(object, "/moving_object");
-    return true;
+    Rtn.handle = true;
+    Rtn.res = object;
   } else {
-    return false;
+    Rtn.handle = false;
   }
+  return Rtn;
 }
 
 function MvOb_Item(myDate, header, info) {
@@ -233,6 +242,7 @@ function MvOb_Item(myDate, header, info) {
   var message="";
   var c="";
   var s="";
+  var Rtn = {};
 
   object["Path"] = headerHandler.getPath(header);
   object["Source"] = header.split('>')[0]; //source of the report
@@ -295,21 +305,26 @@ function MvOb_Item(myDate, header, info) {
       infoHandler.setSymbol(com_obj, symbol, object["Destination"]);
     object["Comment"] = JSON.stringify(com_obj);
     poster.SendtoDB(object, "/moving_object");
-    return true;
+    Rtn.handle = true;
+    Rtn.res = object;
   } else {
-    return false;
+    Rtn.handle = false;
   }
+  return Rtn;
 }
 
 function MicE_Handle(myDate, d_msg){
+    var Rtn = {};
     var haha = miceDecoder.decode(d_msg, myDate);
     if (JSON.stringify(haha) != undefined) {
       poster.SendtoDB(haha, "/moving_object");
-      return true;
+      Rtn.handle = true;
+      Rtn.res = haha;
     }
     else {
-      return false;
+      Rtn.handle = false;
     }
+    return Rtn;
 }
 
 function Wthr_with_Timestamp(myDate, header, info) {
@@ -322,6 +337,7 @@ function Wthr_with_Timestamp(myDate, header, info) {
   var WeatherData;
   var SoftwareIdentifier;
   var MachineIdentifier;
+  var Rtn = {};
 
   if (info.charAt(16) == '/') {
     //Complete Weather data with Lat/Long and Time Stamp
@@ -365,11 +381,13 @@ function Wthr_with_Timestamp(myDate, header, info) {
   if (JSON.stringify(receivedObject) != undefined) {
     receivedObject.Path = headerHandler.getPath(header);
     poster.SendtoDB(receivedObject, "/weather");
-    return true;
+    Rtn.handle = true;
+    Rtn.res = receivedObject;
   }
   else {
-    return false;
+    Rtn.handle = false;
   }
+  return Rtn;
 }
 
 function Wthr_without_Timestamp_no_Message(myDate, header, info) {
@@ -382,6 +400,7 @@ function Wthr_without_Timestamp_no_Message(myDate, header, info) {
   var WeatherData;
   var SoftwareIdentifier;
   var MachineIdentifier;
+  var Rtn = {};
 
   var newWeatherData;
   if (info.charAt(2) != '!') {
@@ -429,11 +448,13 @@ function Wthr_without_Timestamp_no_Message(myDate, header, info) {
   if (JSON.stringify(receivedObject) != undefined) {
     receivedObject.Path = headerHandler.getPath(header);
     poster.SendtoDB(receivedObject, "/weather");
-    return true;
+    Rtn.handle = true;
+    Rtn.res = receivedObject;
   }
   else {
-    return false;
+    Rtn.handle = false;
   }
+  return Rtn;
 }
 
 function Wthr_without_Timestamp_with_Message(myDate, header, info) {
@@ -446,6 +467,7 @@ function Wthr_without_Timestamp_with_Message(myDate, header, info) {
   var WeatherData;
   var SoftwareIdentifier;
   var MachineIdentifier;
+  var Rtn = {};
 
   var newWeatherData;
   if (info.charAt(9) == '/') {
@@ -489,11 +511,13 @@ function Wthr_without_Timestamp_with_Message(myDate, header, info) {
   if (JSON.stringify(receivedObject) != undefined) {
     receivedObject.Path = headerHandler.getPath(header);
     poster.SendtoDB(receivedObject, "/weather");
-    return true;
+    Rtn.handle = true;
+    Rtn.res = receivedObject;
   }
   else {
-    return false;
+    Rtn.handle = false;
   }
+  return Rtn;
 }
 
 function Wthr_Object(myDate, header, info) {
@@ -506,6 +530,7 @@ function Wthr_Object(myDate, header, info) {
   var WeatherData;
   var SoftwareIdentifier;
   var MachineIdentifier;
+  var Rtn = {};
 
   var newWeatherData;
   ObjName = info.substring(1, 10);
@@ -545,11 +570,13 @@ function Wthr_Object(myDate, header, info) {
   if (JSON.stringify(receivedObject) != undefined) {
     receivedObject.Path = headerHandler.getPath(header);
     poster.SendtoDB(receivedObject, "/weather");
-    return true;
+    Rtn.handle = true;
+    Rtn.res = receivedObject;
   }
   else {
-    return false;
+    Rtn.handle = false;
   }
+  return Rtn;
 }
 
 function Wthr_Peet_Bros_or_rawGPS(myDate, header, info) {
@@ -562,6 +589,7 @@ function Wthr_Peet_Bros_or_rawGPS(myDate, header, info) {
   var WeatherData;
   var SoftwareIdentifier;
   var MachineIdentifier;
+  var Rtn = {};
 
   var rawWeatherData = info.substring(1, info.length);
 
@@ -589,11 +617,13 @@ function Wthr_Peet_Bros_or_rawGPS(myDate, header, info) {
   if (JSON.stringify(receivedObject) != undefined) {
     receivedObject.Path = headerHandler.getPath(header);
     poster.SendtoDB(receivedObject, "/weather");
-    return true;
+    Rtn.handle = true;
+    Rtn.res = receivedObject;
   }
   else {
-    return false;
+    Rtn.handle = false;
   }
+  return Rtn;
 }
 
 function Wthr_Weather_Report(myDate, header, info) {
@@ -606,6 +636,7 @@ function Wthr_Weather_Report(myDate, header, info) {
   var WeatherData;
   var SoftwareIdentifier;
   var MachineIdentifier;
+  var Rtn = {};
 
   var rawWeatherData = info.substring(10, info.length);
 
@@ -633,11 +664,13 @@ function Wthr_Weather_Report(myDate, header, info) {
   if (JSON.stringify(receivedObject) != undefined) {
     receivedObject.Path = headerHandler.getPath(header);
     poster.SendtoDB(receivedObject, "/weather");
-    return true;
+    Rtn.handle = true;
+    Rtn.res = receivedObject;
   }
   else {
-    return false;
+    Rtn.handle = false;
   }
+  return Rtn;
 }
 
 exports.MvOb_without_Timestamp = MvOb_without_Timestamp;
