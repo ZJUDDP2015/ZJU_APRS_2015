@@ -1,4 +1,3 @@
-var express = require('express');
 var net = require('net');
 var fs = require("fs");
 var router = require("./DataRouter.js");

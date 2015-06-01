@@ -1,0 +1,4 @@
+1.if you have not initiate MySql, $mysql -u "User"<G5/init.sql
+2.create a directory G2/Proxy/log
+3.node G5/app.js
+4.node G2/Proxy/Proxy.js

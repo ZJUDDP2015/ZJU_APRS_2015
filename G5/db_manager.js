@@ -1,5 +1,3 @@
-var express = require('express');
-var bodyParser = require('body-parser')
 var mysql = require('mysql');
 var fs = require('fs');
 
@@ -12,13 +10,20 @@ var wsql = mysql.createConnection(config);
 config['database'] = 'moving_object';
 var osql = mysql.createConnection(config);
 
-var app = express();
-var port = 3000;
+var wsql = mysql.createConnection({
+    host: 'localhost',
+    user: 'orz',
+    password: '123456',
+    database: 'weather'
+});
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
+var osql = mysql.createConnection({
+    host: 'localhost',
+    user: 'orz',
+    password: '123456',
+    database: 'moving_object'
+});
+
 
 var saved = 0
 var w_save_cnt = 0
@@ -39,7 +44,8 @@ osql.connect(function(err) {
 //osql.query('create table if not exists moving_object ( Source varchar(50), Latitude long int, Longitude long int, Name varchar(50), Time datetime, Speed long int, Course long int, Altitude long int,  Comment varchar(50) )');
 
 
-app.post('/weather', function(req, res) {
+// app.post('/weather',
+exports.weather = function(req, res) {
     //console.log(req.body)
     //console.log(req.body.data);
     ++received
@@ -70,10 +76,11 @@ app.post('/weather', function(req, res) {
         });
 
     res.send("Success");
-});
+}
 
 
-app.post('/moving_object', function(req, res) {
+// app.post('/moving_object', 
+exports.moving_object = function(req, res) {
 	++received
     var insert = 'insert into moving_object (Path,Source,Destination,Name,Time,Latitude,Longitude,Comment) values(' +
         mysql.escape(req.body.Path) + ', ' +
@@ -91,9 +98,7 @@ app.post('/moving_object', function(req, res) {
         });
 
     res.send("Success");
-});
-
-app.listen(port);
+}
 
 wsql.on('error', function(err) {
     console.log('db error', err);
