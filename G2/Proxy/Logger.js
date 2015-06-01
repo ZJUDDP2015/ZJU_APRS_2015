@@ -1,7 +1,7 @@
 var fs = require("fs");
 
 function file_write(content, file, myDate) {
-  fs.open(file,'a',function open(err,fd){
+/*  fs.open(file,'a',function open(err,fd){
     if(err){throw err;}
     var writeBuffer=new Buffer('['+myDate.toUTCString()+']'+content);
     var bufferPosition=0;
@@ -17,7 +17,7 @@ function file_write(content, file, myDate) {
         //console.log('wrote'+written+'byte');
         fs.closeSync(fd);
       });
-  });
+  });*/
 }
 
 exports.file_write = file_write;

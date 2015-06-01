@@ -10,8 +10,8 @@ var current;
 
 var dbclient = mysql.createConnection({
     host: "localhost",
-    user: "root",
-    password: "12345",
+    user: "orz",
+    password: "123456",
     database: "moving_object"
 });
 
@@ -68,8 +68,15 @@ router.get('/data',function(req,res){
           var end=compare(endtime,e.Time);
           if (start==0&&end==1){
             var symbol=JSON.parse(e.Comment).Symbol;
-            if (symbol[0]!='\\'&&symbol[0]!='/') 
-              symbol[0]='\\';
+            console.log(symbol);
+            if (symbol != "" &&symbol!=undefined&& symbol[0]!='\\'&&symbol[0]!='/') {
+              symbol = "\\\\" + symbol[1];
+            }
+            console.log(symbol);
+
+            /*var symbol=JSON.parse(e.Comment).Symbol;
+            if (symbol[0]!='\\'&&symbol[0]!='/')
+              symbol[0]='\\';*/
             //console.log(symbol);
             //console.log(symbol[0]!='\\'&&symbol[0]!='/');
             car.push({
@@ -85,7 +92,7 @@ router.get('/data',function(req,res){
           }
         }
       });
-      return res.JSON(car);
+      return res.json(car);
     });
   });
 });
@@ -121,6 +128,8 @@ router.get('/map', function(req, res) {
                       //console.log(symbol[0]!='\\'&&symbol[0]!='/');
                       car.push({
                           id: e.Source,
+//                          id: e.id,
+//                          source: e.Source,
                           time: e.Time,
                           lat: e.Longitude,
                           lon: e.Latitude,

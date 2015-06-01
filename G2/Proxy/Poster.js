@@ -12,6 +12,9 @@ function SendtoDB(object, url){
     }, function(res){
        //console.log(url + ' Sent');
     });
+    req.on('error', function(e) { 
+	console.log('problem with request: ' + e.message); 
+    });
     req.write(JSON.stringify(object));
     req.end();
 }
