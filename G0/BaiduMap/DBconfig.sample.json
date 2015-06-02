@@ -1,0 +1,14 @@
+{
+    "database1": {
+        "host": "localhost", 
+        "user": "", 
+        "database": "", 
+        "password": "weather"
+    },
+    "database2": {
+        "host": "localhost", 
+        "user": "", 
+        "database": "", 
+        "password": "moving_object"
+    }
+}

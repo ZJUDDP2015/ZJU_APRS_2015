@@ -1,14 +1,9 @@
 var mysql = require('mysql');
 var fs = require('fs');
 
-var config = fs.readFileSync('DBconfig.js','utf8');
+var wsql = mysql.createConnection("require(../DBConfig.json")['database1']);
 
-config = JSON.parse(config);
-
-config['database'] = 'weather';
-var wsql = mysql.createConnection(config);
-config['database'] = 'moving_object';
-var osql = mysql.createConnection(config);
+var osql = mysql.createConnection("require(../DBConfig.json")['database2']);
 
 
 var saved = 0
