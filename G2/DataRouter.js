@@ -70,7 +70,7 @@ function MvOb_without_Timestamp(myDate, header, info) {
     if (object["Destination"])
       infoHandler.setSymbol(com_obj, symbol, object["Destination"]);
     object["Comment"] = JSON.stringify(com_obj);
-    poster.SendtoDB(object, "/moving_object");
+    poster.SendtoDB(object, "/data/moving_object");
     Rtn.handle = true;
     Rtn.res = object;
   } else {
@@ -144,7 +144,7 @@ function MvOb_with_Timestamp(myDate, header, info) {
     if(object["Destination"])
       infoHandler.setSymbol(com_obj, symbol, object["Destination"]);
     object["Comment"] = JSON.stringify(com_obj);
-    poster.SendtoDB(object, "/moving_object");
+    poster.SendtoDB(object, "/data/moving_object");
     Rtn.handle = true;
     Rtn.res = object;
   } else {
@@ -226,7 +226,7 @@ function MvOb_Object(myDate, header, info) {
     if (object["Destination"])
       infoHandler.setSymbol(com_obj, symbol, object["Destination"]);
     object["Comment"] = JSON.stringify(com_obj);
-    poster.SendtoDB(object, "/moving_object");
+    poster.SendtoDB(object, "/data/moving_object");
     Rtn.handle = true;
     Rtn.res = object;
   } else {
@@ -304,7 +304,7 @@ function MvOb_Item(myDate, header, info) {
     if (object["Destination"])
       infoHandler.setSymbol(com_obj, symbol, object["Destination"]);
     object["Comment"] = JSON.stringify(com_obj);
-    poster.SendtoDB(object, "/moving_object");
+    poster.SendtoDB(object, "/data/moving_object");
     Rtn.handle = true;
     Rtn.res = object;
   } else {
@@ -317,7 +317,7 @@ function MicE_Handle(myDate, d_msg){
     var Rtn = {};
     var haha = miceDecoder.decode(d_msg, myDate);
     if (JSON.stringify(haha) != undefined) {
-      poster.SendtoDB(haha, "/moving_object");
+      poster.SendtoDB(haha, "/data/moving_object");
       Rtn.handle = true;
       Rtn.res = haha;
     }
@@ -380,7 +380,7 @@ function Wthr_with_Timestamp(myDate, header, info) {
   var receivedObject = infoHandler.Wthr_dataDecoding(myDate, weatherDataGroup);
   if (JSON.stringify(receivedObject) != undefined) {
     receivedObject.Path = headerHandler.getPath(header);
-    poster.SendtoDB(receivedObject, "/weather");
+    poster.SendtoDB(receivedObject, "/data/weather");
     Rtn.handle = true;
     Rtn.res = receivedObject;
   }
@@ -510,7 +510,7 @@ function Wthr_without_Timestamp_with_Message(myDate, header, info) {
   var receivedObject = infoHandler.Wthr_dataDecoding(myDate, weatherDataGroup);
   if (JSON.stringify(receivedObject) != undefined) {
     receivedObject.Path = headerHandler.getPath(header);
-    poster.SendtoDB(receivedObject, "/weather");
+    poster.SendtoDB(receivedObject, "/data/weather");
     Rtn.handle = true;
     Rtn.res = receivedObject;
   }
@@ -616,7 +616,7 @@ function Wthr_Peet_Bros_or_rawGPS(myDate, header, info) {
   var receivedObject = infoHandler.Wthr_dataDecoding(myDate, weatherDataGroup);
   if (JSON.stringify(receivedObject) != undefined) {
     receivedObject.Path = headerHandler.getPath(header);
-    poster.SendtoDB(receivedObject, "/weather");
+    poster.SendtoDB(receivedObject, "/data/weather");
     Rtn.handle = true;
     Rtn.res = receivedObject;
   }
@@ -663,7 +663,7 @@ function Wthr_Weather_Report(myDate, header, info) {
   var receivedObject = infoHandler.Wthr_dataDecoding(myDate, weatherDataGroup);
   if (JSON.stringify(receivedObject) != undefined) {
     receivedObject.Path = headerHandler.getPath(header);
-    poster.SendtoDB(receivedObject, "/weather");
+    poster.SendtoDB(receivedObject, "/data/weather");
     Rtn.handle = true;
     Rtn.res = receivedObject;
   }
