@@ -1,1 +1,0 @@
-copy DBconfig_default.js and rename it DBconfig.js

@@ -1,9 +1,9 @@
 var mysql = require('mysql');
 var fs = require('fs');
 
-var wsql = mysql.createConnection("require(../DBConfig.json")['database1']);
+var wsql = mysql.createConnection(require("../DBConfig.json")['database1']);
 
-var osql = mysql.createConnection("require(../DBConfig.json")['database2']);
+var osql = mysql.createConnection(require("../DBConfig.json")['database2']);
 
 
 var saved = 0

@@ -3,20 +3,12 @@ var router = express.Router();
 var url = require('url');
 var mysql = require('mysql');
 
-var fs = require('fs');
-
-var config = fs.readFileSync('DBconfig.js','utf8');
-
-config = JSON.parse(config);
-
-config['database'] = 'moving_object';
-
 var starttime;
 var endtime;
 var current;
 
 
-var dbclient = mysql.createConnection(config);
+var dbclient = mysql.createConnection(require("../DBConfig.json")['database2']);
 
 var getFormatedTime = function(month, day, hour) {
   var stime = {};
