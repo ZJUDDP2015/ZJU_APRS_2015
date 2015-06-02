@@ -1,12 +1,13 @@
 var mysql = require('mysql');
 var request = require('request');
+var fs = require('fs');
 
-var client = mysql.createConnection({
-    host: "localhost",
-    user: "orz",
-    password: "123456",
-    database: "moving_object"
-});
+var config = fs.readFileSync('DBconfig.js','utf8');
+
+config = JSON.parse(config);
+
+config['database'] = 'moving_object';
+var client = mysql.createConnection(config);
 
 exports.register = function (req, res) {
     console.log(req.url);

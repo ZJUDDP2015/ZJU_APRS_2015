@@ -1,18 +1,14 @@
 var mysql = require('mysql');
+var fs = require('fs');
 
-var wsql = mysql.createConnection({
-    host: 'localhost',
-    user: 'orz',
-    password: '123456',
-    database: 'weather'
-});
+var config = fs.readFileSync('DBconfig.js','utf8');
 
-var osql = mysql.createConnection({
-    host: 'localhost',
-    user: 'orz',
-    password: '123456',
-    database: 'moving_object'
-});
+config = JSON.parse(config);
+
+config['database'] = 'weather';
+var wsql = mysql.createConnection(config);
+config['database'] = 'moving_object';
+var osql = mysql.createConnection(config);
 
 
 var saved = 0
