@@ -1,6 +1,6 @@
 var mysql = require('mysql');
 var request = require('request');
-var client = mysql.createConnection(require("../DBConfig.json")['database2']);
+var client = mysql.createConnection(require("../DBConfig.json"));
 
 exports.register = function (req, res) {
     console.log(req.url);

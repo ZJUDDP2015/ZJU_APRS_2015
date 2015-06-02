@@ -1,7 +1,6 @@
-create database if not exists weather;
-create database if not exists moving_object;
+create database if not exists aprs;
 
-use weather;
+use aprs;
 create table if not exists weather (
 	id int not null AUTO_INCREMENT,
 	Type int,
@@ -26,8 +25,6 @@ create table if not exists weather (
 	Path varchar(100),
 	primary key(id)
 	);
-
-use moving_object;
 
 create table if not exists moving_object (
 	id int not null AUTO_INCREMENT,

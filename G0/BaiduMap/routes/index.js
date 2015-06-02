@@ -7,8 +7,7 @@ var starttime;
 var endtime;
 var current;
 
-
-var dbclient = mysql.createConnection(require("../DBConfig.json")['database2']);
+var dbclient = mysql.createConnection(require("../DBConfig.json"));
 
 var getFormatedTime = function(month, day, hour) {
   var stime = {};

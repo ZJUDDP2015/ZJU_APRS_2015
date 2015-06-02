@@ -1,31 +1,19 @@
 var mysql = require('mysql');
 var fs = require('fs');
 
-var wsql = mysql.createConnection(require("../DBConfig.json")['database1']);
-
-var osql = mysql.createConnection(require("../DBConfig.json")['database2']);
-
+var sql = mysql.createConnection(require("../DBConfig.json"));
 
 var saved = 0
 var w_save_cnt = 0
 var o_save_cnt = 0
 var received = 0
 
-wsql.connect(function(err) {
+sql.connect(function(err) {
     if (err)
-        console.log('weather connect error', err);
+        console.log('db connect error', err);
 });
 
-osql.connect(function(err) {
-    if (err)
-        console.log('moving_object connect error', err);
-});
 
-//wsql.query('create table if not exists weather ( Type long int, Month long int, Day long int, Hour long int, Min long int, Sec long int, Lat long int, Long long int, WindDirection long int, WindSpeed long int, AprsDevice varchar(50), Gust long int, Temp long int, RainLastHr long int, RainLast24Hr long int, RainSinceMid long int, Humidity long int, Barometric long int, Luminosity long int)');
-//osql.query('create table if not exists moving_object ( Source varchar(50), Latitude long int, Longitude long int, Name varchar(50), Time datetime, Speed long int, Course long int, Altitude long int,  Comment varchar(50) )');
-
-
-// app.post('/weather',
 exports.weather = function(req, res) {
     //console.log(req.body)
     //console.log(req.body.data);
@@ -51,7 +39,7 @@ exports.weather = function(req, res) {
         mysql.escape(req.body.Barometric) + ', ' +
         mysql.escape(req.body.Luminosity) + ', ' +
         mysql.escape(req.body.Path) + ')';
-    wsql.query(insert,function(err, rows, fields) {
+    sql.query(insert,function(err, rows, fields) {
             if (err) console.log(insert);
             else ++saved// console.log('weather_save_cnt:' + (++w_save_cnt));
         });
@@ -73,7 +61,7 @@ exports.moving_object = function(req, res) {
         mysql.escape(req.body.Longitude) + ', ' +
         mysql.escape(req.body.Comment) + ')';
 
-    osql.query(insert, function(err, rows, fields) {
+    sql.query(insert, function(err, rows, fields) {
             if (err) console.log(insert);
             else ++saved//console.log('MovingObject_save_cnt:' + (++o_save_cnt))
         });
@@ -81,11 +69,7 @@ exports.moving_object = function(req, res) {
     res.send("Success");
 }
 
-wsql.on('error', function(err) {
-    console.log('db error', err);
-});
-
-osql.on('error', function(err) {
+sql.on('error', function(err) {
     console.log(err);
 });
 
