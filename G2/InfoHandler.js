@@ -114,13 +114,13 @@ function getTime(time) {   //transfer the time field into date object
     d.setUTCDate(parseInt(time.substring(0,2)));
     d.setUTCHours(parseInt(time.substring(2,4)));
     d.setUTCMinutes(parseInt(time.substring(4,6)));
-    s = d.toUTCString();
+//    s = d.toUTCString();
   }
   else if (time.charAt(6)=="h"){
     d.setUTCHours(parseInt(time.substring(0,2)));
     d.setUTCMinutes(parseInt(time.substring(2,4)));
     d.setUTCSeconds(parseInt(time.substring(4,6)));
-    s = d.toUTCString();
+//    s = d.toUTCString();
   }
   return (s);
 }

@@ -18,7 +18,7 @@ function MvOb_without_Timestamp(myDate, header, info) {
   object["Source"] = header.split('>')[0]; //source of the report
   object["Destination"] = header.split('>')[1].split(',')[0];  //destination of the report
   object["Time"]=myDate;
-  object["Time"]=object["Time"].toUTCString();
+//  object["Time"]=object["Time"].toUTCString();
 
   if (info[1] != '/') {//uncompressed
     object["Latitude"] = infoHandler.displayLat(info.slice(1, 9));

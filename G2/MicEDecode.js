@@ -120,6 +120,10 @@ function decode(rec, myDate){
     i++;
 
   //to decode the longitute degrees
+  if (rec[++i] == undefined) {
+    Info = {};
+    return Info;
+  }
   var LongD = rec[++i].charCodeAt()-28;
   if(Info.LongOff == 100)
     LongD += 100;
@@ -189,7 +193,7 @@ function decode(rec, myDate){
       altitude = alti3 + alti2*91 + alti1*91*91 - 10000;
       Info.Altitude = altitude;
   }
-  Info.Time = myDate.toUTCString();
+  Info.Time = myDate;
   return Info;
   //console.log(JSON.stringify(Info));
 }
