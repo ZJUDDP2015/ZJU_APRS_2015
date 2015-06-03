@@ -32,7 +32,7 @@ create table if not exists moving_object (
 	Source varchar(12),
 	Destination varchar(12),
 	Name varchar(12),
-	Time varchar(40),
+	Time datetime,
 	Latitude float,
 	Longitude float,
 	Comment varchar(255),

@@ -1,5 +1,4 @@
 var mysql = require('mysql');
-var fs = require('fs');
 
 var sql = mysql.createConnection(require("../DBConfig.json"));
 
@@ -39,6 +38,7 @@ exports.weather = function(req, res) {
         mysql.escape(req.body.Barometric) + ', ' +
         mysql.escape(req.body.Luminosity) + ', ' +
         mysql.escape(req.body.Path) + ')';
+
     sql.query(insert,function(err, rows, fields) {
             if (err) console.log(insert);
             else ++saved// console.log('weather_save_cnt:' + (++w_save_cnt));
@@ -50,13 +50,13 @@ exports.weather = function(req, res) {
 
 // app.post('/moving_object', 
 exports.moving_object = function(req, res) {
-	++received
+    ++received
     var insert = 'insert into moving_object (Path,Source,Destination,Name,Time,Latitude,Longitude,Comment) values(' +
         mysql.escape(req.body.Path) + ', ' +
         mysql.escape(req.body.Source) + ', ' +
         mysql.escape(req.body.Destination) + ', ' +
         mysql.escape(req.body.Name) + ', ' +
-        mysql.escape(req.body.Time) + ', ' +
+        mysql.escape(toMysqlFormat(req.body.Time)) + ', ' +
         mysql.escape(req.body.Latitude) + ', ' +
         mysql.escape(req.body.Longitude) + ', ' +
         mysql.escape(req.body.Comment) + ')';
@@ -69,6 +69,13 @@ exports.moving_object = function(req, res) {
     res.send("Success");
 }
 
+/*Convert JS date to MySQL date*/
+function toMysqlFormat(date)
+{
+	date = date.slice(0,19).replace('T',' ');
+	return date
+}
+
 sql.on('error', function(err) {
     console.log(err);
 });
@@ -76,15 +83,15 @@ sql.on('error', function(err) {
 var in_buffer = 0
 
 setInterval(function(){
-	console.log("receive speed:"+received+"/s")
-	in_buffer += received
-	received = 0
+    console.log("receive speed:"+received+"/s")
+    in_buffer += received
+    received = 0
 }, 1000)
 setInterval(function(){
-	console.log("save speed:"+saved+"/s")
-	in_buffer -= saved
-	saved = 0
+    console.log("save speed:"+saved+"/s")
+    in_buffer -= saved
+    saved = 0
 }, 1000)
 setInterval(function(){
-	console.log("in buffer:"+in_buffer)
+    console.log("in buffer:"+in_buffer)
 }, 1000)
