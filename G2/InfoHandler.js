@@ -122,7 +122,7 @@ function getTime(time) {   //transfer the time field into date object
     d.setUTCSeconds(parseInt(time.substring(4,6)));
 //    s = d.toUTCString();
   }
-  return (s);
+  return (d);
 }
 
 function decodeCourse(c) {
