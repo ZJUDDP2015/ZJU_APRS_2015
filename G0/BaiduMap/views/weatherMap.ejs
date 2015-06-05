@@ -9,15 +9,15 @@
 		</style>
 		<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=qE02zgmFr4DFG0me1Q6hL73t"></script>
 		<title>设置覆盖物的显示与隐藏</title>
-		<script src="../bower_components/jquery/dist/jquery.min.js"></script>
-		<script type="text/javascript" src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
-		<link rel="stylesheet" href="../css/map.css">
-    	<link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css">
+		<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+		<script type="text/javascript" src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+		<link rel="stylesheet" href="/css/map.css">
+    	<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css">
     	<link href='http://fonts.googleapis.com/css?family=Bree+Serif' rel='stylesheet' type='text/css'>
 
     	<script>
 	    	$(document).ready(function(){
-	        	$.get("/SessionVerify", function(res) {
+	        	$.get("users/sessionVerify", function(res) {
 	        	//Code 7 means logged in
 	        		if(res.code===7){
 	        		    $('#signup_btn').hide();
@@ -50,13 +50,13 @@
 	        		</div>
 	        		<div id="navbar" class="navbar-collapse collapse">
 	        		    <ul class="nav navbar-nav">
-	            			<li><a href="./index.html">Home</a></li>
+	            			<li><a href="/users">Home</a></li>
 	            			<li class="active"><a href="./map.html">Map</a></li>
 	            		</ul>
 	            		<ul class="nav navbar-nav navbar-right">
-	            			<li><a href="./Login.html" class="btn btn-lg btn-primary btn-block btn-link" role="button" id="signup_btn">Sign Up</a></li>
-            				<li><a href="./Login.html" class="btn btn-lg btn btn-block btn-link" role="button" id="login_btn">Login</a></li>
-            				<li><a href="./index.html" class="btn btn-lg btn btn-block btn-link" role="button" id="logout_btn">Logout</a></li>
+	            			<li><a href="/users/login.html" class="btn btn-lg btn-primary btn-block btn-link" role="button" id="signup_btn">Sign Up</a></li>
+            				<li><a href="/users/login.html" class="btn btn-lg btn btn-block btn-link" role="button" id="login_btn">Login</a></li>
+            				<li><a href="/users" class="btn btn-lg btn btn-block btn-link" role="button" id="logout_btn">Logout</a></li>
 	            		</ul>
 	        		</div><!--/.nav-collapse -->
 	        	</div>
