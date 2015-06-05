@@ -41,15 +41,15 @@ CREATE TABLE IF NOT EXISTS moving_object (
 );
 
 CREATE TABLE `user` (
-  id int(11) NOT NULL AUTO_INCREMENT,
-  email varchar(30) DEFAULT NULL,
-  password varchar(20) DEFAULT NULL,
-  mapCenterX varchar(20) DEFAULT NULL,
-  mapCenterY varchar(20) DEFAULT NULL,
-  bannerImage varchar(50) DEFAULT NULL,
-  bannerWord varchar(50) DEFAULT NULL,
-  bannerWordSize varchar(20) DEFAULT NULL,
-  bannerWordColor varchar(20) DEFAULT NULL,
-  bannerWordFont varchar(20) DEFAULT NULL,
-  PRIMARY KEY (id)
+	id int(11) NOT NULL AUTO_INCREMENT,
+	email varchar(30) DEFAULT NULL,
+	password varchar(20) DEFAULT NULL,
+	mapCenterX varchar(20) DEFAULT NULL,
+	mapCenterY varchar(20) DEFAULT NULL,
+	bannerImage varchar(50) DEFAULT NULL,
+	bannerWord varchar(50) DEFAULT NULL,
+	bannerWordSize varchar(20) DEFAULT NULL,
+	bannerWordColor varchar(20) DEFAULT NULL,
+	bannerWordFont varchar(20) DEFAULT NULL,
+	PRIMARY KEY (id)
 );
