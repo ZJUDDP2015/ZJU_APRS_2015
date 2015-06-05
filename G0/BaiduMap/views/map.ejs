@@ -10,17 +10,13 @@ body{height:100%;margin:0px;padding:0px}
 #controller{width:100%; border-bottom:3px outset; height:30px; filter:alpha(Opacity=100); -moz-opacity:1; opacity:1; z-index:10000; background-color:lightblue;}
 #container{height:100%; width:100%;}
 </style>
-<script type="text/javascript" src="http://api.map.baidu.com/api?v=1.5&ak=xYBeNeqobNOPgiofCkvp1Ln6"></script>
-<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=xYBeNeqobNOPgiofCkvp1Ln6"></script>
+<script src="/components/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="http://developer.baidu.com/map/jsdemo/data/points-sample-data.js"> </script>
 <script src="/symbols.js"> </script>
 <script type="text/javascript">
 
-    var data = [
-        <% car.forEach(function (e, i) { %>
-            { "lat": <%= e.lat %>, "lon": <%= e.lon %>, "id": '<%= e.id %>', "path": '<%= e.path %>',
-              "des": '<%= e.des %>', "time": '<%= e.time %>', "symbol": '<%= e.symbol %>'},
-        <% }); %>
-    ];
+
     var points = new Array();
     var symbol = new Array();
     var line = new Array();
@@ -38,7 +34,7 @@ body{height:100%;margin:0px;padding:0px}
     var lineInfo = new Array();
     var pointpaths = new Array();
     var callsignposition = new Array();
-
+/*
     for (var i in data) {
         if (typeof(points[data[i].id]) == "undefined") {
             points[data[i].id] = new Array();
@@ -61,14 +57,19 @@ body{height:100%;margin:0px;padding:0px}
     }
     //console.log(points)
     //console.log(symbol);
-
+*/
 function init() {
 
     //初始化地图,选取第一个点为起始点
     map = new BMap.Map("container");
-    for (var i in points) {
-        map.centerAndZoom(points[i][0], 15)
-    }
+    map.centerAndZoom(new BMap.Point(120.091444,30.307601),12);
+
+    var myLoc = new BMap.LocalCity();
+
+    myLoc.get(function(result) {
+      map.setCenter(result.name);
+    });
+
     map.enableScrollWheelZoom();
     map.addControl(new BMap.NavigationControl());
     map.addControl(new BMap.ScaleControl());
@@ -76,10 +77,18 @@ function init() {
 
     //连接所有点
     //map.addOverlay(new BMap.Polyline(points, {strokeColor: "black", strokeWeight: 5, strokeOpacity: 1}));
-
+/*
     for (var i in points) {
+        var options = {
+            size: BMAP_POINT_SIZE_SMALL,
+            shape: BMAP_POINT_SHAPE_CIRCLE,
+            color: '#d340c3'
+        };
+        var pointCollection = new BMap.PointCollection(points[i], options);
+        map.addOverlay(pointCollection);
+
         //console.log(lineColor[i]);
-        line[i] = new BMap.Polyline(points[i], {strokeColor: lineColor[i], strokeWeight: 5, strokeOpacity: 1});
+        line[i] = new BMap.Polyline(points[i], {strokeColor: lineColor[i], strokeWeight: 1, strokeOpacity: 1});
         map.addOverlay(line[i]);
 
         var pt = points[i][0];
@@ -110,7 +119,8 @@ function init() {
                  // 将标注添加到地图中
         }
     }
-
+*/
+/*
 
     //点击轨迹显示详细数据
     map.addEventListener("mousemove",function(e){
@@ -118,7 +128,7 @@ function init() {
         click_lng =  e.point.lng ;
         click_lat =  e.point.lat;
 	     });
-	var m;	//点击产生的标记
+
     for (var i in points){
         line[i].info = lineInfo[i];
         line[i].onclick = function(){
@@ -133,48 +143,53 @@ function init() {
         //alert(click_lng + ' ' + click_lat);
         }
     }
+*/
 
+/*
   //鼠标移动到轨迹的点上显示path
- // var markers = [];
- // var coresps = [];
- // var myIcon = new BMap.Icon("/3.png", new BMap.Size(20,20));
- // for (var i in points){
- //   for(var j in points[i]){
- //     var nmk = new BMap.Marker(points[i][j],{
- //       icon: myIcon
- //     });
- //     map.addOverlay(nmk);
- //     markers.push(nmk);
- //     coresps.push(pointpaths[i][j]);
- //   }
- // }
- // var digipeater, curve;
- // for(var i in markers){
- //   markers[i].addEventListener('mouseover',function(e){
- //     digipeater = [];
-	//  console.log("!!!");
- //     // add points of paths
- //     for(j in coresps[i]){
-	//	console.log("Linking callsign:"+coresps[i][j]);
- //       var pp = new BMap.Point(callsignposition[coresps[i][j]].lat, callsignposition[coresps[i][j]].lon);
- //       digipeater.push(pp);
- //     }
- //     curve = new BMapLib.Curveline(digipeater,{strokeColor:"blue", strokeWeight:3, strokeOpacity:0.5});
- //     map.addOverlay(curve); // add curve into the map
- //   });
- //   markers[i].addEventListener('mouseout',function(e){
-	//		map.removeOverlay(curve); //remove curve from the map
-	//	});
- // }
-
-    setTimeout(function(){
-      setInterval(refreshRoute, 2000);
-    },5000);
+  var markers = [];
+  var coresps = [];
+  var myIcon = new BMap.Icon("1.png", new BMap.Size(20,20));
+  for (var i in points){
+    for(var j in points[i]){
+      var nmk = new BMap.Marker(points[i][j],{
+        icon: myIcon
+      });
+      map.addOverlay(nmk);
+      markers.push(nmk);
+      coresps.push(pointpaths[i][j]);
+    }
+  }
+  var digipeater, curve;
+  for(var i in markers){
+    markers[i].addEventListener('mouseover',function(e){
+      digipeater = [];
+      // add points of paths
+      for(j in coresps[i]){
+        var pp = new BMap.Point(callsignposition[coresps[i][j]].lat, callsignposition[coreps[i][j]].lon);
+        digipeater.push(pp);
+      }
+      curve = new BMapLib.Curveline(digipeater,{strokeColor:"blue", strokeWeight:3, strokeOpacity:0.5});
+      map.addOverlay(curve); // add curve into the map
+    });
+    markers[i].addEventListener('mouseout',function(e){
+			map.removeOverlay(curve); //remove curve from the map
+		});
+  }
+*/
+    setInterval(refreshRoute, 2000);
 }
 
 function refreshRoute() {
-    $.get("/data", function(result) {
-      console.log("result");
+    var bs = map.getBounds();
+    var bssw = bs.getSouthWest();
+    var bsne = bs.getNorthEast();
+    //console.log(bssw.lng + ", " + bssw.lat + " to " + bsne.lng + ", " + bsne.lat + "\n");
+
+    $.get("/data", {"sw_lng": bssw.lng, "sw_lat": bssw.lat, "ne_lng": bsne.lng, "ne_lat": bsne.lat}
+    ,function(result) {
+        var pt = new Array();
+        console.log(result);
         for (var i in result) {
             if (typeof(points[result[i].id]) == "undefined") {
                 points[result[i].id] = new Array();
@@ -182,14 +197,17 @@ function refreshRoute() {
                 countColor = (countColor + 1) % 7;
                 lineColor[result[i].id] = color[countColor];
                 lineInfo[result[i].id] = {"source": result[i].id, "path": result[i].path, "time": result[i].time, "des": result[i].des };
+                pt.push(points[result[i].id][0]);
             }
             else {
                 points[result[i].id][points[result[i].id].length] = new BMap.Point(result[i].lat, result[i].lon);
 
+                pt.push(points[result[i].id][points[result[i].id].length - 1]);
+
                 line[result[i].id] = new BMap.Polyline(
                                             [ points[result[i].id][points[result[i].id].length - 2],
                                             points[result[i].id][points[result[i].id].length - 1] ],
-                                            {strokeColor: lineColor[result[i].id], strokeWeight: 5, strokeOpacity: 1}
+                                            {strokeColor: lineColor[result[i].id], strokeWeight: 1, strokeOpacity: 1}
                                         );
 
                 //console.log(line[result[i].id]);
@@ -235,8 +253,18 @@ function refreshRoute() {
                         map.addOverlay(marker2);
                     }
                 }
+
+
             }
         }
+
+        var options = {
+            size: BMAP_POINT_SIZE_SMALL,
+            shape: BMAP_POINT_SHAPE_CIRCLE,
+            color: '#d340c3'
+        };
+        var pointCollection = new BMap.PointCollection(pt, options);
+        map.addOverlay(pointCollection);
     });
 }
 
