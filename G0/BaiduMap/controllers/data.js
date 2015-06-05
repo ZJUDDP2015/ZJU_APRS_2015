@@ -1,6 +1,6 @@
 var mysql = require('mysql');
 
-var sql = mysql.createConnection(require("../DBConfig.json"));
+var sql = mysql.createConnection(require("../DBconfig.json"));
 
 var saved = 0
 var w_save_cnt = 0
