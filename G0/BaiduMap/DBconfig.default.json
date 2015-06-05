@@ -1,6 +1,6 @@
 {
     "host": "localhost", 
-    "user": "root", 
-    "password": "jrc950926", 
+    "user": "", 
+    "password": "", 
     "database": "aprs"
 }
