@@ -5,16 +5,135 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title><%= title %></title>
 <style type="text/css">
-html{height:100%}
-body{height:100%;margin:0px;padding:0px}
-#controller{width:100%; border-bottom:3px outset; height:30px; filter:alpha(Opacity=100); -moz-opacity:1; opacity:1; z-index:10000; background-color:lightblue;}
-#container{height:100%; width:100%;}
+        * {
+            margin: 0;
+            padding: 0;
+            z-index: 1
+        }
+        html {
+            height: 100%;
+        }
+        p {
+            padding: 10px 0;
+        }
+        body {
+            min-height: 100%;
+            font-family: arial;
+        }
+        body.sideMenu {
+            margin: 0;
+            -webkit-transform: none;
+            transform: none;
+        }
+        #sideToggle {
+            display: none;
+        }
+        #sideToggle:checked + aside {
+            right: 0;
+        }
+        #sideToggle:checked ~ #wrap {
+            padding-right: 420px;
+        }
+        body > aside {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: -400px;
+            width: 400px;
+            background: #297bb2;
+            transition: 0.2s ease-out;
+            -webkit-transition: 0.2s ease-out;
+        }
+        body > aside > h2 {
+            color: #FFF;
+            text-align: center;
+            font-weight: normal;
+            padding: 10px;
+        }
+        #banner {
+            margin-left: 110px;
+            margin-top: 20px;
+        }
+        #icon {
+            margin-left: 150px;
+            margin-top: 20px;
+        }
+        #userName {
+            background: #297bb2;
+            color: #FFF;
+            text-align: center;
+            font-size: 25px;
+            border: none;
+            padding: 10px;
+        }
+        .button {
+            margin: auto;
+            margin-bottom: 20px;
+            background: #3399cc;
+            width: 150px;
+            padding: 10px;
+            color: white;
+            text-align: center;
+            border-radius: 5px;
+        }
+        .button:hover {
+            background: #336699;
+        }
+        .timeSelect {
+            margin: auto;
+            border-width: 2px;
+            border-color: #3399cc;
+            border-radius: 5px;
+            width: 300px;
+            padding: 10px;
+            color: white;
+            text-align: center;
+        }
+        .timeSelectInput {
+            margin: auto;
+            background: #FFF;
+            color: #000000;
+            text-align: center;
+            font-size: 15px;
+            width: auto;
+            border: none;
+            border-radius: 5px;
+            padding: 5px;
+        }
+        #wrap {
+            position: absolute;
+            top: 10px;
+            right: 30px;
+            transition: 0.25s ease-out;
+            -webkit-transition: 0.25s ease-out;
+        }
+        #wrap > label {
+            display: inline-block;
+        }
+        #wrap > label {
+            background: #297bb2;
+            border-radius: 50px;
+            color: #FFF;
+            cursor: pointer;
+            display: block;
+            font-family: Courier New;
+            font-size: 25px;
+            font-weight: bold;
+            width: 30px;
+            height: 30px;
+            line-height: 35px;
+            text-align: center;
+            text-shadow: 0 -4px;
+        }
+        #wrap > label:hover {
+            background: #000;
+        }
 </style>
 <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=xYBeNeqobNOPgiofCkvp1Ln6"></script>
 <script src="/bower_components/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" src="http://developer.baidu.com/map/jsdemo/data/points-sample-data.js"> </script>
 <script type="text/javascript" src="http://api.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js"></script>
-	<script type="text/javascript" src="http://api.map.baidu.com/library/MarkerClusterer/1.2/src/MarkerClusterer_min.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/library/MarkerClusterer/1.2/src/MarkerClusterer_min.js"></script>
 <script src="/symbols.js"> </script>
 <script type="text/javascript">
 
@@ -129,7 +248,7 @@ function init() {
         //获取鼠标当前经纬度
         click_lng =  e.point.lng ;
         click_lat =  e.point.lat;
-	     });
+     });
 
     for (var i in points){
         line[i].info = lineInfo[i];
@@ -175,8 +294,8 @@ function init() {
       map.addOverlay(curve); // add curve into the map
     });
     markers[i].addEventListener('mouseout',function(e){
-			map.removeOverlay(curve); //remove curve from the map
-		});
+    map.removeOverlay(curve); //remove curve from the map
+    });
   }
 */
     setInterval(refreshRoute, 2000);
@@ -284,7 +403,69 @@ function refreshRoute() {
 </script>
 </head>
 
-<body onload="init();">
-    <div id="container"></div>
+
+<body style="overflow:hidden" onload="init();">
+    <div id="container" style="position: absolute; top:0; width:100%; height:100%; border:none; z-index:0"></div>
+    <input type='checkbox' id='sideToggle'>
+    <aside>
+        <div id='banner'>
+            <!--Please Replace this part with BANNER-->
+            <img src="/uploads/default.jpg" width="180" alt="Sample Logo" />
+        </div>
+        <p></p>
+        <hr width=80% style="margin:auto">
+        <table class='timeSelect'>
+            <tr>
+                <td>Start Time</td>
+                <td>
+                    <input class='timeSelectInput' id='startTime' type="text" name="Meow" width="100px" value="2015/02/24 06:00">
+                </td>
+            </tr>
+            <tr>
+                <td>End Time</td>
+                <td>
+                    <input class='timeSelectInput' id='startTime' type="text" name="Meow" width="100px" value="2015/02/24 06:00">
+                </td>
+            </tr>
+            <tr>
+                <td>Callsign</td>
+                <td>
+                    <input class='timeSelectInput' id='callSign' type="text" name="Meow" width="100px" value="Batman">
+                </td>
+            </tr>
+        </table>
+        <div class='button'>Show on Map!</div>
+        <hr width=80% style="margin:auto">
+        <!--User Panel-->
+        <div id='icon'>
+            <img src="/joker.jpeg" width="100" alt="Sample Logo" style="position:absolute; z-index:2" />
+            <img src="/maskLogOut.png" width="100" alt="Log-out" style="position:absolute; z-index:4;
+                                opacity:0;filter:alpha(opacity=0)" onmouseover="this.style.opacity=0.8;this.filters.alpha.opacity=80" onmouseout="this.style.opacity=0;this.filters.alpha.opacity=0" />
+            <img src="/mask.png" width="100" style="position:relative; z-index:3" />
+        </div>
+        <div id='userName'>
+            <input id='userName' type="text" name="Meow" width="200px" value="哥谭市蝙蝠侠粉丝团团长">
+        </div>
+        <div class="button">
+            <form
+                id      = "uploadForm"
+                enctype = "multipart/form-data"
+                action  = "/photoUpload"
+                method  = "post"
+            >
+                <input type="file" name="userPhoto"/>
+                <input type="submit" value="Upload Image" name="submit"/>
+            </form>
+        </div>
+        <div class='button' id='changeBanner'>Change Banner</div>
+        <div class='button' id='upload'>Upload Image</div>
+        <hr width=80% style="margin:auto">
+        <!--Please add the user control and date/time/function select panel here-->
+    </aside>
+    <div id='wrap'>
+        <label id='sideMenuControl' for='sideToggle'>=</label>
+    </div>
 </body>
+
 </html>
+

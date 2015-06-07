@@ -15,12 +15,12 @@ router.get('/login', function(req, res) {
     });
 });
 
-router.post('/register', userController.register);
+//router.post('/register', userController.register);
 router.post('/login', userController.login);
-router.post('/changePassword', userController.changePassword);
+//router.post('/changePassword', userController.changePassword);
 router.get('/logout', userController.logout);
-router.get('/get_position', userController.getSavedPosition, userController.getIPPosition);
-router.post('/post_position', userController.postPosition);
+//router.get('/get_position', userController.getSavedPosition, userController.getIPPosition);
+//router.post('/post_position', userController.postPosition);
 router.get('/sessionVerify', userController.sessionVerify);
 
 module.exports = router;

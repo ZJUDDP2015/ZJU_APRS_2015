@@ -1,15 +1,14 @@
 var express = require('express');
 var path = require('path');
-var favicon = require('static-favicon');
 var logger = require('morgan');
+var favicon = require('static-favicon');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
-//var RedisStore = require('connect-redis')(express);
+var multer = require('multer');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
-var data = require('./routes/data.js');
+var index = require('./routes/index');
+var data = require('./routes/data');
 
 var app = express();
 
@@ -20,19 +19,35 @@ app.set('view engine', 'ejs');
 app.use(favicon());
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 app.use(cookieParser('what3213the#%^$fuck'));
 app.use(session({
     secret: '3e%4@#$T342r92hg24$#t',
     resave: false,
     saveUninitialized: true,
-    cookie: { maxAge: 10000000}
+    cookie: {
+        maxAge: 100000
+    }
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
-app.use('/users', users);
+app.use('/', index);
 app.use('/data', data);
+
+app.use(multer({
+    dest: './public/uploads/',
+    rename: function(fieldname, filename) {
+        return "default";
+    },
+    onFileUploadStart: function(file) {
+        console.log(file.originalname + ' is starting ...')
+    },
+    onFileUploadComplete: function(file) {
+        console.log(file.fieldname + ' uploaded to  ' + file.path)
+    }
+}));
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
