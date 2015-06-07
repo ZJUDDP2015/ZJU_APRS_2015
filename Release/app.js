@@ -1,15 +1,13 @@
 var express = require('express');
 var path = require('path');
-var favicon = require('static-favicon');
 var logger = require('morgan');
+var favicon = require('static-favicon');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
-//var RedisStore = require('connect-redis')(express);
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
-var data = require('./routes/data.js');
+var index = require('./routes/index');
+var data = require('./routes/data');
 
 var app = express();
 
@@ -26,12 +24,11 @@ app.use(session({
     secret: '3e%4@#$T342r92hg24$#t',
     resave: false,
     saveUninitialized: true,
-    cookie: { maxAge: 10000000}
+    cookie: { maxAge: 100000}
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
-app.use('/users', users);
+app.use('/', index);
 app.use('/data', data);
 
 /// catch 404 and forwarding to error handler
