@@ -23,8 +23,8 @@ var getFormatedTime = function(month, day, hour , minute) {
   stime+=':'+(minute<10? '0'+minute:minute)+':00';
   return stime;
 }
-starttime = getFormatedTime((new Date()).getMonth()+1,(new Date()).getDay()-1,(new Date()).getHours(),(new Date()).getMinutes());//初始化时间(开始时间为当前一天前)
-endtime = getFormatedTime((new Date()).getMonth()+1,(new Date()).getDay(),(new Date()).getHours(),(new Date()).getMinutes());
+starttime = getFormatedTime((new Date()).getMonth()+1,(new Date()).getDate()-1,(new Date()).getHours(),(new Date()).getMinutes());//初始化时间(开始时间为当前一天前)
+endtime = getFormatedTime((new Date()).getMonth()+1,(new Date()).getDate(),(new Date()).getHours(),(new Date()).getMinutes());
 
 router.get('/', function(req, res) {
     res.render('index', {
