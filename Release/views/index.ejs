@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title><%= title %></title>
 <style type="text/css">
-            * {
+        * {
             margin: 0;
             padding: 0;
             z-index: 1
@@ -410,7 +410,7 @@ function refreshRoute() {
     <aside>
         <div id='banner'>
             <!--Please Replace this part with BANNER-->
-            <img src="/batman.png" width="180" alt="Sample Logo" />
+            <img src="/uploads/default.jpg" width="180" alt="Sample Logo" />
         </div>
         <p></p>
         <hr width=80% style="margin:auto">
@@ -446,8 +446,19 @@ function refreshRoute() {
         <div id='userName'>
             <input id='userName' type="text" name="Meow" width="200px" value="哥谭市蝙蝠侠粉丝团团长">
         </div>
-        <div class='button'>Change Banner</div>
-        <div class='button'>Change Password</div>
+        <div class="button">
+            <form
+                id      = "uploadForm"
+                enctype = "multipart/form-data"
+                action  = "/photoUpload"
+                method  = "post"
+            >
+                <input type="file" name="userPhoto"/>
+                <input type="submit" value="Upload Image" name="submit"/>
+            </form>
+        </div>
+        <div class='button' id='changeBanner'>Change Banner</div>
+        <div class='button' id='upload'>Upload Image</div>
         <hr width=80% style="margin:auto">
         <!--Please add the user control and date/time/function select panel here-->
     </aside>
