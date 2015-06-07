@@ -9,6 +9,11 @@ router.get('/', function(req, res) {
     })
 });
 
+router.post('/photoUpload', function(req, res) {
+    console.log(req.files);
+    res.end("File uploaded.");
+});
+
 router.post('/login', userController.login);
 router.get('/logout', userController.logout);
 router.post('/post_position', userController.postPosition);
