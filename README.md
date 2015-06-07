@@ -38,6 +38,11 @@ The assignments for this week:
     1.copy DBconfig.default.json and rename it DBconfig.json
 
     2.change "user" and "password" in DBconfig.json
+    
+## Remember to "npm install" and "bower install"
+	 1.run cmd "npm install" in Release
+	 
+	 2.run cmd "bower install" in Release/public 
 
 ## How to fetch data and store them into database
     1.cmd: node Release/BaiduMap/app.js
