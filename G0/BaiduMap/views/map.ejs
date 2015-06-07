@@ -207,7 +207,7 @@ function refreshRoute() {
                 points[result[i].id][points[result[i].id].length] = new BMap.Point(result[i].lat, result[i].lon);
 
                 //pt.push(points[result[i].id][points[result[i].id].length - 1]);
-                if (points[result[i].id][points[result[i].id].length-1] != points[result[i].id][points[result[i].id].length-2])
+                if (points[result[i].id][points[result[i].id].length-1].lat != points[result[i].id][points[result[i].id].length-2].lat||points[result[i].id][points[result[i].id].length-1].lng != points[result[i].id][points[result[i].id].length-2].lng)
                     markers.push(new BMap.Marker(points[result[i].id][points[result[i].id].length - 1]));
 
                 line[result[i].id] = new BMap.Polyline(
