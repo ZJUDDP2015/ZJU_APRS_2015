@@ -374,6 +374,9 @@ function refreshRoute() {
                     symbol[result[i].id] = result[i].symbol;
                     var pt = points[result[i].id][0];
                     var s=Symbol[symbol[result[i].id]];
+					
+					
+						//alert("Great");
 
                     if (typeof(s)!="undefined")
                     {
@@ -382,25 +385,33 @@ function refreshRoute() {
                         console.log(i);
                         var x=s[1];
                         var y=s[2];
+						var myIcon;
 
                         if (pic==1) {
-                             var myIcon = new BMap.Icon("/1.png", new BMap.Size(22,22),{
-                             imageOffset: new BMap.Size(0-x, y)
+                             myIcon = new BMap.Icon("/1.png", new BMap.Size(22,22),{
+                             imageOffset: new BMap.Size(0-x, 0-y)
                            });
                         }
                         else {
-                            var myIcon = new BMap.Icon("/2.png", new BMap.Size(22,22),{
-                             imageOffset: new BMap.Size(0-x, y)
+                            myIcon = new BMap.Icon("/2.png", new BMap.Size(22,22),{
+                             imageOffset: new BMap.Size(0-x, 0-y)
                            });
                         }
-                        var marker2 = new BMap.Marker(pt,{icon:myIcon});  // 创建标注
+                        //var marker2 = new BMap.Marker(pt,{icon:myIcon});  // 创建标注
                         //map.addOverlay(marker2);
-                        markers.push(marker2);
+						var mymarker = new BMap.Point(result[i].lat+0.000001, result[i].lon+0.000001);
+						var marker3 = new BMap.Marker(mymarker, {icon:myIcon});
+						
+                        //markers.push(marker3);
+						markers.push(marker3);
+						//alert(result[i].lat+" "+result[i].lon);
                     }else{
 
                         markers.push(new BMap.Marker(pt));
                     }
-                }
+                } else {
+					
+				}
 
 
             }

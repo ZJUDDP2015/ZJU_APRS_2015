@@ -253,22 +253,25 @@ function refreshRoute() {
 
                         if (pic==1) {
                              var myIcon = new BMap.Icon("/1.png", new BMap.Size(22,22),{
-                             imageOffset: new BMap.Size(0-x, y)
+                             imageOffset: new BMap.Size(0-x, 0-y)
                            });
                         }
                         else {
                             var myIcon = new BMap.Icon("/2.png", new BMap.Size(22,22),{
-                             imageOffset: new BMap.Size(0-x, y)
+                             imageOffset: new BMap.Size(0-x, 0-y)
                            });
                         }
-                        var marker2 = new BMap.Marker(pt,{icon:myIcon});  // 创建标注
+                        //var marker2 = new BMap.Marker(pt,{icon:myIcon});  // 创建标注
                         //map.addOverlay(marker2);
-                        markers.push(marker2);
+                        //markers.push(marker2);
+						var mymarker = new BMap.Point(result[i].lat + 0.00001, result[i].lon + 0.00001);
+						var marker3 = new BMap.Marker(mymarker, {icon:myIcon});
+						markers.push(marker3);
                     }else{
 
                         markers.push(new BMap.Marker(pt));
                     }
-                }
+                } 
 
 
             }
