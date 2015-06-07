@@ -1,0 +1,23 @@
+{
+  "name": "WeatherWeb",
+  "version": "0.0.0",
+  "homepage": "https://github.com/asynte/WeatherWeb",
+  "authors": [
+    "Leeleo3x <leeleo3x@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "d3": "~3.5.5",
+    "bootstrap-datepicker": "~1.4.0",
+    "bootstrap": "~3.3.4",
+    "topojson": "~1.6.19",
+    "moment": "~2.10.2"
+  }
+}

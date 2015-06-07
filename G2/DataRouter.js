@@ -447,7 +447,7 @@ function Wthr_without_Timestamp_no_Message(myDate, header, info) {
   var receivedObject = infoHandler.Wthr_dataDecoding(myDate, weatherDataGroup);
   if (JSON.stringify(receivedObject) != undefined) {
     receivedObject.Path = headerHandler.getPath(header);
-    poster.SendtoDB(receivedObject, "/weather");
+    poster.SendtoDB(receivedObject, "/data/weather");
     Rtn.handle = true;
     Rtn.res = receivedObject;
   }
@@ -569,7 +569,7 @@ function Wthr_Object(myDate, header, info) {
   var receivedObject = infoHandler.Wthr_dataDecoding(myDate, weatherDataGroup);
   if (JSON.stringify(receivedObject) != undefined) {
     receivedObject.Path = headerHandler.getPath(header);
-    poster.SendtoDB(receivedObject, "/weather");
+    poster.SendtoDB(receivedObject, "/data/weather");
     Rtn.handle = true;
     Rtn.res = receivedObject;
   }
