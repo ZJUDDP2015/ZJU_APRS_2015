@@ -18,18 +18,33 @@ var getFormatedTime = function(month, day, hour, minute) {
 exports.handleData = function(req, res) {
     var lon_limit = {"small_lon":parseFloat(req.query.sw_lng), "big_lon":parseFloat(req.query.ne_lng)};//当前屏幕的经度范围
     var lat_limit = {"small_lat":parseFloat(req.query.sw_lat), "big_lat":parseFloat(req.query.ne_lat)};//当前屏幕的纬度范围
-    var starttime;
-    var endtime;
-
-    starttime = getFormatedTime((new Date()).getMonth() + 1, (new Date()).getDate() - 1, (new Date()).getHours(), (new Date()).getMinutes()); //初始化时间(开始时间为当前一天前)
-    endtime = getFormatedTime((new Date()).getMonth() + 1, (new Date()).getDate(), (new Date()).getHours(), (new Date()).getMinutes());
-
+    var starttime = req.query.starttime;
+    var endtime = req.query.endtime;
+    var callsign = req.query.callsign;
+    console.log(starttime);
+    console.log(endtime);
+    console.log(callsign);
+    if (starttime==''||endtime=='')
+    {
+      starttime = getFormatedTime((new Date()).getMonth() + 1, (new Date()).getDate() - 1, (new Date()).getHours(), (new Date()).getMinutes()); //初始化时间(开始时间为当前一天前)
+      endtime = getFormatedTime((new Date()).getMonth() + 1, (new Date()).getDate(), (new Date()).getHours(), (new Date()).getMinutes());
+    }
     client.connect(function(err,results){
         console.log(starttime);
         console.log(endtime);
-        var Addsql="select *from moving_object where Latitude >? && Latitude <? && Longitude > ? && Longitude < ? && unix_timestamp(Time) > unix_timestamp(?) &&unix_timestamp(Time) < unix_timestamp(?)";
-        var Addsql_param=[lat_limit.small_lat,lat_limit.big_lat,lon_limit.small_lon,lon_limit.big_lon,starttime,endtime];
-        console.log(Addsql_param);
+        var Addsql;
+        var Addsql_param;
+        if (callsign =='')
+        {
+          var Addsql="select *from moving_object where Latitude >? && Latitude <? && Longitude > ? && Longitude < ? && unix_timestamp(Time) > unix_timestamp(?) &&unix_timestamp(Time) < unix_timestamp(?)";
+          var Addsql_param=[lat_limit.small_lat,lat_limit.big_lat,lon_limit.small_lon,lon_limit.big_lon,starttime,endtime];
+        }
+        else
+        {
+          var Addsql="select *from moving_object where Latitude >? && Latitude <? && Longitude > ? && Longitude < ? && unix_timestamp(Time) > unix_timestamp(?) &&unix_timestamp(Time) < unix_timestamp(?) &&Source=?";
+          var Addsql_param=[lat_limit.small_lat,lat_limit.big_lat,lon_limit.small_lon,lon_limit.big_lon,starttime,endtime,callsign];
+        }
+        //console.log(Addsql_param);
         client.query(Addsql,Addsql_param,function(err,rows){
             var car=[];
             if (rows){
@@ -42,7 +57,7 @@ exports.handleData = function(req, res) {
                     if (symbol != "" &&symbol!=undefined&& symbol[0]!='\\'&&symbol[0]!='/') {
                       symbol = "\\\\" + symbol[1];
                     }
-                    console.log(symbol);
+                    //console.log(symbol);
 
                     /*var symbol=JSON.parse(e.Comment).Symbol;
                     if (symbol[0]!='\\'&&symbol[0]!='/')

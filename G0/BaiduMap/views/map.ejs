@@ -181,17 +181,22 @@ function init() {
 */
     setInterval(refreshRoute, 2000);
 }
+var markers = [];
+var markerClusterer;
 
 function refreshRoute() {
+    map.clearOverlays();
     var bs = map.getBounds();
     var bssw = bs.getSouthWest();
     var bsne = bs.getNorthEast();
     //console.log(bssw.lng + ", " + bssw.lat + " to " + bsne.lng + ", " + bsne.lat + "\n");
-
     $.get("/data", {"sw_lng": bssw.lng, "sw_lat": bssw.lat, "ne_lng": bsne.lng, "ne_lat": bsne.lat}
     ,function(result) {
         //var pt = new Array();
-        var markers = [];
+        
+        symbol=[];
+        points.length=0;
+        markers = [];
         console.log(result);
         for (var i in result) {
             if (typeof(points[result[i].id]) == "undefined") {
@@ -277,7 +282,7 @@ function refreshRoute() {
         var pointCollection = new BMap.PointCollection(pt, options);
         map.addOverlay(pointCollection);
         */
-        var markerClusterer = new BMapLib.MarkerClusterer(map, {markers:markers});
+        markerClusterer=new BMapLib.MarkerClusterer(map,{GridSize:10,markers:markers});
     });
 }
 
