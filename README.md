@@ -5,7 +5,7 @@ Each group should create a new folder for their own task~
 
 学长们加油 =w=
 
-##1. June 2015
+## June 2015
 
 The assignments for this week:
 
@@ -23,6 +23,30 @@ The assignments for this week:
 12. 采用get方式获得某站台的最后位置和最后60分钟数据
 13. 数据显示中的呼号为链接，指向12的URL
 
-###Update 000
+# Aprs project
+    This project fetch online aprs data and show them on Baidu map 
+    
+## Now all the updates should be in Release folder
+	So first we cd to Release folder
 
-The index.html for homepage has been uploaded to homePage. Please add the **user control panel** ,  **banner control panel**,  and **function control panel**.  
+## How to init database
+    1.start mysql database service
+
+    2.cmd: mysql -u "Your username" <init.sql
+
+## How to configurate your database setting
+    1.copy DBconfig.default.json and rename it DBconfig.json
+
+    2.change "user" and "password" in DBconfig.json
+
+## How to fetch data and store them into database
+    1.cmd: node Release/BaiduMap/app.js
+
+    2.create a folder 'log' in G2
+
+    3.cmd: node G2/Proxy.js
+
+## How to access web page
+    app.js has create a server listening port 3001
+    
+    web page url: localhost:3001
