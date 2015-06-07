@@ -70,6 +70,7 @@ router.get('/data',function(req,res){
                 path: e.Path
             });
       });
+      //console.log(car[0].path+'type:'+JSON.parse(car[0].path));
       return res.json(car);
     }
     });
