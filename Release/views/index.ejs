@@ -164,7 +164,7 @@
 
     function submit()
     {
-        refresh=0;
+        map.clearOverlays();
         starttime=document.getElementById('startTime').value;
         endtime=document.getElementById('endTime').value;
         callsign=document.getElementById('callSign').value;
@@ -316,7 +316,6 @@ function init() {
 }
 
 function refreshRoute() {
-    map.clearOverlays();
     var bs = map.getBounds();
     var bssw = bs.getSouthWest();
     var bsne = bs.getNorthEast();
