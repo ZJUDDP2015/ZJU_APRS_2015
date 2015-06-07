@@ -5,6 +5,7 @@ var favicon = require('static-favicon');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
+var multer = require('multer');
 
 var index = require('./routes/index');
 var data = require('./routes/data');
@@ -18,18 +19,35 @@ app.set('view engine', 'ejs');
 app.use(favicon());
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 app.use(cookieParser('what3213the#%^$fuck'));
 app.use(session({
     secret: '3e%4@#$T342r92hg24$#t',
     resave: false,
     saveUninitialized: true,
-    cookie: { maxAge: 100000}
+    cookie: {
+        maxAge: 100000
+    }
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/data', data);
+
+app.use(multer({
+    dest: './public/uploads/',
+    rename: function(fieldname, filename) {
+        return "default";
+    },
+    onFileUploadStart: function(file) {
+        console.log(file.originalname + ' is starting ...')
+    },
+    onFileUploadComplete: function(file) {
+        console.log(file.fieldname + ' uploaded to  ' + file.path)
+    }
+}));
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
