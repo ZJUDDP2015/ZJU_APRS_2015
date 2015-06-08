@@ -135,6 +135,7 @@
 <script src="/bower_components/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" src="http://developer.baidu.com/map/jsdemo/data/points-sample-data.js"> </script>
 <script type="text/javascript" src="http://api.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/library/CurveLine/1.5/src/CurveLine.min.js"></script>
 <script type="text/javascript" src="http://api.map.baidu.com/library/MarkerClusterer/1.2/src/MarkerClusterer_min.js"></script>
 <script src="/symbols.js"> </script>
 <script type="text/javascript">
@@ -319,6 +320,8 @@ function refreshRoute() {
     var bs = map.getBounds();
     var bssw = bs.getSouthWest();
     var bsne = bs.getNorthEast();
+    //var myIcon2 = new BMap.Icon("/3.png", new BMap.Size(20,20));
+    var digipeater, curve;
     console.log(starttime);
     console.log(endtime);
     console.log(callsign);
@@ -334,19 +337,32 @@ function refreshRoute() {
             if (typeof(points[result[i].id]) == "undefined") {
                 points[result[i].id] = new Array();
                 points[result[i].id][0] = new BMap.Point(result[i].lat, result[i].lon);
+                if ((callsignposition[result[i].id] == undefined) || (result[i].time>callsignposition[result[i].id].time))
+                  callsignposition[result[i].id] = {'lat':result[i].lat,'lon':result[i].lon,'time':result[i].time};//<iy> create callsign index
                 countColor = (countColor + 1) % 7;
                 lineColor[result[i].id] = color[countColor];
                 lineInfo[result[i].id] = {"source": result[i].id, "path": result[i].path, "time": result[i].time, "des": result[i].des };
-                //pt.push(points[result[i].id][0]);
-                //markers.push(new BMap.Marker(points[result[i].id][0]));
             }
             else {
-                points[result[i].id][points[result[i].id].length] = new BMap.Point(result[i].lat, result[i].lon);
-
-                //pt.push(points[result[i].id][points[result[i].id].length - 1]);
-                if (points[result[i].id][points[result[i].id].length-1].lat != points[result[i].id][points[result[i].id].length-2].lat||points[result[i].id][points[result[i].id].length-1].lng != points[result[i].id][points[result[i].id].length-2].lng)
-                //    markers.push(new BMap.Marker(points[result[i].id][points[result[i].id].length - 1]));
-
+                points[result[i].id][points[result[i].id].length] = new BMap.Point(result[i].lat, result[i].lon);                if ((callsignposition[result[i].id] == undefined) || (result[i].time>callsignposition[result[i].id].time))
+                  callsignposition[result[i].id] = {'lat':result[i].lat,'lon':result[i].lon,'time':result[i].time};//<iy> create callsign index
+                if (points[result[i].id][points[result[i].id].length-1].lat != points[result[i].id][points[result[i].id].length-2].lat||points[result[i].id][points[result[i].id].length-1].lng != points[result[i].id][points[result[i].id].length-2].lng){
+                  var nmk = new BMap.Marker(points[result[i].id][points[result[i].id].length - 1]);
+                  markers.push(nmk);
+                  nmk.addEventListener('mouseover',function(e){
+                    digipeater = [];
+                    // add points of paths
+                    var paths = JSON.parse(result[i].path);
+                    var pp = new BMap.Point(result[i].lat, result[i].lon);
+                    digipeater.push(pp);
+                    for(j in paths){
+                      pp = new BMap.Point(callsignposition[paths[j]].lat, callsignposition[paths[j]].lon);
+                      digipeater.push(pp);
+                    }
+                    curve = new BMapLib.CurveLine(digipeater,{strokeColor:"blue", strokeWeight:3, strokeOpacity:0.5});
+                    map.addOverlay(curve); // add curve into the map*/
+                  });
+                }
                 line[result[i].id] = new BMap.Polyline(
                                             [ points[result[i].id][points[result[i].id].length - 2],
                                             points[result[i].id][points[result[i].id].length - 1] ],
@@ -374,8 +390,6 @@ function refreshRoute() {
                     symbol[result[i].id] = result[i].symbol;
                     var pt = points[result[i].id][0];
                     var s=Symbol[symbol[result[i].id]];
-					
-					
 						//alert("Great");
 
                     if (typeof(s)!="undefined")
@@ -401,7 +415,7 @@ function refreshRoute() {
                         map.addOverlay(marker2);
 						var mymarker = new BMap.Point(result[i].lat+0.000001, result[i].lon+0.000001);
 						var marker3 = new BMap.Marker(mymarker, {icon:myIcon});
-						
+
                         //markers.push(marker3);
 						//markers.push(marker3);
 						//alert(result[i].lat+" "+result[i].lon);
@@ -409,12 +423,13 @@ function refreshRoute() {
 
                         //markers.push(new BMap.Marker(pt));
                     }
+
                 } else {
-					
+
 				}
 
-
             }
+
         }
         /*
         var options = {
@@ -497,4 +512,3 @@ function refreshRoute() {
 </body>
 
 </html>
-

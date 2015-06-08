@@ -14,7 +14,8 @@ body{height:100%;margin:0px;padding:0px}
 <script src="/bower_components/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" src="http://developer.baidu.com/map/jsdemo/data/points-sample-data.js"> </script>
 <script type="text/javascript" src="http://api.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js"></script>
-	<script type="text/javascript" src="http://api.map.baidu.com/library/MarkerClusterer/1.2/src/MarkerClusterer_min.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/library/CurveLine/1.5/src/CurveLine.min.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/library/MarkerClusterer/1.2/src/MarkerClusterer_min.js"></script>
 <script src="/symbols.js"> </script>
 <script type="text/javascript">
 
@@ -189,7 +190,13 @@ function refreshRoute() {
     var bs = map.getBounds();
     var bssw = bs.getSouthWest();
     var bsne = bs.getNorthEast();
+    var myIcon2 = new BMap.Icon("/3.png", new BMap.Size(20,20));
+    var digipeater, curve;
     //console.log(bssw.lng + ", " + bssw.lat + " to " + bsne.lng + ", " + bsne.lat + "\n");
+<<<<<<< HEAD
+    //alert("ss");
+=======
+>>>>>>> e7433f7cbb60aaef458733e5d4e57375e4c7feea
     $.get("/data", {"sw_lng": bssw.lng, "sw_lat": bssw.lat, "ne_lng": bsne.lng, "ne_lat": bsne.lat}
     ,function(result) {
         //var pt = new Array();
@@ -198,10 +205,16 @@ function refreshRoute() {
         points.length=0;
         markers = [];
         console.log(result);
+        //alert('result:'+result);
         for (var i in result) {
+          //alert(result);
             if (typeof(points[result[i].id]) == "undefined") {
                 points[result[i].id] = new Array();
                 points[result[i].id][0] = new BMap.Point(result[i].lat, result[i].lon);
+                //pointpaths[result[i].id] = new Array();//<iy> create path array
+                //pointpaths[result[i].id][0] = JSON.parse(result[i].path);//<iy> add path
+                if ((callsignposition[result[i].id] == undefined) || (result[i].time>callsignposition[result[i].id].time))
+                  callsignposition[result[i].id] = {'lat':result[i].lat,'lon':result[i].lon,'time':result[i].time};//<iy> create callsign index
                 countColor = (countColor + 1) % 7;
                 lineColor[result[i].id] = color[countColor];
                 lineInfo[result[i].id] = {"source": result[i].id, "path": result[i].path, "time": result[i].time, "des": result[i].des };
@@ -210,11 +223,35 @@ function refreshRoute() {
             }
             else {
                 points[result[i].id][points[result[i].id].length] = new BMap.Point(result[i].lat, result[i].lon);
-
+                //pointpaths[result[i].id][pointpaths[result[i].id].length] = JSON.parse(result[i].path);//<iy> add path
                 //pt.push(points[result[i].id][points[result[i].id].length - 1]);
-                if (points[result[i].id][points[result[i].id].length-1].lat != points[result[i].id][points[result[i].id].length-2].lat||points[result[i].id][points[result[i].id].length-1].lng != points[result[i].id][points[result[i].id].length-2].lng)
-                    markers.push(new BMap.Marker(points[result[i].id][points[result[i].id].length - 1]));
-
+                if ((callsignposition[result[i].id] == undefined) || (result[i].time>callsignposition[result[i].id].time))
+                  callsignposition[result[i].id] = {'lat':result[i].lat,'lon':result[i].lon,'time':result[i].time};//<iy> create callsign index
+                //alert(result[i].time+'  type:'+typeof(JSON.stringify(result[i].time)));
+                //pt.push(points[result[i].id][points[result[i].id].length - 1]);
+                if (points[result[i].id][points[result[i].id].length-1].lat != points[result[i].id][points[result[i].id].length-2].lat||points[result[i].id][points[result[i].id].length-1].lng != points[result[i].id][points[result[i].id].length-2].lng){
+                  var nmk = new BMap.Marker(points[result[i].id][points[result[i].id].length - 1]);
+                  markers.push(nmk);
+                  nmk.addEventListener('mouseover',function(e){
+                    digipeater = [];
+                    // add points of paths
+                    var paths = JSON.parse(result[i].path);
+                    //alert(paths+'  type:'+typeof(paths));
+                    var pp = new BMap.Point(result[i].lat, result[i].lon);
+                    //alert(result[i].id+' lat:'+result[i].lat+'lon:'+result[i].lon);
+                    digipeater.push(pp);
+                    for(j in paths){
+                      pp = new BMap.Point(callsignposition[paths[j]].lat, callsignposition[paths[j]].lon);
+                      //alert('path:'+paths[j]+'lat:'+callsignposition[paths[j]].lat+'lon:'+callsignposition[paths[j]].lon);
+                      digipeater.push(pp);
+                    }
+                    curve = new BMapLib.CurveLine(digipeater,{strokeColor:"blue", strokeWeight:3, strokeOpacity:0.5});
+                    map.addOverlay(curve); // add curve into the map*/
+                  });
+                  /*nmk.addEventListener('mouseout',function(e){
+                  	map.removeOverlay(curve); //remove curve from the map
+                  });*/
+                }
                 line[result[i].id] = new BMap.Polyline(
                                             [ points[result[i].id][points[result[i].id].length - 2],
                                             points[result[i].id][points[result[i].id].length - 1] ],
@@ -261,20 +298,62 @@ function refreshRoute() {
                              imageOffset: new BMap.Size(0-x, 0-y)
                            });
                         }
+<<<<<<< HEAD
+                        var marker2 = new BMap.Marker(pt,{icon:myIcon});  // 创建标注
+
+=======
                         //var marker2 = new BMap.Marker(pt,{icon:myIcon});  // 创建标注
+>>>>>>> e7433f7cbb60aaef458733e5d4e57375e4c7feea
                         //map.addOverlay(marker2);
                         //markers.push(marker2);
 						var mymarker = new BMap.Point(result[i].lat + 0.00001, result[i].lon + 0.00001);
 						var marker3 = new BMap.Marker(mymarker, {icon:myIcon});
 						markers.push(marker3);
                     }else{
-
                         markers.push(new BMap.Marker(pt));
                     }
+<<<<<<< HEAD
+                }
+=======
                 } 
 
 
+>>>>>>> e7433f7cbb60aaef458733e5d4e57375e4c7feea
             }
+            //鼠标移动到轨迹的点上显示path
+            //var markers = [];
+            //var coresps = [];
+            //var myIcon2 = new BMap.Icon("/3.png", new BMap.Size(20,20));
+            //for (var i in points){
+                //for(var j in points[i]){
+            //var nmk = new BMap.Marker(points[result[i].id][points[result[i].id].length],{
+            //  icon: myIcon2
+            //});
+            //map.addOverlay(nmk);
+            /*markers[markers.length] = nmk;
+            //coresps[coresps.length] = points[result[i].id][points[result[i].id].length];
+            //    }
+            //  }
+            var digipeater, curve;
+            //for(var i in markers){
+            markers[markers.length].addEventListener('mouseover',function(e){
+              digipeater = [];
+              // add points of paths
+              var paths = JSON.parse(result[i].path);
+              var pp = new BMap.Point(result[i].lat, result[i].lon);
+              digipeater.push(pp);
+              for(j in paths){
+                pp = new BMap.Point(callsignposition[paths[j]].lat, callsignposition[paths[j]].lon);
+                digipeater.push(pp);
+              }
+              curve = new BMapLib.Curveline(digipeater,{strokeColor:"blue", strokeWeight:3, strokeOpacity:0.5});
+              map.addOverlay(curve); // add curve into the map
+            });
+            markers[markers.length].addEventListener('mouseout',function(e){
+            	map.removeOverlay(curve); //remove curve from the map
+            });
+          //}*/
+
         }
         /*
         var options = {
