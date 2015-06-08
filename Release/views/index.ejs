@@ -3,7 +3,8 @@
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title><%= title %></title>
+<title>Map</title>
+<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
 <style type="text/css">
         * {
             margin: 0;
@@ -130,6 +131,7 @@
         }
 </style>
 <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=xYBeNeqobNOPgiofCkvp1Ln6"></script>
+<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="/bower_components/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" src="http://developer.baidu.com/map/jsdemo/data/points-sample-data.js"> </script>
 <script type="text/javascript" src="http://api.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js"></script>
@@ -143,6 +145,9 @@
     var symbol = new Array();
     var line = new Array();
     var pointpaths = new Array();
+    var starttime='';
+    var endtime='';
+    var callsign='';
 
     var m;  //点击产生的标记
     var click_lng;
@@ -156,6 +161,15 @@
     var lineInfo = new Array();
     var pointpaths = new Array();
     var callsignposition = new Array();
+
+
+    function submit()
+    {
+        map.clearOverlays();
+        starttime=document.getElementById('startTime').value;
+        endtime=document.getElementById('endTime').value;
+        callsign=document.getElementById('callSign').value;
+    }
 /*
     for (var i in data) {
         if (typeof(points[data[i].id]) == "undefined") {
@@ -308,12 +322,16 @@ function refreshRoute() {
     var bsne = bs.getNorthEast();
     var myIcon2 = new BMap.Icon("/3.png", new BMap.Size(20,20));
     var digipeater, curve;
+    console.log(starttime);
+    console.log(endtime);
+    console.log(callsign);
     //console.log(bssw.lng + ", " + bssw.lat + " to " + bsne.lng + ", " + bsne.lat + "\n");
-    //alert("ss");
-    $.get("/data", {"sw_lng": bssw.lng, "sw_lat": bssw.lat, "ne_lng": bsne.lng, "ne_lat": bsne.lat}
+    $.get("/data", {"sw_lng": bssw.lng, "sw_lat": bssw.lat, "ne_lng": bsne.lng, "ne_lat": bsne.lat,"starttime":starttime,"endtime":endtime,"callsign":callsign}
     ,function(result) {
         //var pt = new Array();
-        var markers = [];
+        symbol=[];
+        points.length=0;
+        markers = [];
         console.log(result);
         for (var i in result) {
             if (typeof(points[result[i].id]) == "undefined") {
@@ -373,6 +391,9 @@ function refreshRoute() {
                     var pt = points[result[i].id][0];
                     var s=Symbol[symbol[result[i].id]];
 
+
+						//alert("Great");
+
                     if (typeof(s)!="undefined")
                     {
                         var pic=s[0];
@@ -380,25 +401,34 @@ function refreshRoute() {
                         console.log(i);
                         var x=s[1];
                         var y=s[2];
+						var myIcon;
 
                         if (pic==1) {
-                             var myIcon = new BMap.Icon("/1.png", new BMap.Size(22,22),{
-                             imageOffset: new BMap.Size(0-x, y)
+                             myIcon = new BMap.Icon("/1.png", new BMap.Size(22,22),{
+                             imageOffset: new BMap.Size(0-x, 0-y)
                            });
                         }
                         else {
-                            var myIcon = new BMap.Icon("/2.png", new BMap.Size(22,22),{
-                             imageOffset: new BMap.Size(0-x, y)
+                            myIcon = new BMap.Icon("/2.png", new BMap.Size(22,22),{
+                             imageOffset: new BMap.Size(0-x, 0-y)
                            });
                         }
-                        var marker2 = new BMap.Marker(pt,{icon:myIcon});  // 创建标注
-
+                        //var marker2 = new BMap.Marker(pt,{icon:myIcon});  // 创建标注
                         //map.addOverlay(marker2);
-                        markers.push(marker2);
+						var mymarker = new BMap.Point(result[i].lat+0.000001, result[i].lon+0.000001);
+						var marker3 = new BMap.Marker(mymarker, {icon:myIcon});
+
+                        //markers.push(marker3);
+						markers.push(marker3);
+						//alert(result[i].lat+" "+result[i].lon);
                     }else{
                         markers.push(new BMap.Marker(pt));
                     }
-                }
+
+                } else {
+
+				}
+
             }
 
         }
@@ -411,7 +441,7 @@ function refreshRoute() {
         var pointCollection = new BMap.PointCollection(pt, options);
         map.addOverlay(pointCollection);
         */
-        var markerClusterer = new BMapLib.MarkerClusterer(map, {markers:markers});
+        markerClusterer=new BMapLib.MarkerClusterer(map,{GridSize:10,markers:markers});
     });
 }
 
@@ -433,23 +463,23 @@ function refreshRoute() {
             <tr>
                 <td>Start Time</td>
                 <td>
-                    <input class='timeSelectInput' id='startTime' type="text" name="Meow" width="100px" value="2015/02/24 06:00">
+                    <input class='timeSelectInput' id='startTime' type="text" name="Meow" width="100px" value="2015-02-24 06:00:00">
                 </td>
             </tr>
             <tr>
                 <td>End Time</td>
                 <td>
-                    <input class='timeSelectInput' id='startTime' type="text" name="Meow" width="100px" value="2015/02/24 06:00">
+                    <input class='timeSelectInput' id='endTime' type="text" name="Meow" width="100px" value="2015-02-24 06:00:00">
                 </td>
             </tr>
             <tr>
                 <td>Callsign</td>
                 <td>
-                    <input class='timeSelectInput' id='callSign' type="text" name="Meow" width="100px" value="Batman">
+                    <input class='timeSelectInput' id='callSign' type="text" name="Meow" width="100px" value="BA5AG">
                 </td>
             </tr>
         </table>
-        <div class='button'>Show on Map!</div>
+        <div class='button' onclick="submit()">Show on Map!</div>
         <hr width=80% style="margin:auto">
         <!--User Panel-->
         <div id='icon'>

@@ -182,19 +182,28 @@ function init() {
 */
     setInterval(refreshRoute, 2000);
 }
+var markers = [];
+var markerClusterer;
 
 function refreshRoute() {
+    map.clearOverlays();
     var bs = map.getBounds();
     var bssw = bs.getSouthWest();
     var bsne = bs.getNorthEast();
     var myIcon2 = new BMap.Icon("/3.png", new BMap.Size(20,20));
     var digipeater, curve;
     //console.log(bssw.lng + ", " + bssw.lat + " to " + bsne.lng + ", " + bsne.lat + "\n");
+<<<<<<< HEAD
     //alert("ss");
+=======
+>>>>>>> e7433f7cbb60aaef458733e5d4e57375e4c7feea
     $.get("/data", {"sw_lng": bssw.lng, "sw_lat": bssw.lat, "ne_lng": bsne.lng, "ne_lat": bsne.lat}
     ,function(result) {
         //var pt = new Array();
-        var markers = [];
+        
+        symbol=[];
+        points.length=0;
+        markers = [];
         console.log(result);
         //alert('result:'+result);
         for (var i in result) {
@@ -281,22 +290,35 @@ function refreshRoute() {
 
                         if (pic==1) {
                              var myIcon = new BMap.Icon("/1.png", new BMap.Size(22,22),{
-                             imageOffset: new BMap.Size(0-x, y)
+                             imageOffset: new BMap.Size(0-x, 0-y)
                            });
                         }
                         else {
                             var myIcon = new BMap.Icon("/2.png", new BMap.Size(22,22),{
-                             imageOffset: new BMap.Size(0-x, y)
+                             imageOffset: new BMap.Size(0-x, 0-y)
                            });
                         }
+<<<<<<< HEAD
                         var marker2 = new BMap.Marker(pt,{icon:myIcon});  // 创建标注
 
+=======
+                        //var marker2 = new BMap.Marker(pt,{icon:myIcon});  // 创建标注
+>>>>>>> e7433f7cbb60aaef458733e5d4e57375e4c7feea
                         //map.addOverlay(marker2);
-                        markers.push(marker2);
+                        //markers.push(marker2);
+						var mymarker = new BMap.Point(result[i].lat + 0.00001, result[i].lon + 0.00001);
+						var marker3 = new BMap.Marker(mymarker, {icon:myIcon});
+						markers.push(marker3);
                     }else{
                         markers.push(new BMap.Marker(pt));
                     }
+<<<<<<< HEAD
                 }
+=======
+                } 
+
+
+>>>>>>> e7433f7cbb60aaef458733e5d4e57375e4c7feea
             }
             //鼠标移动到轨迹的点上显示path
             //var markers = [];
@@ -342,7 +364,7 @@ function refreshRoute() {
         var pointCollection = new BMap.PointCollection(pt, options);
         map.addOverlay(pointCollection);
         */
-        var markerClusterer = new BMapLib.MarkerClusterer(map, {markers:markers});
+        markerClusterer=new BMapLib.MarkerClusterer(map,{GridSize:10,markers:markers});
     });
 }
 
