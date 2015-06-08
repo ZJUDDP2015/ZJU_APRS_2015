@@ -1,71 +1,6 @@
 var mysql = require('mysql');
 var url = require('url');
-var fs = require('fs');
 var client = mysql.createConnection(require("../DBconfig.json"));
-
-function toMysqlFormat(date) {
-    return date.getFullYear() + "-" + twoDigits(1 + date.getMonth()) + "-" + twoDigits(date.getDate()) + " " + twoDigits(date.getHours()) + ":" + twoDigits(date.getMinutes()) + ":" + twoDigits(date.getSeconds());
-};
-
-function twoDigits(d) {
-    if(0 <= d && d < 10) return "0" + d.toString();
-    if(-10 < d && d < 0) return "-0" + (-1*d).toString();
-    return d.toString();
-};
-
-exports.createCallsignEjs = function(callsign) {
-  var myDate=new Date();
-  var currentT=toMysqlFormat(myDate);
-  console.log(callsign);
-  console.log(currentT);
-  client.connect(function(err,results){
-    var Addsql="select * from moving_object where Source=? and Time <= ?  and Time >= DATE_ADD(?,INTERVAL -60 MINUTE) order by Time desc";
-    var Addsql_param=[callsign,currentT,currentT];
-    client.query(Addsql,Addsql_param,function(err,rows){
-      if(err) {
-        throw err;}
-      if(rows.length > 0){
-        var i = 0;
-        console.log(__dirname);
-        var Stream = fs.createWriteStream(__dirname + '/../views/callsign.ejs', {flags:'w'});
-        lat=rows[0].Latitude;
-        longi=rows[0].Longitude;
-        Stream.write('<html lang="en">\r\n');
-        Stream.write('<head>\r\n');
-        Stream.write('<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />\r\n');
-        Stream.write('<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\r\n');
-        Stream.write('<title><%= title %></title>\r\n');
-        Stream.write('</head>\r\n');
-        Stream.write('<body>\r\n');
-        Stream.write('<div><h1> ' + rows[0].Source + ' </h1></div>\r\n');
-        Stream.write('<div><h2> Last position: Latitude = ' + lat + '; Longitude' + longi + ' </h2></div>\r\n');
-        Stream.write('<div><h2> data during the last 60 minutes: </h2></div>');
-        for (i; i < rows.length; ++i) {
-          console.log(i);
-          var writeBuffer = new Buffer(JSON.stringify(rows[i]));
-          Stream.write('<div> ' + i + ':   ' + writeBuffer + '</div>\r\n');
-        }
-        Stream.write('</body>\r\n');
-        Stream.write('</html>\r\n');
-        Stream.end();
-      }else{
-        var Stream = fs.createWriteStream(__dirname + '/../views/callsign.ejs', {flags:'w'});
-        Stream.write('<html lang="en">\r\n');
-        Stream.write('<head>\r\n');
-        Stream.write('<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />\r\n');
-        Stream.write('<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\r\n');
-        Stream.write('<title><%= title %></title>\r\n');
-        Stream.write('</head>\r\n');
-        Stream.write('<body>\r\n');
-        Stream.write('<div><h1> Not found </h1></div>\r\n');
-        Stream.write('</body>\r\n');
-        Stream.write('</html>\r\n');
-        Stream.end();
-      }
-    });
-  });
-  return true;
-}
 
 var getFormatedTime = function(month, day, hour, minute) {
     var stime = "2015";
@@ -83,33 +18,18 @@ var getFormatedTime = function(month, day, hour, minute) {
 exports.handleData = function(req, res) {
     var lon_limit = {"small_lon":parseFloat(req.query.sw_lng), "big_lon":parseFloat(req.query.ne_lng)};//当前屏幕的经度范围
     var lat_limit = {"small_lat":parseFloat(req.query.sw_lat), "big_lat":parseFloat(req.query.ne_lat)};//当前屏幕的纬度范围
-    var starttime = req.query.starttime;
-    var endtime = req.query.endtime;
-    var callsign = req.query.callsign;
-    console.log(starttime);
-    console.log(endtime);
-    console.log(callsign);
-    if (starttime==''||endtime=='')
-    {
-      starttime = getFormatedTime((new Date()).getMonth() + 1, (new Date()).getDate(), (new Date()).getHours() - 1, (new Date()).getMinutes()); //初始化时间(开始时间为当前一天前)
-      endtime = getFormatedTime((new Date()).getMonth() + 1, (new Date()).getDate(), (new Date()).getHours(), (new Date()).getMinutes());
-    }
+    var starttime;
+    var endtime;
+
+    starttime = getFormatedTime((new Date()).getMonth() + 1, (new Date()).getDate() - 1, (new Date()).getHours(), (new Date()).getMinutes()); //初始化时间(开始时间为当前一天前)
+    endtime = getFormatedTime((new Date()).getMonth() + 1, (new Date()).getDate(), (new Date()).getHours(), (new Date()).getMinutes());
+
     client.connect(function(err,results){
         console.log(starttime);
         console.log(endtime);
-        var Addsql;
-        var Addsql_param;
-        if (callsign =='')
-        {
-          var Addsql="select *from moving_object where Latitude >? && Latitude <? && Longitude > ? && Longitude < ? && unix_timestamp(Time) > unix_timestamp(?) &&unix_timestamp(Time) < unix_timestamp(?) order by Time asc";
-          var Addsql_param=[lat_limit.small_lat,lat_limit.big_lat,lon_limit.small_lon,lon_limit.big_lon,starttime,endtime];
-        }
-        else
-        {
-          var Addsql="select *from moving_object where Latitude >? && Latitude <? && Longitude > ? && Longitude < ? && unix_timestamp(Time) > unix_timestamp(?) &&unix_timestamp(Time) < unix_timestamp(?) &&Source=? order by Time asc";
-          var Addsql_param=[lat_limit.small_lat,lat_limit.big_lat,lon_limit.small_lon,lon_limit.big_lon,starttime,endtime,callsign];
-        }
-        //console.log(Addsql_param);
+        var Addsql="select *from moving_object where Latitude >? && Latitude <? && Longitude > ? && Longitude < ? && unix_timestamp(Time) > unix_timestamp(?) &&unix_timestamp(Time) < unix_timestamp(?)";
+        var Addsql_param=[lat_limit.small_lat,lat_limit.big_lat,lon_limit.small_lon,lon_limit.big_lon,starttime,endtime];
+        console.log(Addsql_param);
         client.query(Addsql,Addsql_param,function(err,rows){
             var car=[];
             if (rows){
@@ -122,7 +42,7 @@ exports.handleData = function(req, res) {
                     if (symbol != "" &&symbol!=undefined&& symbol[0]!='\\'&&symbol[0]!='/') {
                       symbol = "\\\\" + symbol[1];
                     }
-                    //console.log(symbol);
+                    console.log(symbol);
 
                     /*var symbol=JSON.parse(e.Comment).Symbol;
                     if (symbol[0]!='\\'&&symbol[0]!='/')
@@ -209,3 +129,4 @@ exports.handleClick = function(req, res) {
         });
     });
 };
+
