@@ -345,7 +345,7 @@ function refreshRoute() {
 
                 //pt.push(points[result[i].id][points[result[i].id].length - 1]);
                 if (points[result[i].id][points[result[i].id].length-1].lat != points[result[i].id][points[result[i].id].length-2].lat||points[result[i].id][points[result[i].id].length-1].lng != points[result[i].id][points[result[i].id].length-2].lng)
-                    markers.push(new BMap.Marker(points[result[i].id][points[result[i].id].length - 1]));
+                //    markers.push(new BMap.Marker(points[result[i].id][points[result[i].id].length - 1]));
 
                 line[result[i].id] = new BMap.Polyline(
                                             [ points[result[i].id][points[result[i].id].length - 2],
@@ -397,17 +397,17 @@ function refreshRoute() {
                              imageOffset: new BMap.Size(0-x, 0-y)
                            });
                         }
-                        //var marker2 = new BMap.Marker(pt,{icon:myIcon});  // 创建标注
-                        //map.addOverlay(marker2);
+                        var marker2 = new BMap.Marker(pt,{icon:myIcon});  // 创建标注
+                        map.addOverlay(marker2);
 						var mymarker = new BMap.Point(result[i].lat+0.000001, result[i].lon+0.000001);
 						var marker3 = new BMap.Marker(mymarker, {icon:myIcon});
 						
                         //markers.push(marker3);
-						markers.push(marker3);
+						//markers.push(marker3);
 						//alert(result[i].lat+" "+result[i].lon);
                     }else{
 
-                        markers.push(new BMap.Marker(pt));
+                        //markers.push(new BMap.Marker(pt));
                     }
                 } else {
 					
@@ -425,7 +425,7 @@ function refreshRoute() {
         var pointCollection = new BMap.PointCollection(pt, options);
         map.addOverlay(pointCollection);
         */
-        markerClusterer=new BMapLib.MarkerClusterer(map,{GridSize:10,markers:markers});
+        //markerClusterer=new BMapLib.MarkerClusterer(map,{GridSize:10,markers:markers});
     });
 }
 
