@@ -323,11 +323,8 @@ function refreshRoute() {
             color: '#d340c3'
         };
         var pointCollection = new BMap.PointCollection(pts, options);
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> 9e4a67f146c7138d89956e54bbfd5c43c275cb1c
+
         map.addEventListener("click",function(e){
             //alert("h");
           if(e.overlay && e.overlay.toString()==="null"){
@@ -346,20 +343,11 @@ function refreshRoute() {
             map.removeOverlay(m);
           }
         });
-<<<<<<< HEAD
 
-        pointCollection.addEventListener('click', function (e) {
-          //alert('单击点的坐标为：' + e.point.lng + ',' + e.point.lat);  // 监听点击事件
-          map.removeOverlay(m);
-
-=======
-        
-        
         pointCollection.addEventListener('click', function (e) {
           //alert('单击点的坐标为：' + e.point.lng + ',' + e.point.lat);  // 监听点击事件
           map.removeOverlay(m);
           //alert("hello");
->>>>>>> 9e4a67f146c7138d89956e54bbfd5c43c275cb1c
 
           var p = new BMap.Point(e.point.lng, e.point.lat);
           m = new BMap.Marker(p);
@@ -371,10 +359,7 @@ function refreshRoute() {
           map.addOverlay(m);
 
         });
-<<<<<<< HEAD
-=======
-        
->>>>>>> 9e4a67f146c7138d89956e54bbfd5c43c275cb1c
+
         map.addOverlay(pointCollection);
         //markerClusterer=new BMapLib.MarkerClusterer(map,{GridSize:10,markers:markers});
     });
