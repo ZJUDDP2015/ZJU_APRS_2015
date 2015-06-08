@@ -331,7 +331,7 @@ function refreshRoute() {
         var pts = new Array();
         symbol=[];
         points.length=0;
-        markers = [];
+        //markers = [];
         console.log(result);
         for (var i in result) {
             if (typeof(points[result[i].id]) == "undefined") {
@@ -350,7 +350,7 @@ function refreshRoute() {
                 pts.push(points[result[i].id][points[result[i].id].length - 1]);
                 if (points[result[i].id][points[result[i].id].length-1].lat != points[result[i].id][points[result[i].id].length-2].lat||points[result[i].id][points[result[i].id].length-1].lng != points[result[i].id][points[result[i].id].length-2].lng){
                   var nmk = new BMap.Marker(points[result[i].id][points[result[i].id].length - 1]);
-                  markers.push(nmk);
+                  //markers.push(nmk);
                   nmk.addEventListener('mouseover',function(e){
                     digipeater = [];
                     // add points of paths
@@ -464,13 +464,13 @@ function refreshRoute() {
             <tr>
                 <td>Start Time</td>
                 <td>
-                    <input class='timeSelectInput' id='startTime' type="text" name="Meow" width="100px" value="2015-02-24 06:00:00">
+                    <input class='timeSelectInput' id='startTime' type="text" name="Meow" width="100px" value="2015-06-01 06:00:00">
                 </td>
             </tr>
             <tr>
                 <td>End Time</td>
                 <td>
-                    <input class='timeSelectInput' id='endTime' type="text" name="Meow" width="100px" value="2015-02-24 06:00:00">
+                    <input class='timeSelectInput' id='endTime' type="text" name="Meow" width="100px" value="2015-06-31 06:00:00">
                 </td>
             </tr>
             <tr>

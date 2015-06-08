@@ -101,12 +101,12 @@ exports.handleData = function(req, res) {
         var Addsql_param;
         if (callsign =='')
         {
-          var Addsql="select *from moving_object where Latitude >? && Latitude <? && Longitude > ? && Longitude < ? && unix_timestamp(Time) > unix_timestamp(?) &&unix_timestamp(Time) < unix_timestamp(?)";
+          var Addsql="select *from moving_object where Latitude >? && Latitude <? && Longitude > ? && Longitude < ? && unix_timestamp(Time) > unix_timestamp(?) &&unix_timestamp(Time) < unix_timestamp(?) order by Time asc";
           var Addsql_param=[lat_limit.small_lat,lat_limit.big_lat,lon_limit.small_lon,lon_limit.big_lon,starttime,endtime];
         }
         else
         {
-          var Addsql="select *from moving_object where Latitude >? && Latitude <? && Longitude > ? && Longitude < ? && unix_timestamp(Time) > unix_timestamp(?) &&unix_timestamp(Time) < unix_timestamp(?) &&Source=?";
+          var Addsql="select *from moving_object where Latitude >? && Latitude <? && Longitude > ? && Longitude < ? && unix_timestamp(Time) > unix_timestamp(?) &&unix_timestamp(Time) < unix_timestamp(?) &&Source=? order by Time asc";
           var Addsql_param=[lat_limit.small_lat,lat_limit.big_lat,lon_limit.small_lon,lon_limit.big_lon,starttime,endtime,callsign];
         }
         //console.log(Addsql_param);
@@ -207,4 +207,3 @@ exports.handleClick = function(req, res) {
         });
     });
 };
-
