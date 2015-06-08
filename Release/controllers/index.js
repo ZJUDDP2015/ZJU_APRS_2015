@@ -136,7 +136,8 @@ exports.handleData = function(req, res) {
                         lon: e.Latitude,
                         symbol:symbol,
                         des: e.Destination,
-                        path: e.Path
+                        path: e.Path,
+                        comment: e.Comment
                     });
           });
           return res.json(car);
@@ -191,7 +192,8 @@ exports.handleClick = function(req, res) {
                           lon: e.Latitude,
                           symbol:symbol,
                           des: e.Destination,
-                          path: e.Path
+                          path: e.Path,
+                          comment: e.Comment
                       });
                       current=e.id;//最近的一条数据
                       //console.log(e);
