@@ -2,7 +2,7 @@
 .DS_Store*
 Icon?
 ._*
-Release/views/callsign.ejs
+
 # Windows
 Thumbs.db
 ehthumbs.db
@@ -24,8 +24,12 @@ coverage
 # Benchmarking
 benchmarks/graphs
 
+# Git conflit
+.orig
+
 # Group
 G0/BaiduMap/DBconfig.json
 Release/DBconfig.json
+Release/views/callsign.ejs
 G5
 bower_components
