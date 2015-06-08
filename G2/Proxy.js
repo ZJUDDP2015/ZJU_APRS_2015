@@ -3,28 +3,28 @@ var fs = require("fs");
 var router = require("./DataRouter.js");
 var logger = require("./Logger.js");
 
-var proxy = net.connect({port:14580,host:'asia.aprs2.net'},function() {
+var proxy = net.connect({port:14580,host:'hangzhou.aprs2.net'},function() {
     var myDate = new Date();
     console.log(myDate.toUTCString() + ": connection to server!");
-    proxy.write("user BG5ZZZ-85 pass 24229 ver MY185\n#filter t/poi\n");
+    proxy.write("user BG5ZZZ-92 pass 24229 ver MY185\n#filter t/poi\n");
 });
 
 proxy.on("error",function(err){
     var myDate = new Date();
     console.log(myDate.toUTCString() + ": " + err.message);
     proxy.end();
-/*    proxy.connect({port:14580,host:'asia.aprs2.net'},function() {
+    proxy.connect({port:14580,host:'hangzhou.aprs2.net'},function() {
         console.log("connection to server!");
-        proxy.write("user BG5ZZZ-85 pass 24229 ver MY185\n#filter t/poi\n");
-    });*/
+        proxy.write("user BG5ZZZ-92 pass 24229 ver MY185\n#filter t/poi\n");
+    });
 });
 
 proxy.on('end',function(){
     var myDate = new Date();
     console.log(myDate.toUTCString() + ": proxy unconnected.");
-    proxy.connect({port:14580,host:'asia.aprs2.net'},function() {
+    proxy.connect({port:14580,host:'hangzhou.aprs2.net'},function() {
         console.log("connection to server!");
-        proxy.write("user BG5ZZZ-85 pass 24229 ver MY185\n#filter t/poi\n");
+        proxy.write("user BG5ZZZ-92 pass 24229 ver MY185\n#filter t/poi\n");
   });
 })
 

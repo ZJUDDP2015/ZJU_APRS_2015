@@ -5,139 +5,15 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Map</title>
 <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
-<style type="text/css">
-        * {
-            margin: 0;
-            padding: 0;
-            z-index: 1
-        }
-        html {
-            height: 100%;
-        }
-        p {
-            padding: 10px 0;
-        }
-        body {
-            min-height: 100%;
-            font-family: arial;
-        }
-        body.sideMenu {
-            margin: 0;
-            -webkit-transform: none;
-            transform: none;
-        }
-        #sideToggle {
-            display: none;
-        }
-        #sideToggle:checked + aside {
-            right: 0;
-        }
-        #sideToggle:checked ~ #wrap {
-            padding-right: 420px;
-        }
-        body > aside {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            right: -400px;
-            width: 400px;
-            background: #297bb2;
-            transition: 0.2s ease-out;
-            -webkit-transition: 0.2s ease-out;
-        }
-        body > aside > h2 {
-            color: #FFF;
-            text-align: center;
-            font-weight: normal;
-            padding: 10px;
-        }
-        #banner {
-            margin-left: 110px;
-            margin-top: 20px;
-        }
-        #icon {
-            margin-left: 150px;
-            margin-top: 20px;
-        }
-        #userName {
-            background: #297bb2;
-            color: #FFF;
-            text-align: center;
-            font-size: 25px;
-            border: none;
-            padding: 10px;
-        }
-        .button {
-            margin: auto;
-            margin-bottom: 20px;
-            background: #3399cc;
-            width: 150px;
-            padding: 10px;
-            color: white;
-            text-align: center;
-            border-radius: 5px;
-        }
-        .button:hover {
-            background: #336699;
-        }
-        .timeSelect {
-            margin: auto;
-            border-width: 2px;
-            border-color: #3399cc;
-            border-radius: 5px;
-            width: 300px;
-            padding: 10px;
-            color: white;
-            text-align: center;
-        }
-        .timeSelectInput {
-            margin: auto;
-            background: #FFF;
-            color: #000000;
-            text-align: center;
-            font-size: 15px;
-            width: auto;
-            border: none;
-            border-radius: 5px;
-            padding: 5px;
-        }
-        #wrap {
-            position: absolute;
-            top: 10px;
-            right: 30px;
-            transition: 0.25s ease-out;
-            -webkit-transition: 0.25s ease-out;
-        }
-        #wrap > label {
-            display: inline-block;
-        }
-        #wrap > label {
-            background: #297bb2;
-            border-radius: 50px;
-            color: #FFF;
-            cursor: pointer;
-            display: block;
-            font-family: Courier New;
-            font-size: 25px;
-            font-weight: bold;
-            width: 30px;
-            height: 30px;
-            line-height: 35px;
-            text-align: center;
-            text-shadow: 0 -4px;
-        }
-        #wrap > label:hover {
-            background: #000;
-        }
-</style>
-<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=xYBeNeqobNOPgiofCkvp1Ln6"></script>
+<link rel="stylesheet" href="/css/index.css" type="text/css"/>
 <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="/symbols.js"> </script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=xYBeNeqobNOPgiofCkvp1Ln6"></script>
 <script type="text/javascript" src="http://developer.baidu.com/map/jsdemo/data/points-sample-data.js"> </script>
 <script type="text/javascript" src="http://api.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js"></script>
 <script type="text/javascript" src="http://api.map.baidu.com/library/CurveLine/1.5/src/CurveLine.min.js"></script>
 <script type="text/javascript" src="http://api.map.baidu.com/library/MarkerClusterer/1.2/src/MarkerClusterer_min.js"></script>
-<script src="/symbols.js"> </script>
 <script type="text/javascript">
 
 
