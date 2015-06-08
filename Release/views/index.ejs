@@ -256,7 +256,7 @@ function init() {
         }
     }
 */
-/*
+
 
     //点击轨迹显示详细数据
     map.addEventListener("mousemove",function(e){
@@ -264,7 +264,7 @@ function init() {
         click_lng =  e.point.lng ;
         click_lat =  e.point.lat;
      });
-
+/*
     for (var i in points){
         line[i].info = lineInfo[i];
         line[i].onclick = function(){
@@ -328,7 +328,7 @@ function refreshRoute() {
     //console.log(bssw.lng + ", " + bssw.lat + " to " + bsne.lng + ", " + bsne.lat + "\n");
     $.get("/data", {"sw_lng": bssw.lng, "sw_lat": bssw.lat, "ne_lng": bsne.lng, "ne_lat": bsne.lat,"starttime":starttime,"endtime":endtime,"callsign":callsign}
     ,function(result) {
-        //var pt = new Array();
+        var pts = new Array();
         symbol=[];
         points.length=0;
         markers = [];
@@ -342,10 +342,12 @@ function refreshRoute() {
                 countColor = (countColor + 1) % 7;
                 lineColor[result[i].id] = color[countColor];
                 lineInfo[result[i].id] = {"source": result[i].id, "path": result[i].path, "time": result[i].time, "des": result[i].des };
+                pts.push(points[result[i].id][0]);
             }
             else {
                 points[result[i].id][points[result[i].id].length] = new BMap.Point(result[i].lat, result[i].lon);                if ((callsignposition[result[i].id] == undefined) || (result[i].time>callsignposition[result[i].id].time))
                   callsignposition[result[i].id] = {'lat':result[i].lat,'lon':result[i].lon,'time':result[i].time};//<iy> create callsign index
+                pts.push(points[result[i].id][points[result[i].id].length - 1]);
                 if (points[result[i].id][points[result[i].id].length-1].lat != points[result[i].id][points[result[i].id].length-2].lat||points[result[i].id][points[result[i].id].length-1].lng != points[result[i].id][points[result[i].id].length-2].lng){
                   var nmk = new BMap.Marker(points[result[i].id][points[result[i].id].length - 1]);
                   markers.push(nmk);
@@ -431,15 +433,15 @@ function refreshRoute() {
             }
 
         }
-        /*
+
         var options = {
-            size: BMAP_POINT_SIZE_SMALL,
+            size: BMAP_POINT_SIZE_TINY,
             shape: BMAP_POINT_SHAPE_CIRCLE,
             color: '#d340c3'
         };
-        var pointCollection = new BMap.PointCollection(pt, options);
+        var pointCollection = new BMap.PointCollection(pts, options);
         map.addOverlay(pointCollection);
-        */
+
         //markerClusterer=new BMapLib.MarkerClusterer(map,{GridSize:10,markers:markers});
     });
 }
