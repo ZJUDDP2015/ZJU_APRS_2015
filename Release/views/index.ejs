@@ -204,26 +204,30 @@ function init() {
 
 var heatmapOverlay;
 function refreshRoute_ZoomOut() {
-	var row_num=27;
-    var col_num=48;
-
 	var bs = map.getBounds();
 	var bssw = bs.getSouthWest();
     var bsne = bs.getNorthEast();
 
-    var lng_len = (bsne.lng-bssw.lng)/col_num;
-    var lat_len = (bsne.lat-bssw.lat)/row_num;
+	var level = 9-map.getZoom();
+
+	var lng_len = 0.18*(1<<level);
+    var lat_len = 0.18*(1<<level);
+
     var lng_num = Math.floor((bssw.lng+180)/lng_len);
     var lat_num = Math.floor((bssw.lat+90)/lat_len);
-    console.log("Gap: "+(bsne.lat-bssw.lat));
 
-    $.get("/data_zoomout", {"lng_num":lng_num , "lat_num":lat_num , "lng_len":lng_len , "lat_len":lat_len ,"starttime":starttime,"endtime":endtime,"callsign":callsign},function(result){
+    var col_num=Math.floor((bsne.lng+180)/lng_len)-lng_num+1;
+	var row_num=Math.floor((bsne.lat+90)/lat_len)-lat_num+1;
+    
+    //console.log("Gap: "+(bsne.lat-bssw.lat));
+
+    $.get("/data_zoomout", {"level":level ,"lng_num":lng_num , "lat_num":lat_num , "col_num":col_num , "row_num":row_num ,"starttime":starttime,"endtime":endtime,"callsign":callsign},function(result){
     	map.clearOverlays();
     	symbol = [];
     	var points = [];
     	var count = 0;
-    	for (var i=0;i<row_num+1;++i){
-    		for (var j=0;j<col_num+1;++j){
+    	for (var i=0;i<row_num;++i){
+    		for (var j=0;j<col_num;++j){
     			var lat=lat_len*(lat_num+i+0.5)-90;
     			var lng=lng_len*(lng_num+j+0.5)-180;
     			if (result[i][j]>0){
