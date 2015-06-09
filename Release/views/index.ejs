@@ -202,6 +202,7 @@ function init() {
     setInterval(refreshRoute, 2000);
 }
 
+var heatmapOverlay;
 function refreshRoute_ZoomOut() {
 	var row_num=27;
     var col_num=48;
@@ -214,13 +215,11 @@ function refreshRoute_ZoomOut() {
     var lat_len = (bsne.lat-bssw.lat)/row_num;
     var lng_num = Math.floor((bssw.lng+180)/lng_len);
     var lat_num = Math.floor((bssw.lat+90)/lat_len);
-    //console.log(lng_len)
-    //console.log(lat_len)
-
-    var heatmapOverlay;
+    console.log("Gap: "+(bsne.lat-bssw.lat));
 
     $.get("/data_zoomout", {"lng_num":lng_num , "lat_num":lat_num , "lng_len":lng_len , "lat_len":lat_len ,"starttime":starttime,"endtime":endtime,"callsign":callsign},function(result){
     	map.clearOverlays();
+    	symbol = [];
     	var points = [];
     	var count = 0;
     	for (var i=0;i<row_num+1;++i){
@@ -236,7 +235,7 @@ function refreshRoute_ZoomOut() {
     	if (map.getZoom()<10){
     		heatmapOverlay = new BMapLib.HeatmapOverlay({"radius":80});
 			map.addOverlay(heatmapOverlay);
-			heatmapOverlay.setDataSet({data:points,max:count/50});
+			heatmapOverlay.setDataSet({data:points,max:10});
     	}
 	});
 }
@@ -267,7 +266,7 @@ function refreshRoute() {
 
     $.get("/data", {"sw_lng": bssw.lng, "sw_lat": bssw.lat, "ne_lng": bsne.lng, "ne_lat": bsne.lat,"starttime":starttime,"endtime":endtime,"callsign":callsign}
     ,function(result) {
-    	map.clearOverlays();
+    	map.removeOverlay(heatmapOverlay);
         var pts = new Array();
         //symbol=[];
         //points.length=0;

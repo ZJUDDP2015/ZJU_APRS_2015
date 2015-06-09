@@ -102,7 +102,7 @@ exports.handleZoomoutData = function(req, res) {
     //console.log(endtime);
     //console.log(callsign);
     if (starttime == '' || endtime == '') {
-        starttime = getFormatedTime((new Date()).getMonth() + 1, (new Date()).getDate()-1, (new Date()).getHours(), (new Date()).getMinutes()); //初始化时间(开始时间为当前一天前)
+        starttime = getFormatedTime((new Date()).getMonth() + 1, (new Date()).getDate(), (new Date()).getHours()-1, (new Date()).getMinutes()); //初始化时间(开始时间为当前一天前)
         endtime = getFormatedTime((new Date()).getMonth() + 1, (new Date()).getDate(), (new Date()).getHours(), (new Date()).getMinutes());
     }
     //计算相关增量
