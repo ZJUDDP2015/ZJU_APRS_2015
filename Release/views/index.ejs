@@ -200,10 +200,12 @@ function init() {
       }
     });
     setInterval(refreshRoute, 2000);
+    setInterval(map.clearOverlays(),20000);
 }
 
 var heatmapOverlay;
 function refreshRoute_ZoomOut() {
+
 	var bs = map.getBounds();
 	var bssw = bs.getSouthWest();
     var bsne = bs.getNorthEast();
@@ -272,9 +274,12 @@ function refreshRoute() {
     ,function(result) {
     	map.removeOverlay(heatmapOverlay);
         var pts = new Array();
-        //symbol=[];
-        //points.length=0;
-        //markers = [];
+        symbol=[];
+        points.length=0;
+        markers = [];
+        lineInfo = [];
+    	pointpaths = [];
+    	callsignposition = [];
         //console.log(result);
         for (var i in result) {
             if (typeof(points[result[i].id]) == "undefined") {
@@ -335,6 +340,7 @@ function refreshRoute() {
                   });
                 }
                 */
+
                 line[result[i].id] = new BMap.Polyline(
                                             [ points[result[i].id][points[result[i].id].length - 2],
                                             points[result[i].id][points[result[i].id].length - 1] ],
@@ -359,6 +365,7 @@ function refreshRoute() {
                 */
 
                 if (typeof(symbol[result[i].id]) == "undefined") {
+                	console.log(result[i].symbol);
                     symbol[result[i].id] = result[i].symbol;
                     var pt = points[result[i].id][0];
                     var s=Symbol[symbol[result[i].id]];
@@ -371,7 +378,7 @@ function refreshRoute() {
                         //console.log(i);
                         var x=s[1];
                         var y=s[2];
-						            var myIcon;
+						var myIcon;
 
                         if (pic==1) {
                              myIcon = new BMap.Icon("/1.png", new BMap.Size(22,22),{
@@ -432,7 +439,6 @@ function refreshRoute() {
        }
         //markerClusterer=new BMapLib.MarkerClusterer(map,{GridSize:10,markers:markers});
     });
-
 }
 
 </script>
