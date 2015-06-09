@@ -13,7 +13,7 @@
 <script type="text/javascript" src="http://developer.baidu.com/map/jsdemo/data/points-sample-data.js"> </script>
 <script type="text/javascript" src="http://api.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js"></script>
 <script type="text/javascript" src="http://api.map.baidu.com/library/CurveLine/1.5/src/CurveLine.min.js"></script>
-<script type="text/javascript" src="http://api.map.baidu.com/library/MarkerClusterer/1.2/src/MarkerClusterer_min.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/library/Heatmap/2.0/src/Heatmap_min.js"></script>
 <script type="text/javascript">
 
 
@@ -202,7 +202,52 @@ function init() {
     setInterval(refreshRoute, 2000);
 }
 
+function refreshRoute_ZoomOut() {
+	var row_num=27;
+    var col_num=48;
+
+	var bs = map.getBounds();
+	var bssw = bs.getSouthWest();
+    var bsne = bs.getNorthEast();
+
+    var lng_len = (bsne.lng-bssw.lng)/col_num;
+    var lat_len = (bsne.lat-bssw.lat)/row_num;
+    var lng_num = Math.floor((bssw.lng+180)/lng_len);
+    var lat_num = Math.floor((bssw.lat+90)/lat_len);
+    //console.log(lng_len)
+    //console.log(lat_len)
+
+    var heatmapOverlay;
+
+    $.get("/data_zoomout", {"lng_num":lng_num , "lat_num":lat_num , "lng_len":lng_len , "lat_len":lat_len ,"starttime":starttime,"endtime":endtime,"callsign":callsign},function(result){
+    	map.clearOverlays();
+    	var points = [];
+    	var count = 0;
+    	for (var i=0;i<row_num+1;++i){
+    		for (var j=0;j<col_num+1;++j){
+    			var lat=lat_len*(lat_num+i+0.5)-90;
+    			var lng=lng_len*(lng_num+j+0.5)-180;
+    			if (result[i][j]>0){
+    				points.push({"lng":lng,"lat":lat,"count":result[i][j]});
+    				count+=result[i][j];
+    			}
+    		}
+    	}
+    	if (map.getZoom()<10){
+    		heatmapOverlay = new BMapLib.HeatmapOverlay({"radius":80});
+			map.addOverlay(heatmapOverlay);
+			heatmapOverlay.setDataSet({data:points,max:count/50});
+    	}
+	});
+}
+
 function refreshRoute() {
+
+	if (map.getZoom()<10){
+		refreshRoute_ZoomOut();
+		return;
+	}
+
     var bs = map.getBounds();
     var bssw = bs.getSouthWest();
     var bsne = bs.getNorthEast();
@@ -222,6 +267,7 @@ function refreshRoute() {
 
     $.get("/data", {"sw_lng": bssw.lng, "sw_lat": bssw.lat, "ne_lng": bsne.lng, "ne_lat": bsne.lat,"starttime":starttime,"endtime":endtime,"callsign":callsign}
     ,function(result) {
+    	map.clearOverlays();
         var pts = new Array();
         //symbol=[];
         //points.length=0;
@@ -410,7 +456,7 @@ function refreshRoute() {
             <tr>
                 <td>End Time</td>
                 <td>
-                    <input class='timeSelectInput' id='endTime' type="text" name="Meow" width="100px" value="2015-06-31 06:00:00">
+                    <input class='timeSelectInput' id='endTime' type="text" name="Meow" width="100px" value="2015-06-30 06:00:00">
                 </td>
             </tr>
             <tr>

@@ -40,6 +40,9 @@ CREATE TABLE IF NOT EXISTS moving_object (
 	PRIMARY KEY(id)
 );
 
+ALTER TABLE `moving_object` ADD INDEX(`Longitude`);
+ALTER TABLE `moving_object` ADD INDEX(`Latitude`);
+
 CREATE TABLE `user` (
 	id int(11) NOT NULL AUTO_INCREMENT,
 	email varchar(30) DEFAULT NULL,

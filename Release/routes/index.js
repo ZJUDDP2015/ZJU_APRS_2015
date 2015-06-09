@@ -31,6 +31,7 @@ router.post('/post_position', userController.postPosition);
 router.get('/sessionVerify', userController.sessionVerify);
 
 router.get('/data', indexController.handleData);
+router.get('/data_zoomout', indexController.handleZoomoutData);
 router.get('/click', indexController.handleClick);
 
 module.exports = router;
