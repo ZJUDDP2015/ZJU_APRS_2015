@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS moving_object (
 
 ALTER TABLE `moving_object` ADD INDEX(`Longitude`);
 ALTER TABLE `moving_object` ADD INDEX(`Latitude`);
+ALTER TABLE `moving_object` ADD INDEX(`Time`);
 
 CREATE TABLE `user` (
 	id int(11) NOT NULL AUTO_INCREMENT,
