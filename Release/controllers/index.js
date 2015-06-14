@@ -62,7 +62,7 @@ exports.createCallsignEjs = function(callsign) {
                 Stream.write('<title><%= title %></title>\r\n');
                 Stream.write('</head>\r\n');
                 Stream.write('<body>\r\n');
-                Stream.write('<div><h1> Not found </h1></div>\r\n');
+                Stream.write('<div><h1> Sorry, Not found </h1></div>\r\n');
                 Stream.write('</body>\r\n');
                 Stream.write('</html>\r\n');
                 Stream.end();

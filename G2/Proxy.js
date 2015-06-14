@@ -21,34 +21,24 @@ proxy.on("error",function(err){
         console.log("connection to server!");
         logger.file_write("connection to server!" + '\r\n', './log/Received.log', myDate);
         proxy.write("user BG5ZZZ-" + randomnum + " pass 24229 ver MY185\n#filter t/poi\n");
-//>>>>>>> 8dcf64d149c7de530b0333dec73cfe7723d08870
     });
 });
 
 proxy.on('end',function(){
     var myDate = new Date();
     console.log(myDate.toUTCString() + ": proxy unconnected.");
-//<<<<<<< HEAD
     logger.file_write(": proxy unconnected." + '\r\n', './log/Received.log', myDate);
-   /* proxy.connect({port:14580,host:'hangzhou.aprs2.net'},function() {
-        console.log("connection to server!");
-        logger.file_write("connection to server!" + '\r\n', './log/Received.log', myDate);
-        proxy.write("user BG5ZZZ-92 pass 24229 ver MY185\n#filter t/poi\n");
-=======*/
     proxy.destroy();
-    //var randomnum = 0;
-    //randomnum = Math.ceil(Math.random()*(99-10)+10);
     /*proxy.connect({port:14580,host:'hangzhou.aprs2.net'},function() {
         console.log("connection to server!");
         proxy.write("user BG5ZZZ- pass 24229 ver MY185\n#filter t/poi\n");
-  });
-  */
+    });
+    */
     proxy = net.connect({port:14580,host:'hangzhou.aprs2.net'},function() {
       var myDate = new Date();
       console.log(myDate.toUTCString() + ": connection to server!");
       logger.file_write("connection to server!" + '\r\n', './log/Received.log', myDate);
       proxy.write("user BG5ZZZ-92 pass 24229 ver MY185\n#filter t/poi\n");
-//>>>>>>> 8dcf64d149c7de530b0333dec73cfe7723d08870
   });
 })
 
