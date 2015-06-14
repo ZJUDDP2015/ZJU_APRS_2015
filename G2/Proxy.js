@@ -13,18 +13,29 @@ proxy.on("error",function(err){
     var myDate = new Date();
     console.log(myDate.toUTCString() + ": " + err.message);
     proxy.end();
+    var randomnum = 0;
+    randomnum = Math.ceil(Math.random()*(99-10)+10);
     proxy.connect({port:14580,host:'hangzhou.aprs2.net'},function() {
         console.log("connection to server!");
-        proxy.write("user BG5ZZZ-92 pass 24229 ver MY185\n#filter t/poi\n");
+        proxy.write("user BG5ZZZ-" + randomnum + " pass 24229 ver MY185\n#filter t/poi\n");
     });
 });
 
 proxy.on('end',function(){
     var myDate = new Date();
     console.log(myDate.toUTCString() + ": proxy unconnected.");
-    proxy.connect({port:14580,host:'hangzhou.aprs2.net'},function() {
+    proxy.destroy();
+    //var randomnum = 0;
+    //randomnum = Math.ceil(Math.random()*(99-10)+10);
+    /*proxy.connect({port:14580,host:'hangzhou.aprs2.net'},function() {
         console.log("connection to server!");
-        proxy.write("user BG5ZZZ-92 pass 24229 ver MY185\n#filter t/poi\n");
+        proxy.write("user BG5ZZZ- pass 24229 ver MY185\n#filter t/poi\n");
+  });
+  */
+    proxy = net.connect({port:14580,host:'hangzhou.aprs2.net'},function() {
+      var myDate = new Date();
+      console.log(myDate.toUTCString() + ": connection to server!");
+      proxy.write("user BG5ZZZ-92 pass 24229 ver MY185\n#filter t/poi\n");
   });
 })
 
