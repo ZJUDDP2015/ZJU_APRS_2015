@@ -255,9 +255,9 @@ function refreshRoute() {
 
     var bs = map.getBounds();
     var bssw = bs.getSouthWest();
-    var bsne = bs.getNorthEast();
+    var bsne = bs.getNorthEast(); 
     //var myIcon2 = new BMap.Icon("/3.png", new BMap.Size(20,20));
-    var digipeater, curve;
+    //var digipeater, curve;
     //console.log(starttime);
     //console.log(endtime);
     //console.log(callsign);
@@ -293,7 +293,7 @@ function refreshRoute() {
                 points[result[i].id][0].comment = result[i].comment;
 
                 if ((callsignposition[result[i].id] == undefined) || (result[i].time>callsignposition[result[i].id].time))
-                  callsignposition[result[i].id] = {'lat':result[i].lat,'lon':result[i].lon,'time':result[i].time};//<iy> create callsign index
+                  callsignposition[result[i].id] = {'lat':result[i].lat,'lng':result[i].lng,'time':result[i].time};//<iy> create callsign index
                 countColor = (countColor + 1) % 7;
                 lineColor[result[i].id] = color[countColor];
                 lineInfo[result[i].id] = {"source": result[i].id, "path": result[i].path, "time": result[i].time, "des": result[i].des };
@@ -322,7 +322,7 @@ function refreshRoute() {
                   points[result[i].id][points[result[i].id].length - 1].comment = result[i].comment;
 
                   if ((callsignposition[result[i].id] == undefined) || (result[i].time>callsignposition[result[i].id].time))
-                    callsignposition[result[i].id] = {'lat':result[i].lat,'lon':result[i].lon,'time':result[i].time};//<iy> create callsign index
+                    callsignposition[result[i].id] = {'lat':result[i].lat,'lng':result[i].lng,'time':result[i].time};//<iy> create callsign index
                   pts.push(points[result[i].id][points[result[i].id].length - 1]);
                   /*
                   if (points[result[i].id][points[result[i].id].length-1].lat != points[result[i].id][points[result[i].id].length-2].lat||points[result[i].id][points[result[i].id].length-1].lng != points[result[i].id][points[result[i].id].length-2].lng){
@@ -439,6 +439,32 @@ function refreshRoute() {
               map.addOverlay(m);
 
             });
+
+            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      ＴＨＩＳ ＰＡＲＴ ＣＡＮ ＮＯＴ ＢＥ　ＲＥＭＯＶＥＤ
+            /*pointCollection.addEventListener('mouseover',function (e){
+            	var out = "victory";
+            	var paths = JSON.toString(JSON.parse(e.point.path));
+            	alert(paths+' type:'+typeof(paths));
+            	alert(out+' type:'+typeof(out));
+            	//out += e.point.lng +" "+e.point.lat+'\n';
+            	var pp = new BMap.Point(e.point.lng, e.point.lat);
+            	var digipeater = [];
+            	digipeater.push(pp);
+            	//这里的paths并不是数组（和说好的不一样），所以会报错
+            	/*for (var j in paths){
+            		alert(j);
+            		pp = new BMap.Point(callsignposition[paths[j]].lng, callsignposition[paths[j]].lat);
+            		out += callsignposition[paths[j]].lng+' '+callsignposition[paths[j]].lat+'\n';
+            		digipeater.push(pp);
+            	}//------------------------------------* /
+            	digipeater.push(new BMap.Point(callsignposition[paths].lng, callsignposition[paths].lat));
+            	curve = new BMapLib.CurveLine(digipeater,{strokeColor:"blue", strokeWeight:3, strokeOpacity:0.5});
+                map.addOverlay(curve); // add curve into the map
+                alert(out);
+            })
+            pointCollection.addEventListener('mouseout',function (e){
+            	map.removeOverlay(curve);
+            })*/
        }
         //markerClusterer=new BMapLib.MarkerClusterer(map,{GridSize:10,markers:markers});
     });
