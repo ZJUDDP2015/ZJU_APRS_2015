@@ -272,6 +272,7 @@ function refreshRoute() {
 
     $.get("/data", {"sw_lng": bssw.lng, "sw_lat": bssw.lat, "ne_lng": bsne.lng, "ne_lat": bsne.lat,"starttime":starttime,"endtime":endtime,"callsign":callsign}
     ,function(result) {
+    	//callsignposition = [];
     	map.removeOverlay(heatmapOverlay);
         var pts = new Array();
         //symbol=[];
@@ -292,8 +293,8 @@ function refreshRoute() {
                 points[result[i].id][0].des = result[i].des;
                 points[result[i].id][0].comment = result[i].comment;
 
-                if ((callsignposition[result[i].id] == undefined) || (result[i].time>callsignposition[result[i].id].time))
-                  callsignposition[result[i].id] = {'lat':result[i].lat,'lng':result[i].lng,'time':result[i].time};//<iy> create callsign index
+                if ((typeof(callsignposition[result[i].id]) == 'undefined') || (result[i].time>callsignposition[result[i].id].time))
+                  callsignposition[result[i].id] = {'lat':result[i].lon,'lng':result[i].lat,'time':result[i].time};//<iy> create callsign index
                 countColor = (countColor + 1) % 7;
                 lineColor[result[i].id] = color[countColor];
                 lineInfo[result[i].id] = {"source": result[i].id, "path": result[i].path, "time": result[i].time, "des": result[i].des };
@@ -322,7 +323,7 @@ function refreshRoute() {
                   points[result[i].id][points[result[i].id].length - 1].comment = result[i].comment;
 
                   if ((callsignposition[result[i].id] == undefined) || (result[i].time>callsignposition[result[i].id].time))
-                    callsignposition[result[i].id] = {'lat':result[i].lat,'lng':result[i].lng,'time':result[i].time};//<iy> create callsign index
+                    callsignposition[result[i].id] = {'lat':result[i].lon,'lng':result[i].lat,'time':result[i].time};//<iy> create callsign index
                   pts.push(points[result[i].id][points[result[i].id].length - 1]);
                   /*
                   if (points[result[i].id][points[result[i].id].length-1].lat != points[result[i].id][points[result[i].id].length-2].lat||points[result[i].id][points[result[i].id].length-1].lng != points[result[i].id][points[result[i].id].length-2].lng){
@@ -439,32 +440,43 @@ function refreshRoute() {
               map.addOverlay(m);
 
             });
-
+			var digipeater = [];
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      ＴＨＩＳ ＰＡＲＴ ＣＡＮ ＮＯＴ ＢＥ　ＲＥＭＯＶＥＤ
-            /*pointCollection.addEventListener('mouseover',function (e){
-            	var out = "victory";
+            pointCollection.addEventListener('mouseover',function (e){
+            	var out = "";
             	var paths = JSON.parse(e.point.path);
-            	alert(paths+' type:'+typeof(paths));
-            	alert(out+' type:'+typeof(out));
-            	//out += e.point.lng +" "+e.point.lat+'\n';
+            	//alert(paths+' type:'+typeof(paths));
+            	//alert(out+' type:'+typeof(out));
+            	//alert(pts.length);
+            	/*for(var j in pts){
+            		out += pts[j].path +" "+pts[j].source+'\n';
+            	}*/
             	var pp = new BMap.Point(e.point.lng, e.point.lat);
-            	var digipeater = [];
+            	
             	digipeater.push(pp);
             	//这里的paths并不是数组（和说好的不一样），所以会报错
             	for (var j in paths){
-            		alert(paths[j]);
-            		pp = new BMap.Point(callsignposition[paths[j]].lng, callsignposition[paths[j]].lat);
-            		out += callsignposition[paths[j]].lng+' '+callsignposition[paths[j]].lat+'\n';
-            		digipeater.push(pp);
+            		//alert(paths[j]);
+            		if(typeof(callsignposition[paths[j]]) !== 'undefined' && paths[j]!=e.point.source){
+            			//console.log(callsignposition[paths[j]] !== 'undefined');
+            			pp = new BMap.Point(callsignposition[paths[j]].lng, callsignposition[paths[j]].lat);
+            			digipeater.push(pp);
+            		}
+            		//out += callsignposition[paths[j]].lng+' '+callsignposition[paths[j]].lat+'\n';
             	}//------------------------------------* /
-            	digipeater.push(new BMap.Point(callsignposition[paths].lng, callsignposition[paths].lat));
-            	curve = new BMapLib.CurveLine(digipeater,{strokeColor:"blue", strokeWeight:3, strokeOpacity:0.5});
-                map.addOverlay(curve); // add curve into the map
-                alert(out);
+            	//digipeater.push(new BMap.Point(callsignposition[paths].lng, callsignposition[paths].lat));
+            	//digipeater.push(new BMap.Point(pts[2].lng, pts[2].lat));
+            	if(digipeater.length>1){
+            		curve = new BMapLib.CurveLine(digipeater,{strokeColor:"blue", strokeWeight:3, strokeOpacity:0.5});
+                	map.addOverlay(curve); // add curve into the map
+                }
+                //alert(out);
             })
             pointCollection.addEventListener('mouseout',function (e){
-            	map.removeOverlay(curve);
-            })*/
+            	if(digipeater.length>1)
+            		map.removeOverlay(curve);
+            	digipeater = [];
+            })
        }
         //markerClusterer=new BMapLib.MarkerClusterer(map,{GridSize:10,markers:markers});
     });
