@@ -241,7 +241,7 @@ function refreshRoute_ZoomOut() {
     	if (map.getZoom()<10){
     		heatmapOverlay = new BMapLib.HeatmapOverlay({"radius":80});
 			map.addOverlay(heatmapOverlay);
-			heatmapOverlay.setDataSet({data:points,max:10});
+			heatmapOverlay.setDataSet({data:points,max:count/10});
     	}
 	});
 }
@@ -255,7 +255,7 @@ function refreshRoute() {
 
     var bs = map.getBounds();
     var bssw = bs.getSouthWest();
-    var bsne = bs.getNorthEast();
+    var bsne = bs.getNorthEast(); 
     //var myIcon2 = new BMap.Icon("/3.png", new BMap.Size(20,20));
     //var digipeater, curve;
     //console.log(starttime);
@@ -272,6 +272,7 @@ function refreshRoute() {
 
     $.get("/data", {"sw_lng": bssw.lng, "sw_lat": bssw.lat, "ne_lng": bsne.lng, "ne_lat": bsne.lat,"starttime":starttime,"endtime":endtime,"callsign":callsign}
     ,function(result) {
+    	//callsignposition = [];
     	map.removeOverlay(heatmapOverlay);
         var pts = new Array();
         //symbol=[];
@@ -292,8 +293,8 @@ function refreshRoute() {
                 points[result[i].id][0].des = result[i].des;
                 points[result[i].id][0].comment = result[i].comment;
 
-                if ((callsignposition[result[i].id] == undefined) || (result[i].time>callsignposition[result[i].id].time))
-                  callsignposition[result[i].id] = {'lat':result[i].lat,'lng':result[i].lng,'time':result[i].time};//<iy> create callsign index
+                if ((typeof(callsignposition[result[i].id]) == 'undefined') || (result[i].time>callsignposition[result[i].id].time))
+                  callsignposition[result[i].id] = {'lat':result[i].lon,'lng':result[i].lat,'time':result[i].time};//<iy> create callsign index
                 countColor = (countColor + 1) % 7;
                 lineColor[result[i].id] = color[countColor];
                 lineInfo[result[i].id] = {"source": result[i].id, "path": result[i].path, "time": result[i].time, "des": result[i].des };
@@ -322,7 +323,7 @@ function refreshRoute() {
                   points[result[i].id][points[result[i].id].length - 1].comment = result[i].comment;
 
                   if ((callsignposition[result[i].id] == undefined) || (result[i].time>callsignposition[result[i].id].time))
-                    callsignposition[result[i].id] = {'lat':result[i].lat,'lng':result[i].lng,'time':result[i].time};//<iy> create callsign index
+                    callsignposition[result[i].id] = {'lat':result[i].lon,'lng':result[i].lat,'time':result[i].time};//<iy> create callsign index
                   pts.push(points[result[i].id][points[result[i].id].length - 1]);
                   /*
                   if (points[result[i].id][points[result[i].id].length-1].lat != points[result[i].id][points[result[i].id].length-2].lat||points[result[i].id][points[result[i].id].length-1].lng != points[result[i].id][points[result[i].id].length-2].lng){
@@ -433,38 +434,49 @@ function refreshRoute() {
               m = new BMap.Marker(p);
               var l = new BMap.Label("", {offset: new BMap.Size(-20, -20)});
               l.setContent("Longitude: " + p.lng + "<br>Latitude: " + p.lat
-                  + "<br>source:" + e.point.source + "<br>path:" + e.point.path + "<br>time:" + e.point.time + "<br>des:" + e.point.des + "<br>comment:" + e.point.comment);
+                      + "<br>source:<a href='localhost:3001/callsign?name=" + e.point.source + "' target='_blank'>" + e.point.source + "</a><br>path:" + e.point.path + "<br>time:" + e.point.time + "<br>des:" + e.point.des + "<br>comment:" + e.point.comment);
 
               m.setLabel(l);
               map.addOverlay(m);
 
             });
-
+			var digipeater = [];
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      ＴＨＩＳ ＰＡＲＴ ＣＡＮ ＮＯＴ ＢＥ　ＲＥＭＯＶＥＤ
-            /*pointCollection.addEventListener('mouseover',function (e){
-            	var out = "victory";
-            	var paths = JSON.toString(JSON.parse(e.point.path));
-            	alert(paths+' type:'+typeof(paths));
-            	alert(out+' type:'+typeof(out));
-            	//out += e.point.lng +" "+e.point.lat+'\n';
+            pointCollection.addEventListener('mouseover',function (e){
+            	var out = "";
+            	var paths = JSON.parse(e.point.path);
+            	//alert(paths+' type:'+typeof(paths));
+            	//alert(out+' type:'+typeof(out));
+            	//alert(pts.length);
+            	/*for(var j in pts){
+            		out += pts[j].path +" "+pts[j].source+'\n';
+            	}*/
             	var pp = new BMap.Point(e.point.lng, e.point.lat);
-            	var digipeater = [];
+            	
             	digipeater.push(pp);
             	//这里的paths并不是数组（和说好的不一样），所以会报错
-            	/*for (var j in paths){
-            		alert(j);
-            		pp = new BMap.Point(callsignposition[paths[j]].lng, callsignposition[paths[j]].lat);
-            		out += callsignposition[paths[j]].lng+' '+callsignposition[paths[j]].lat+'\n';
-            		digipeater.push(pp);
+            	for (var j in paths){
+            		//alert(paths[j]);
+            		if(typeof(callsignposition[paths[j]]) !== 'undefined' && paths[j]!=e.point.source){
+            			//console.log(callsignposition[paths[j]] !== 'undefined');
+            			pp = new BMap.Point(callsignposition[paths[j]].lng, callsignposition[paths[j]].lat);
+            			digipeater.push(pp);
+            		}
+            		//out += callsignposition[paths[j]].lng+' '+callsignposition[paths[j]].lat+'\n';
             	}//------------------------------------* /
-            	digipeater.push(new BMap.Point(callsignposition[paths].lng, callsignposition[paths].lat));
-            	curve = new BMapLib.CurveLine(digipeater,{strokeColor:"blue", strokeWeight:3, strokeOpacity:0.5});
-                map.addOverlay(curve); // add curve into the map
-                alert(out);
+            	//digipeater.push(new BMap.Point(callsignposition[paths].lng, callsignposition[paths].lat));
+            	//digipeater.push(new BMap.Point(pts[2].lng, pts[2].lat));
+            	if(digipeater.length>1){
+            		curve = new BMapLib.CurveLine(digipeater,{strokeColor:"blue", strokeWeight:3, strokeOpacity:0.5});
+                	map.addOverlay(curve); // add curve into the map
+                }
+                //alert(out);
             })
             pointCollection.addEventListener('mouseout',function (e){
-            	map.removeOverlay(curve);
-            })*/
+            	if(digipeater.length>1)
+            		map.removeOverlay(curve);
+            	digipeater = [];
+            })
        }
         //markerClusterer=new BMapLib.MarkerClusterer(map,{GridSize:10,markers:markers});
     });
@@ -480,7 +492,7 @@ function refreshRoute() {
     <aside>
         <div id='banner'>
             <!--Please Replace this part with BANNER-->
-            <img src="/uploads/default.png" width="180" alt="Sample Logo" />
+            <img src="/uploads/default.jpg" width="180" alt="Sample Logo" />
         </div>
         <p></p>
         <hr width=80% style="margin:auto">
@@ -510,26 +522,25 @@ function refreshRoute() {
         <div id='icon'>
             <img src="/joker.jpeg" width="100" alt="Sample Logo" style="position:absolute; z-index:2" />
             <img src="/maskLogOut.png" width="100" alt="Log-out" style="position:absolute; z-index:4;
-                                opacity:0;filter:alpha(opacity=0)"
-                                onmouseover="this.style.opacity=0.8;this.filters.alpha.opacity=80"
-                                onmouseout="this.style.opacity=0;this.filters.alpha.opacity=0" />
+                                opacity:0;filter:alpha(opacity=0)" onmouseover="this.style.opacity=0.8;this.filters.alpha.opacity=80" onmouseout="this.style.opacity=0;this.filters.alpha.opacity=0" />
             <img src="/mask.png" width="100" style="position:relative; z-index:3" />
         </div>
         <div id='userName'>
             <input id='userName' type="text" name="Meow" width="200px" value="哥谭市蝙蝠侠粉丝团团长">
         </div>
-        <form   id      = "uploadForm"
+        <div class="button">
+            <form
+                id      = "uploadForm"
                 enctype = "multipart/form-data"
                 action  = "/photoUpload"
-                method  = "post" class='middle'>
-                <div class='button'>Select Banner
-                    <input id='buttonFile' type="file"   name="userPhoto"/>
-                </div>
-                <div class='button'>Upload Image
-                    <input id='buttonFile' type="submit" value="Upload Image" name="submit"/>
-                </div>
-        </form>
-        <div class='button'>Change Password</div>
+                method  = "post"
+            >
+                <input type="file" name="userPhoto"/>
+                <input type="submit" value="Upload Image" name="submit"/>
+            </form>
+        </div>
+        <div class='button' id='changeBanner'>Change Banner</div>
+        <div class='button' id='upload'>Upload Image</div>
         <hr width=80% style="margin:auto">
         <!--Please add the user control and date/time/function select panel here-->
     </aside>
