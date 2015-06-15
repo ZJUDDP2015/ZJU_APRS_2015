@@ -91,8 +91,11 @@ exports.handleZoomoutData = function(req, res) {
     var col_num=req.query.col_num;
     var level = req.query.level;
 
-    var lng_len = 0.18;
-    var lat_len = 0.18;
+    var lng_num = Number(req.query.lng_num);
+    var lat_num = Number(req.query.lat_num);
+
+    var lng_len = 0.1;
+    var lat_len = 0.1;
 
     var starttime = req.query.starttime;
     var endtime = req.query.endtime;
@@ -110,49 +113,35 @@ exports.handleZoomoutData = function(req, res) {
         endtime = getFormatedTime((new Date()).getMonth() + 1, (new Date()).getDate(), (new Date()).getHours(), (new Date()).getMinutes());
     }
     //计算相关增量
-    var lon_incre = Number(lng_len)*(1<<Number(level));
-    var lat_incre = Number(lat_len)*(1<<Number(level));
+    var incre = 1<<level;
     //连接数据库
     client.connect(function(err, results) {
         //console.log(starttime);
         //console.log(endtime);
         var Addsql;
         var Addsql_param;
-        for (var i = 0; i < row_num; i++) {
-            draw[i] = [];
-            for (var j = 0; j < col_num; j++) {
-                Addsql_param = [(Number(req.query.lat_num) + i) * lat_incre-90,(Number(req.query.lat_num) + i+1) * lat_incre-90, (Number(req.query.lng_num) + j) * lon_incre-180, (Number(req.query.lng_num) + j+1) * lon_incre-180, starttime, endtime];
-                if (callsign == '') {
-                    Addsql = "select count(*) as num from moving_object where Latitude >? && Latitude <? && Longitude > ? && Longitude < ? && unix_timestamp(Time) > unix_timestamp(?) &&unix_timestamp(Time) < unix_timestamp(?)";       
-                } else {
-                    Addsql = "select count(*) as num from moving_object where Latitude >? && Latitude <? && Longitude > ? && Longitude < ? && unix_timestamp(Time) > unix_timestamp(?) &&unix_timestamp(Time) < unix_timestamp(?) &&Source=?";
-                    Addsql_param.push(callsign);
-                }
-                ZoomoutQuery(Addsql, Addsql_param,i,j,function(err,rows,i,j){
-                    if (typeof(rows)=='undefined'){
-                        draw[i][j] = 0;
-                    }else{
-                        draw[i][j] = rows[0].num;
-                        //console.log('++'+rows[0].num)
-                    }
-                    count++;
-                    if (count == (row_num) * (col_num)){
-                        console.log("zoomout delay: %d\n",(new Date()).getTime()-start_time)
-                        return res.json(draw);
-                    }
-
-                });
-            }
+        Addsql_param = [lat_num,lat_num+row_num*incre,lng_num,lng_num+col_num*incre , starttime, endtime];
+        if (callsign == '') {
+            Addsql = "select Grid_latitude,Grid_longitude,count(*) as num from moving_object where Grid_latitude >=? && Grid_latitude <? && Grid_longitude >= ? && Grid_longitude <? && unix_timestamp(Time) > unix_timestamp(?) &&unix_timestamp(Time) < unix_timestamp(?) group by Grid_latitude,Grid_longitude";       
+        } else {
+            Addsql = "select Grid_latitude,Grid_longitude,count(*) as num from moving_object where Grid_latitude >=? && Grid_latitude <? && Grid_longitude >= ? && Grid_longitude <? && unix_timestamp(Time) > unix_timestamp(?) &&unix_timestamp(Time) < unix_timestamp(?) &&Source=? group by Grid_latitude,Grid_longitude";
+            Addsql_param.push(callsign);
         }
+        for (i=0;i<row_num;++i)
+        	draw[i] = [];
+        client.query(Addsql, Addsql_param,function(err,rows){
+            if (typeof(rows)!='undefined'){
+            	for (i=0;i<rows.length;++i){
+            		draw[Math.floor((rows[i].Grid_latitude-lat_num)/incre)][Math.floor((rows[i].Grid_longitude-lng_num)/incre)]=rows[i].num;
+            	}
+            	//console.log(Addsql_param)
+            	console.log("zoomout delay:"+(new Date().getTime()-start_time))
+                return res.json(draw);
+            }
+        });
     });
 };
 
-function ZoomoutQuery(Addsql, Addsql_param,i,j,callback){
-    client.query(Addsql, Addsql_param, function(err, rows) {
-        //console.log('++'+rows[0].num)
-        return callback(err,rows,i,j)
-    });
-}
 
 exports.handleData = function(req, res) {
     var lon_limit = {

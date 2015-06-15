@@ -204,23 +204,36 @@ function init() {
 }
 
 var heatmapOverlay;
-function refreshRoute_ZoomOut() {
-  points = [];
+var heatmap_config = {
+    "radius": 40,
+    "visible": true,
+    "maxOpacity": 1,
+    "minOpacity": 0,
+    "gradient": {
+      0:'rgb(102, 255, 0)',
+      .5:'rgb(255, 170, 0)',
+      1:'rgb(255, 0, 0)'
+    }
+};
 
-	var bs = map.getBounds();
-	var bssw = bs.getSouthWest();
+function refreshRoute_ZoomOut() {
+    points = [];
+
+  	var bs = map.getBounds();
+  	var bssw = bs.getSouthWest();
     var bsne = bs.getNorthEast();
 
-	var level = 9-map.getZoom();
+  	var level = 9-map.getZoom();
 
-	var lng_len = 0.18*(1<<level);
-    var lat_len = 0.18*(1<<level);
+  	var lng_len = 0.1;
+    var lat_len = 0.1;
+    var incre = (1<<level);
 
     var lng_num = Math.floor((bssw.lng+180)/lng_len);
     var lat_num = Math.floor((bssw.lat+90)/lat_len);
 
-    var col_num=Math.floor((bsne.lng+180)/lng_len)-lng_num+1;
-	var row_num=Math.floor((bsne.lat+90)/lat_len)-lat_num+1;
+    var col_num=(Math.floor((bsne.lng+180)/lng_len)-lng_num+1)/incre;
+    var row_num=(Math.floor((bsne.lat+90)/lat_len)-lat_num+1)/incre;
 
     //console.log("Gap: "+(bsne.lat-bssw.lat));
 
@@ -231,8 +244,8 @@ function refreshRoute_ZoomOut() {
     	var count = 0;
     	for (var i=0;i<row_num;++i){
     		for (var j=0;j<col_num;++j){
-    			var lat=lat_len*(lat_num+i+0.5)-90;
-    			var lng=lng_len*(lng_num+j+0.5)-180;
+    			var lat=lat_len*(lat_num+incre*i+0.5)-90;
+    			var lng=lng_len*(lng_num+incre*j+0.5)-180;
     			if (result[i][j]>0){
     				points.push({"lng":lng,"lat":lat,"count":result[i][j]});
     				count+=result[i][j];
@@ -240,9 +253,9 @@ function refreshRoute_ZoomOut() {
     		}
     	}
     	if (map.getZoom()<10){
-    		heatmapOverlay = new BMapLib.HeatmapOverlay({"radius":80});
-			map.addOverlay(heatmapOverlay);
-			heatmapOverlay.setDataSet({data:points,max:count/10});
+  		  heatmapOverlay = new BMapLib.HeatmapOverlay(heatmap_config);
+  			map.addOverlay(heatmapOverlay);
+  			heatmapOverlay.setDataSet({data:points,max:count/10});
     	}
 	});
 }
