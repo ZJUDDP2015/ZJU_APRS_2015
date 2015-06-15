@@ -64,12 +64,12 @@ body > aside > h2 {
 }
 
 #userName {
+    margin-top: 10px;
     background: #297bb2;
     color: #FFF;
     text-align: center;
     font-size: 25px;
     border: none;
-    padding: 10px;
 }
 
 .middle {
@@ -79,7 +79,8 @@ body > aside > h2 {
 
 .button {
     margin: auto;
-    margin-bottom: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
     background: #3399cc;
     width: 150px;
     padding: 10px;
@@ -95,6 +96,8 @@ body > aside > h2 {
 
 .timeSelect {
     margin: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
     border-width: 2px;
     border-color: #3399cc;
     border-radius: 5px;
@@ -106,6 +109,8 @@ body > aside > h2 {
 
 .timeSelectInput {
     margin: auto;
+    margin-top: 5px;
+    margin-bottom: 5px;
     background: #FFF;
     color: #000000;
     text-align: center;
