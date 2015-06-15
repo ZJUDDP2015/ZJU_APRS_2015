@@ -11,7 +11,8 @@ router.get('/', function(req, res) {
 
 router.get('/callsign', function(req, res) {
     var callsign = req.query.name;
-    var success = indexController.createCallsignEjs(callsign);
+    var success;
+    success = indexController.createCallsignEjs(callsign);
     console.log('haha');
     if (success) {
         res.render('callsign', {

@@ -6,25 +6,39 @@ var logger = require("./Logger.js");
 var proxy = net.connect({port:14580,host:'hangzhou.aprs2.net'},function() {
     var myDate = new Date();
     console.log(myDate.toUTCString() + ": connection to server!");
+    logger.file_write(": connection to server!" + '\r\n', './log/Received.log', myDate);
     proxy.write("user BG5ZZZ-92 pass 24229 ver MY185\n#filter t/poi\n");
 });
 
 proxy.on("error",function(err){
     var myDate = new Date();
     console.log(myDate.toUTCString() + ": " + err.message);
+    logger.file_write( ": " + err.message + '\r\n', './log/Received.log', myDate);
     proxy.end();
+    var randomnum = 0;
+    randomnum = Math.ceil(Math.random()*(99-10)+10);
     proxy.connect({port:14580,host:'hangzhou.aprs2.net'},function() {
         console.log("connection to server!");
-        proxy.write("user BG5ZZZ-92 pass 24229 ver MY185\n#filter t/poi\n");
+        logger.file_write("connection to server!" + '\r\n', './log/Received.log', myDate);
+        proxy.write("user BG5ZZZ-" + randomnum + " pass 24229 ver MY185\n#filter t/poi\n");
     });
 });
 
 proxy.on('end',function(){
     var myDate = new Date();
     console.log(myDate.toUTCString() + ": proxy unconnected.");
-    proxy.connect({port:14580,host:'hangzhou.aprs2.net'},function() {
+    logger.file_write(": proxy unconnected." + '\r\n', './log/Received.log', myDate);
+    proxy.destroy();
+    /*proxy.connect({port:14580,host:'hangzhou.aprs2.net'},function() {
         console.log("connection to server!");
-        proxy.write("user BG5ZZZ-92 pass 24229 ver MY185\n#filter t/poi\n");
+        proxy.write("user BG5ZZZ- pass 24229 ver MY185\n#filter t/poi\n");
+    });
+    */
+    proxy = net.connect({port:14580,host:'hangzhou.aprs2.net'},function() {
+      var myDate = new Date();
+      console.log(myDate.toUTCString() + ": connection to server!");
+      logger.file_write("connection to server!" + '\r\n', './log/Received.log', myDate);
+      proxy.write("user BG5ZZZ-92 pass 24229 ver MY185\n#filter t/poi\n");
   });
 })
 
