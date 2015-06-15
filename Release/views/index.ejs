@@ -241,7 +241,7 @@ function refreshRoute_ZoomOut() {
     	if (map.getZoom()<10){
     		heatmapOverlay = new BMapLib.HeatmapOverlay({"radius":80});
 			map.addOverlay(heatmapOverlay);
-			heatmapOverlay.setDataSet({data:points,max:10});
+			heatmapOverlay.setDataSet({data:points,max:count/10});
     	}
 	});
 }
@@ -441,7 +441,7 @@ function refreshRoute() {
             });
 
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      ＴＨＩＳ ＰＡＲＴ ＣＡＮ ＮＯＴ ＢＥ　ＲＥＭＯＶＥＤ
-            pointCollection.addEventListener('mouseover',function (e){
+            /*pointCollection.addEventListener('mouseover',function (e){
             	var out = "victory";
             	var paths = JSON.parse(e.point.path);
             	alert(paths+' type:'+typeof(paths));
@@ -464,7 +464,7 @@ function refreshRoute() {
             })
             pointCollection.addEventListener('mouseout',function (e){
             	map.removeOverlay(curve);
-            })
+            })*/
        }
         //markerClusterer=new BMapLib.MarkerClusterer(map,{GridSize:10,markers:markers});
     });
