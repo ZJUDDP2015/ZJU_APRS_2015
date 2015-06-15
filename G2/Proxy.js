@@ -10,6 +10,8 @@ var proxy = net.connect({port:14580,host:'hangzhou.aprs2.net'},function() {
     proxy.write("user BG5ZZZ-92 pass 24229 ver MY185\n#filter t/poi\n");
 });
 
+proxy.setKeepAlive(true, 10000);
+
 proxy.on("error",function(err){
     var myDate = new Date();
     console.log(myDate.toUTCString() + ": " + err.message);
@@ -28,18 +30,10 @@ proxy.on('end',function(){
     var myDate = new Date();
     console.log(myDate.toUTCString() + ": proxy unconnected.");
     logger.file_write(": proxy unconnected." + '\r\n', './log/Received.log', myDate);
-    proxy.destroy();
-    /*proxy.connect({port:14580,host:'hangzhou.aprs2.net'},function() {
+    proxy.connect({port:14580,host:'hangzhou.aprs2.net'},function() {
         console.log("connection to server!");
         proxy.write("user BG5ZZZ- pass 24229 ver MY185\n#filter t/poi\n");
     });
-    */
-    proxy = net.connect({port:14580,host:'hangzhou.aprs2.net'},function() {
-      var myDate = new Date();
-      console.log(myDate.toUTCString() + ": connection to server!");
-      logger.file_write("connection to server!" + '\r\n', './log/Received.log', myDate);
-      proxy.write("user BG5ZZZ-92 pass 24229 ver MY185\n#filter t/poi\n");
-  });
 })
 
 proxy.on('data',function(data){
