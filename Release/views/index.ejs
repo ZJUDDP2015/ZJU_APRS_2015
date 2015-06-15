@@ -255,7 +255,7 @@ function refreshRoute() {
 
     var bs = map.getBounds();
     var bssw = bs.getSouthWest();
-    var bsne = bs.getNorthEast(); 
+    var bsne = bs.getNorthEast();
     //var myIcon2 = new BMap.Icon("/3.png", new BMap.Size(20,20));
     //var digipeater, curve;
     //console.log(starttime);
@@ -452,7 +452,7 @@ function refreshRoute() {
             		out += pts[j].path +" "+pts[j].source+'\n';
             	}*/
             	var pp = new BMap.Point(e.point.lng, e.point.lat);
-            	
+
             	digipeater.push(pp);
             	//这里的paths并不是数组（和说好的不一样），所以会报错
             	for (var j in paths){
@@ -492,7 +492,7 @@ function refreshRoute() {
     <aside>
         <div id='banner'>
             <!--Please Replace this part with BANNER-->
-            <img src="/uploads/default.jpg" width="180" alt="Sample Logo" />
+            <img src="/uploads/default.png" width="180" alt="Sample Logo" />
         </div>
         <p></p>
         <hr width=80% style="margin:auto">
@@ -522,26 +522,41 @@ function refreshRoute() {
         <div id='icon'>
             <img src="/joker.jpeg" width="100" alt="Sample Logo" style="position:absolute; z-index:2" />
             <img src="/maskLogOut.png" width="100" alt="Log-out" style="position:absolute; z-index:4;
-                                opacity:0;filter:alpha(opacity=0)" onmouseover="this.style.opacity=0.8;this.filters.alpha.opacity=80" onmouseout="this.style.opacity=0;this.filters.alpha.opacity=0" />
+                                opacity:0;filter:alpha(opacity=0)"
+                                onmouseover="this.style.opacity=0.8;this.filters.alpha.opacity=80"
+                                onmouseout="this.style.opacity=0;this.filters.alpha.opacity=0" />
             <img src="/mask.png" width="100" style="position:relative; z-index:3" />
         </div>
         <div id='userName'>
             <input id='userName' type="text" name="Meow" width="200px" value="哥谭市蝙蝠侠粉丝团团长">
         </div>
-        <div class="button">
-            <form
-                id      = "uploadForm"
+        <form   id      = "uploadForm"
                 enctype = "multipart/form-data"
                 action  = "/photoUpload"
-                method  = "post"
-            >
-                <input type="file" name="userPhoto"/>
-                <input type="submit" value="Upload Image" name="submit"/>
-            </form>
-        </div>
-        <div class='button' id='changeBanner'>Change Banner</div>
-        <div class='button' id='upload'>Upload Image</div>
-        <hr width=80% style="margin:auto">
+                method  = "post" class='middle'>
+                <div class='button'>Change Banner
+                    <input id='buttonFile' type="file"   name="userPhoto"/>
+                    <!--use onchange to perform the upload-->
+                </div>
+        </form>
+        <div class='button'>Change Password</div>
+        <hr width=80% style="margin:auto"><table class='timeSelect'>
+                <tr>
+                    <td>User Name<p></p></td>
+                    <td>
+                        <input class='timeSelectInput' id='email' type="text" name="Meow" width="80px" value="Email">
+                        <p></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Password</td>
+                    <td>
+                        <input class='timeSelectInput' id='password' type="password" name="Meow" width="80px" value="Password">
+                    </td>
+                </tr>
+            </table>
+            <div class='button'>Log in</div>
+            <div class='button'>Sign in</div>
         <!--Please add the user control and date/time/function select panel here-->
     </aside>
     <div id='wrap'>
