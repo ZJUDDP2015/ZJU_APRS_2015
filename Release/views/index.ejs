@@ -441,9 +441,9 @@ function refreshRoute() {
             });
 
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      ＴＨＩＳ ＰＡＲＴ ＣＡＮ ＮＯＴ ＢＥ　ＲＥＭＯＶＥＤ
-            /*pointCollection.addEventListener('mouseover',function (e){
+            pointCollection.addEventListener('mouseover',function (e){
             	var out = "victory";
-            	var paths = JSON.toString(JSON.parse(e.point.path));
+            	var paths = JSON.parse(e.point.path);
             	alert(paths+' type:'+typeof(paths));
             	alert(out+' type:'+typeof(out));
             	//out += e.point.lng +" "+e.point.lat+'\n';
@@ -451,8 +451,8 @@ function refreshRoute() {
             	var digipeater = [];
             	digipeater.push(pp);
             	//这里的paths并不是数组（和说好的不一样），所以会报错
-            	/*for (var j in paths){
-            		alert(j);
+            	for (var j in paths){
+            		alert(paths[j]);
             		pp = new BMap.Point(callsignposition[paths[j]].lng, callsignposition[paths[j]].lat);
             		out += callsignposition[paths[j]].lng+' '+callsignposition[paths[j]].lat+'\n';
             		digipeater.push(pp);
@@ -464,7 +464,7 @@ function refreshRoute() {
             })
             pointCollection.addEventListener('mouseout',function (e){
             	map.removeOverlay(curve);
-            })*/
+            })
        }
         //markerClusterer=new BMapLib.MarkerClusterer(map,{GridSize:10,markers:markers});
     });
