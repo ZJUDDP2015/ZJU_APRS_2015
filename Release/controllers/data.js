@@ -17,6 +17,7 @@ exports.weather = function(req, res) {
     //console.log(req.body)
     //console.log(req.body.data);
     ++received
+    
     var insert = 'insert into weather (Type,Month,Day,Hour,Min,Sec,Lat,Longi,WindDirection,WindSpeed,WeatherUnit,Gust,Temp,RainLastHr,RainLast24Hr,RainSinceMid,Humidity,Barometric,Luminosity,Path) values(' +
         mysql.escape(req.body.Type) + ', ' +
         mysql.escape(req.body.Month) + ', ' +
@@ -37,7 +38,8 @@ exports.weather = function(req, res) {
         mysql.escape(req.body.Humidity) + ', ' +
         mysql.escape(req.body.Barometric) + ', ' +
         mysql.escape(req.body.Luminosity) + ', ' +
-        mysql.escape(req.body.Path) + ')';
+        mysql.escape(req.body.Path) +
+        ')';
 
     sql.query(insert,function(err, rows, fields) {
             if (err) console.log(insert);
@@ -51,7 +53,12 @@ exports.weather = function(req, res) {
 // app.post('/moving_object',
 exports.moving_object = function(req, res) {
     ++received
-    var insert = 'insert into moving_object (Path,Source,Destination,Name,Time,Latitude,Longitude,Comment) values(' +
+
+    var lng_len = 0.1;
+    var lat_len = 0.1;
+    var Grid_lat = Math.floor((Number(req.body.Latitude)+90)/lat_len);
+    var Grid_lng = Math.floor((Number(req.body.Longitude)+180)/lng_len);
+    var insert = 'insert into moving_object (Path,Source,Destination,Name,Time,Latitude,Longitude,Comment,Grid_latitude,Grid_longitude) values(' +
         mysql.escape(req.body.Path) + ', ' +
         mysql.escape(req.body.Source) + ', ' +
         mysql.escape(req.body.Destination) + ', ' +
@@ -59,8 +66,10 @@ exports.moving_object = function(req, res) {
         mysql.escape(toMysqlFormat(req.body.Time)) + ', ' +
         mysql.escape(req.body.Latitude) + ', ' +
         mysql.escape(req.body.Longitude) + ', ' +
-        mysql.escape(req.body.Comment) + ')';
-
+        mysql.escape(req.body.Comment) + ', ' +
+        Grid_lat+ ', ' +
+        Grid_lng + 
+        ')';
     sql.query(insert, function(err, rows, fields) {
             if (err) console.log(insert);
             else ++saved//console.log('MovingObject_save_cnt:' + (++o_save_cnt))
@@ -93,5 +102,5 @@ setInterval(function(){
     saved = 0
 }, 1000)
 setInterval(function(){
-    console.log("in buffer:"+in_buffer)
+    console.log("in buffer or cannot insert:"+in_buffer)
 }, 1000)
