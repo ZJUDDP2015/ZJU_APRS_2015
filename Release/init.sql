@@ -24,8 +24,6 @@ CREATE TABLE IF NOT EXISTS weather (
 	Barometric int,
 	LUMINOSITY INT,
 	Path varchar(100),
-	Grid_latitude int,
-	Grid_longitude int,
 	PRIMARY KEY(id)
 );
 
@@ -39,6 +37,8 @@ CREATE TABLE IF NOT EXISTS moving_object (
 	Latitude float,
 	Longitude float,
 	Comment varchar(255),
+	Grid_latitude int,
+	Grid_longitude int,
 	PRIMARY KEY(id)
 );
 
