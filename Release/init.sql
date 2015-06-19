@@ -42,8 +42,6 @@ CREATE TABLE IF NOT EXISTS moving_object (
 	PRIMARY KEY(id)
 );
 
-ALTER TABLE `moving_object` DROP INDEX `Longitude`;
-ALTER TABLE `moving_object` DROP INDEX `Latitude`;
 ALTER TABLE `moving_object` ADD INDEX(`Grid_longitude`);
 ALTER TABLE `moving_object` ADD INDEX(`Grid_latitude`);
 ALTER TABLE `moving_object` ADD INDEX(`Time`);
