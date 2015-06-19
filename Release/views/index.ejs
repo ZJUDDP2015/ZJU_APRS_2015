@@ -435,7 +435,7 @@ function refreshRoute() {
               m = new BMap.Marker(p);
               var l = new BMap.Label("", {offset: new BMap.Size(-20, -20)});
               l.setContent("Longitude: " + p.lng + "<br>Latitude: " + p.lat
-                      + "<br>source:<a href='localhost:3001/callsign?name=" + e.point.source + "' target='_blank'>" + e.point.source + "</a><br>path:" + e.point.path + "<br>time:" + e.point.time + "<br>des:" + e.point.des + "<br>comment:" + e.point.comment);
+                      + "<br>source:<a href='/callsign?name=" + e.point.source + "' target='_blank'>" + e.point.source + "</a><br>path:" + e.point.path + "<br>time:" + e.point.time + "<br>des:" + e.point.des + "<br>comment:" + e.point.comment);
 
               m.setLabel(l);
               map.addOverlay(m);
