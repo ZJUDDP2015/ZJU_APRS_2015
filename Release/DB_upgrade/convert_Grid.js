@@ -7,12 +7,20 @@ sql.connect(function(err) {
     if (err)
         console.log('db connect error', err);
 });
-
 sql.query("use aprs");
 sql.query("ALTER TABLE moving_object ADD Grid_latitude INT", function(err) {});
 sql.query("ALTER TABLE moving_object ADD Grid_longitude INT", function(err) {});
 sql.query("ALTER TABLE `moving_object` ADD INDEX(`Grid_latitude`)", function(err) {});
 sql.query("ALTER TABLE `moving_object` ADD INDEX(`Grid_longitude`)", function(err) {});
+console.log('Computing Gird started, please wait!')
+sql.query("update moving_object set Grid_latitude = floor((`Latitude`+90)/0.1) ," +
+    "Grid_longitude = floor((`Longitude`+180)/0.1) " +
+    "where Latitude >=-90 and Latitude <=90 and Longitude>=-180 and Longitude<=180", 
+    function(err, row) {
+        console.log("Computing Gird finished.")
+        process.exit()
+    })
+/*
 sql.query("select id,Latitude,Longitude from moving_object where Latitude is not null and Longitude is not null", function(err, row) {
     if (typeof(row) != 'undefined'){
         var count = 0;
@@ -32,4 +40,4 @@ sql.query("select id,Latitude,Longitude from moving_object where Latitude is not
             });
         })
     }
-})
+})*/
