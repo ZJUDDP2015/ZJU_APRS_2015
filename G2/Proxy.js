@@ -3,63 +3,42 @@ var fs = require("fs");
 var router = require("./DataRouter.js");
 var logger = require("./Logger.js");
 
-var proxy = net.connect({port:14580,host:'hangzhou.aprs2.net'},function() {
-  var myDate = new Date();
-  console.log(myDate.toUTCString() + ": connection to server!");
-  logger.file_write(": connection to server!" + '\r\n', './log/Received.log', myDate);
-  proxy.write("user BG5ZZZ-92 pass 24229 ver MY185\n#filter t/poi\n");
-});
-
-
 function Reconnect(){
 
-  proxy.setKeepAlive(true, 10000);
-
-  proxy.on("timeout", function() {
-    var myDate = new Date();
-    console.log(myDate.toUTCString() + ": timeout.");
-    logger.file_write(": timeout." + '\r\n', './log/Received.log', myDate);
-
-    proxy.end();
-    proxy.connect({port:14580,host:'hangzhou.aprs2.net'},function() {
-      var myDate = new Date();
-      console.log(myDate.toUTCString() + ": connection to server!");
-      logger.file_write(": connection to server!" + '\r\n', './log/Received.log', myDate);
-      proxy.write("user BG5ZZZ-92 pass 24229 ver MY185\n#filter t/poi\n");
+    var proxy = net.connect({port:14580,host:'hangzhou.aprs2.net'},function() {
+        var myDate = new Date();
+        console.log(myDate.toUTCString() + ": connected to server!");
+        logger.file_write(": connected to server!" + '\r\n', './log/Received.log', myDate);
+        var randomnum = 0;
+        randomnum = Math.ceil(Math.random()*(99-10)+10);
+        proxy.write("user BG5ZZZ-92 pass 24229 ver MY185\n#filter t/poi\n");
     });
-  });
 
-  proxy.on("error",function(err){
-    var myDate = new Date();
-    console.log(myDate.toUTCString() + ": " + err.message);
-    logger.file_write( ": " + err.message + '\r\n', './log/Received.log', myDate);
-    proxy.end();
-    var randomnum = 0;
-    randomnum = Math.ceil(Math.random()*(99-10)+10);
-    proxy.connect({port:14580,host:'hangzhou.aprs2.net'},function() {
-      console.log("connection to server!");
-      logger.file_write("connection to server!" + '\r\n', './log/Received.log', myDate);
-      proxy.write("user BG5ZZZ-" + randomnum + " pass 24229 ver MY185\n#filter t/poi\n");
-    });
-    Reconnect();
-  });
+    proxy.setKeepAlive(true, 10000);
 
-  proxy.on('end',function(){
-    var myDate = new Date();
-    console.log(myDate.toUTCString() + ": proxy unconnected.");
-    logger.file_write(": proxy unconnected." + '\r\n', './log/Received.log', myDate);
-    /*proxy.connect({port:14580,host:'hangzhou.aprs2.net'},function() {
-        console.log("connection to server!");
-        proxy.write("user BG5ZZZ- pass 24229 ver MY185\n#filter t/poi\n");
-    });*/
-    proxy.destroy();
-    proxy = net.connect({port:14580,host:'hangzhou.aprs2.net'},function() {
-      console.log("connection to server!");
-      logger.file_write("connection to server!" + '\r\n', './log/Received.log', myDate);
-      proxy.write("user BG5ZZZ-92 pass 24229 ver MY185\n#filter t/poi\n");
+    proxy.on("timeout", function() {
+        var myDate = new Date();
+        console.log(myDate.toUTCString() + ": timeout.");
+        logger.file_write(": timeout." + '\r\n', './log/Received.log', myDate);
+        proxy.destroy();
+        Reconnect();
     });
-    Reconnect();
-  })
+
+    proxy.on("error",function(err){
+        var myDate = new Date();
+        console.log(myDate.toUTCString() + ": " + err.message);
+        logger.file_write( ": " + err.message + '\r\n', './log/Received.log', myDate);
+        proxy.destroy();
+        Reconnect();
+    });
+
+    proxy.on('end',function(){
+        var myDate = new Date();
+        console.log(myDate.toUTCString() + ": proxy unconnected.");
+        logger.file_write(": proxy unconnected." + '\r\n', './log/Received.log', myDate);
+        proxy.destroy();
+        Reconnect();
+    });
 
   proxy.on('data',function(data){
     var myDate = new Date();
