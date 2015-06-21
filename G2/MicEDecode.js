@@ -120,7 +120,7 @@ function decode(rec, myDate){
     i++;
 
   //to decode the longitute degrees
-  if (rec[++i] == undefined) {
+  if (rec[i + 1] == undefined) {
     Info = {};
     return Info;
   }
@@ -133,11 +133,19 @@ function decode(rec, myDate){
     LongD -= 190;
 
   //to decode the longitute minutes
+  if (rec[i + 1] == undefined) {
+    Info = {};
+    return Info;
+  }
   var LongM = rec[++i].charCodeAt()-28;
   if(LongM>=60)
     LongM -= 60;
 
   //to decode the longitute hundredths
+  if (rec[i + 1] == undefined) {
+    Info = {};
+    return Info;
+  }
   var LongH = rec[++i].charCodeAt()-28;
 
   var Longitude = LongD + LongM/60 + LongH/3600;
