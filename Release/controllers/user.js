@@ -1,6 +1,7 @@
 var mysql = require('mysql');
 var request = require('request');
 var client = mysql.createConnection(require("../DBconfig.json"));
+var crypto = require('crypto');
 
 exports.register = function(req, res) {
     console.log(req.url);
@@ -38,8 +39,9 @@ exports.register = function(req, res) {
                     message: "Registered e-mail"
                 });
             } else {
+                hashedPassword = crypto.createHash('md5').update(req.body.pw).digest('hex');
                 client.query('INSERT INTO user(email, password)' +
-                    'VALUES(?,?)', [req.body.email, req.body.pw]);
+                    'VALUES(?,?)', [req.body.email, String(hashedPassword)]);
                 return res.json({
                     code: 0,
                     message: "Register success"
@@ -65,7 +67,8 @@ exports.login = function(req, res) {
                 throw err;
             }
             if (row[0]) {
-                if (row[0].password != req.body.pw)
+                hashedPassword = crypto.createHash('md5').update(req.body.pw).digest('hex');
+                if (row[0].password != String(hashedPassword))
                     return res.json({
                         code: 5,
                         message: "Wrong password"

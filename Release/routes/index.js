@@ -30,6 +30,7 @@ router.post('/login', userController.login);
 router.get('/logout', userController.logout);
 router.post('/post_position', userController.postPosition);
 router.get('/sessionVerify', userController.sessionVerify);
+router.post('/register', userController.register);
 
 router.get('/data', indexController.handleData);
 router.get('/data_zoomout', indexController.handleZoomoutData);
