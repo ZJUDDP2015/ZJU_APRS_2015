@@ -1,0 +1,28 @@
+html {
+    height: 100%
+}
+
+body {
+    height: 100%;
+    margin: 0px;
+    padding: 0px
+}
+
+#controller {
+    width: 100%;
+    border-bottom: 3px outset;
+    height: 30px;
+    filter: alpha(Opacity=100);
+    -moz-opacity: 1;
+    opacity: 1;
+    z-index: 10000;
+    background-color: lightblue;
+}
+
+#container {
+    height: 100%;
+}
+<<<<<<< HEAD
+=======
+
+>>>>>>> b370a33d92bce4c794688bde006a54794facfe75
