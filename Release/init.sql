@@ -1,3 +1,9 @@
+/*
+	Version:1.1.0
+	If database upgraded, please run DB_upgrade\convert_(oldversion)to(newversion)
+	If version number is not available in your old init.sql, run convert_1.0.0to1.1.0 to upgrade to version 1.1.0
+*/
+
 CREATE DATABASE IF NOT EXISTS aprs;
 
 USE aprs;

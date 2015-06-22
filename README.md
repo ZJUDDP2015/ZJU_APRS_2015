@@ -12,6 +12,13 @@
 
     2.cmd: mysql -u "Your username" <init.sql
 
+#How to upgrade database
+    1.read version number in init.sql
+
+    2.if version number is different from your old init.sql, run DB_upgrade\convert_(oldversion)to(newversion) to upgrade to new version(if convert file is not available, drop database and run init.sql)
+
+    3.or you can drop database and run init.sql
+
 ## How to configurate your database setting
     1.copy DBconfig.default.json and rename it DBconfig.json
 
