@@ -454,7 +454,7 @@ function refreshRoute() {
               map.addOverlay(m);*/
               var opts = {    
  					width : 350,     // 信息窗口宽度    
- 					height: 100,     // 信息窗口高度    
+ 					height: 125,     // 信息窗口高度    
  					title : "<a href='/callsign?name=" + e.point.source + "' target='_blank'>" + e.point.source + "</a>"  // 信息窗口标题   
 				}  
 			  var table = "<table border='0' > <tr>" + "<td width='200px'>经度: " + p.lng + "</td>" + "<td>纬度: " + p.lat + "</td></tr>" + "<tr>" + "<td width='200px'>路径: " + e.point.path + "</td>" + "<td>目的地: " + e.point.des + "</td></tr></table>" + "时间: " + e.point.time + 
