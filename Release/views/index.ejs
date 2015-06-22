@@ -445,15 +445,26 @@ function refreshRoute() {
               //alert("hello");
 
               var p = new BMap.Point(e.point.lng, e.point.lat);
-              m = new BMap.Marker(p);
+              /*m = new BMap.Marker(p);
               var l = new BMap.Label("", {offset: new BMap.Size(-20, -20)});
-              l.setContent("Longitude: " + p.lng + "<br>Latitude: " + p.lat
-                      + "<br>source:<a href='/callsign?name=" + e.point.source + "' target='_blank'>" + e.point.source + "</a><br>path:" + e.point.path + "<br>time:" + e.point.time + "<br>des:" + e.point.des + "<br>comment:" + e.point.comment);
-
+              //l.setContent("Longitude: " + p.lng + "<br>Latitude: " + p.lat
+               //       + "<br>source:<a href='/callsign?name=" + e.point.source + "' target='_blank'>" + e.point.source + "</a><br>path:" + e.point.path + "<br>time:" + e.point.time + "<br>des:" + e.point.des + "<br>comment:" + e.point.comment);
+			  
               m.setLabel(l);
-              map.addOverlay(m);
+              map.addOverlay(m);*/
+              var opts = {    
+ 					width : 350,     // 信息窗口宽度    
+ 					height: 100,     // 信息窗口高度    
+ 					title : "<a href='/callsign?name=" + e.point.source + "' target='_blank'>" + e.point.source + "</a>"  // 信息窗口标题   
+				}  
+			  var table = "<table border='0' > <tr>" + "<td width='200px'>经度: " + p.lng + "</td>" + "<td>纬度: " + p.lat + "</td></tr>" + "<tr>" + "<td width='200px'>路径: " + e.point.path + "</td>" + "<td>目的地: " + e.point.des + "</td></tr></table>" + "时间: " + e.point.time + 
+			  				"<br>注释: " + e.point.comment ;
+			  var s = "经度: " + p.lng + " | 纬度: " + p.lat + "<br>路径: " + e.point.path + " | 目的地: " + e.point.des + "<br>时间: " + e.point.time + "<br>注释: " + e.point.comment;
+			  var m = new BMap.InfoWindow(table, opts);  // 创建信息窗口对象    
+			  map.openInfoWindow(m, e.point);      // 打开信息窗口
 
             });
+            
 			var digipeater = [];
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      ＴＨＩＳ ＰＡＲＴ ＣＡＮ ＮＯＴ ＢＥ　ＲＥＭＯＶＥＤ
             pointCollection.addEventListener('mouseover',function (e){
