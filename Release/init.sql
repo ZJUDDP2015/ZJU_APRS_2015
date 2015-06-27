@@ -55,7 +55,7 @@ ALTER TABLE `moving_object` ADD INDEX(`Time`);
 CREATE TABLE `user` (
 	id int(11) NOT NULL AUTO_INCREMENT,
 	email varchar(30) DEFAULT NULL,
-	password varchar(20) DEFAULT NULL,
+	password varchar(50) DEFAULT NULL,
 	mapCenterX varchar(20) DEFAULT NULL,
 	mapCenterY varchar(20) DEFAULT NULL,
 	bannerImage varchar(50) DEFAULT NULL,

@@ -93,16 +93,37 @@ exports.login = function(req, res) {
 exports.changePassword = function(req, res) {
     console.log(req.url);
     console.log('e-mail= ' + req.session.email);
-    console.log('old password= ' + req.opw);
-    console.log('new password= ' + req.npw);
+    console.log('old password= ' + req.body.opw);
+    console.log('new password= ' + req.body.npw);
+    console.log('new password= ' + req.body.renpw);
 
-    if (req.body.pw.length < 6) {
+    if (req.body.npw.length < 6) {
         return res.json({
             code: 2,
             message: "Password too short"
         });
     }
-    client.query('UPDATE user SET password=? WHERE email=?', [req.pw, req.session.email],
+    if (req.body.npw != req.body.renpw) {
+        return res.json({
+            code: 3,
+            message: "Password confirm error"
+        });
+    }
+    client.query('SELECT * FROM user WHERE email=?', [req.session.email],
+        function(err, row, fields) {
+            if (err) {
+                throw err;
+            }
+            if (row[0]) {
+                hashedPassword = crypto.createHash('md5').update(req.body.opw).digest('hex');
+                if (row[0].password != String(hashedPassword))
+                    return res.json({
+                        code: 5,
+                        message: "Wrong password"
+                    });
+        }
+    });
+    client.query('UPDATE user SET password=? WHERE email=?', [crypto.createHash('md5').update(req.body.npw).digest('hex'), req.session.email],
         function(err, row, fields) {
             if (err) {
                 throw err;
