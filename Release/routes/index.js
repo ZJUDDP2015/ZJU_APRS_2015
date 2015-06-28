@@ -11,15 +11,8 @@ router.get('/', function(req, res) {
 
 router.get('/callsign', function(req, res) {
     var callsign = req.query.name;
-    var success;
-    success = indexController.createCallsignEjs(callsign);
-    console.log('haha');
-    if (success) {
-        res.render('callsign', {
-            title: 'Callsign'
-        });
-    }
-})
+    indexController.createCallsignEjs(callsign, res);
+});
 
 router.post('/photoUpload', function(req, res) {
     console.log(req.files);

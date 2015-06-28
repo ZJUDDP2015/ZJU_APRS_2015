@@ -1,7 +1,17 @@
+var express = require('express');
+var Promise = require("bluebird");
 var mysql = require('mysql');
 var url = require('url');
 var fs = require('fs');
 var client = mysql.createConnection(require("../DBconfig.json"));
+var connection;
+
+/*mysql.createConnection(require("../DBconfig.json")).then(function(conn){
+    connection = conn;
+});*/
+
+Promise.promisifyAll(fs);
+
 
 function toMysqlFormat(date) {
     return date.getFullYear() + "-" + twoDigits(1 + date.getMonth()) + "-" + twoDigits(date.getDate()) + " " + twoDigits(date.getHours()) + ":" + twoDigits(date.getMinutes()) + ":" + twoDigits(date.getSeconds());
@@ -13,63 +23,51 @@ function twoDigits(d) {
     return d.toString();
 };
 
-exports.createCallsignEjs = function(callsign) {
+exports.createCallsignEjs = function(callsign, res) {
+    var i;
     var myDate = new Date();
     var currentT = toMysqlFormat(myDate);
-    console.log(callsign);
-    console.log(currentT);
+    var sql_60 = 'select * from moving_object where Source=? and Time <= ?  and Time >= DATE_ADD(?,INTERVAL -60 MINUTE) order by Time desc';
+    var sql_60_param = [callsign, currentT, currentT];
+    var sql_recent = "select Longitude, Latitude from moving_object where Source=? order by Time desc LIMIT 1";
+    var sql_recent_param = [callsign];
+    var filename = __dirname + '/../views/callsign.ejs';
+
     client.connect(function(err, results) {
-        var Addsql = "select * from moving_object where Source=? and Time <= ?  and Time >= DATE_ADD(?,INTERVAL -60 MINUTE) order by Time desc";
-        var Addsql_param = [callsign, currentT, currentT];
-        client.query(Addsql, Addsql_param, function(err, rows) {
-            if (err) {
-                throw err;
-            }
-            if (rows.length > 0) {
-                var i = 0;
-                console.log(__dirname);
-                var Stream = fs.createWriteStream(__dirname + '/../views/callsign.ejs', {
-                    flags: 'w'
+        client.query(sql_recent, sql_recent_param, function(err, rows) {
+            fs.writeFileAsync(filename, "")
+            .then(fs.appendFileSync(filename, '<html lang="en">\r\n'))
+            .then(fs.appendFileSync(filename, '<head>\r\n'))
+            .then(fs.appendFileSync(filename, '<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />\r\n'))
+            .then(fs.appendFileSync(filename, '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\r\n'))
+            .then(fs.appendFileSync(filename, '<title><%= title %></title>\r\n'))
+            .then(fs.appendFileSync(filename, '</head>\r\n'))
+            .then(fs.appendFileSync(filename, '<body>\r\n'))
+            .then(fs.appendFileSync(filename, '<div><h1> ' + callsign + ' </h1></div>\r\n'))
+            .then(fs.appendFileSync(filename, '<div><h2> Last position: Latitude = ' + rows[0].Latitude + '; Longitude' + rows[0].Longitude + ' </h2></div>\r\n'))
+            .then(fs.appendFileSync(filename, '<div><h2> data during the last 60 minutes: </h2></div>'))
+            .then(function() {
+                client.query(sql_60, sql_60_param, function(err, rows) {
+                    console.log(rows);
+                    if (rows.length == 0) {
+                        fs.appendFileSync(filename, '<div> This station has no data in 60 minutes! </div>');
+                    }
+                    else {
+                        for (i=0; i < rows.length; ++i) {
+                            console.log(i);
+                            var writeBuffer = new Buffer(JSON.stringify(rows[i]))
+                            fs.appendFileSync(filename, '<div> ' + i + ':   ' + writeBuffer + '</div>\r\n');
+                        }
+                    }
+                    fs.appendFileSync(filename, '</body>\r\n');
+                    fs.appendFileSync(filename, '</html>\r\n');
+                    res.render("callsign", {
+                        title: 'Callsign'
+                    })
                 });
-                lat = rows[0].Latitude;
-                longi = rows[0].Longitude;
-                Stream.write('<html lang="en">\r\n');
-                Stream.write('<head>\r\n');
-                Stream.write('<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />\r\n');
-                Stream.write('<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\r\n');
-                Stream.write('<title><%= title %></title>\r\n');
-                Stream.write('</head>\r\n');
-                Stream.write('<body>\r\n');
-                Stream.write('<div><h1> ' + rows[0].Source + ' </h1></div>\r\n');
-                Stream.write('<div><h2> Last position: Latitude = ' + lat + '; Longitude' + longi + ' </h2></div>\r\n');
-                Stream.write('<div><h2> data during the last 60 minutes: </h2></div>');
-                for (i; i < rows.length; ++i) {
-                    console.log(i);
-                    var writeBuffer = new Buffer(JSON.stringify(rows[i]));
-                    Stream.write('<div> ' + i + ':   ' + writeBuffer + '</div>\r\n');
-                }
-                Stream.write('</body>\r\n');
-                Stream.write('</html>\r\n');
-                Stream.end();
-            } else {
-                var Stream = fs.createWriteStream(__dirname + '/../views/callsign.ejs', {
-                    flags: 'w'
-                });
-                Stream.write('<html lang="en">\r\n');
-                Stream.write('<head>\r\n');
-                Stream.write('<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />\r\n');
-                Stream.write('<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\r\n');
-                Stream.write('<title><%= title %></title>\r\n');
-                Stream.write('</head>\r\n');
-                Stream.write('<body>\r\n');
-                Stream.write('<div><h1> Sorry, Not found </h1></div>\r\n');
-                Stream.write('</body>\r\n');
-                Stream.write('</html>\r\n');
-                Stream.end();
-            }
-        });
-    });
-    return true;
+            })
+        })
+    })
 }
 
 var getFormatedTime = function(month, day, hour, minute) {
@@ -182,10 +180,10 @@ exports.handleData = function(req, res) {
             if (rows) {
                 console.log("hello");
                 rows.forEach(function(e) {
-                    console.log("fuck");
-                    console.log(e);
+                    //console.log("fuck");
+                    //console.log(e);
                     var symbol = JSON.parse(e.Comment).Symbol;
-                    console.log(symbol);
+                    //console.log(symbol);
                     if (symbol != "" && symbol != undefined && symbol[0] != '\\' && symbol[0] != '/') {
                         symbol = "\\\\" + symbol[1];
                     }
