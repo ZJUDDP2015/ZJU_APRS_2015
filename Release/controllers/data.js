@@ -17,7 +17,7 @@ exports.weather = function(req, res) {
     //console.log(req.body)
     //console.log(req.body.data);
     ++received
-    
+
     var insert = 'insert into weather (Type,Month,Day,Hour,Min,Sec,Lat,Longi,WindDirection,WindSpeed,WeatherUnit,Gust,Temp,RainLastHr,RainLast24Hr,RainSinceMid,Humidity,Barometric,Luminosity,Path) values(' +
         mysql.escape(req.body.Type) + ', ' +
         mysql.escape(req.body.Month) + ', ' +
@@ -68,7 +68,7 @@ exports.moving_object = function(req, res) {
         mysql.escape(req.body.Longitude) + ', ' +
         mysql.escape(req.body.Comment) + ', ' +
         Grid_lat+ ', ' +
-        Grid_lng + 
+        Grid_lng +
         ')';
     sql.query(insert, function(err, rows, fields) {
             if (err) console.log(insert);
