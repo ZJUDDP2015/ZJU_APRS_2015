@@ -362,7 +362,7 @@ function refreshRoute() {
                   line[result[i].id] = new BMap.Polyline(
                                               [ points[result[i].id][points[result[i].id].length - 2],
                                               points[result[i].id][points[result[i].id].length - 1] ],
-                                              {strokeColor: lineColor[result[i].id], strokeWeight: 3, strokeOpacity: 3}
+                                              {strokeColor: lineColor[result[i].id], strokeWeight: 1, strokeOpacity: 1}
                                           );
 
                   //console.log(line[result[i].id]);
@@ -445,26 +445,29 @@ function refreshRoute() {
               //alert("hello");
 
               var p = new BMap.Point(e.point.lng, e.point.lat);
-              /*m = new BMap.Marker(p);
+              m = new BMap.Marker(p);
               var l = new BMap.Label("", {offset: new BMap.Size(-20, -20)});
-              //l.setContent("Longitude: " + p.lng + "<br>Latitude: " + p.lat
-               //       + "<br>source:<a href='/callsign?name=" + e.point.source + "' target='_blank'>" + e.point.source + "</a><br>path:" + e.point.path + "<br>time:" + e.point.time + "<br>des:" + e.point.des + "<br>comment:" + e.point.comment);
+              l.setContent("Longitude: " + p.lng + "<br>Latitude: " + p.lat
+                      + "<br>source:<a href='/callsign?name=" + e.point.source + "' target='_blank'>" + e.point.source + "</a><br>path:" + e.point.path + "<br>time:" + e.point.time + "<br>des:" + e.point.des + "<br>comment:" + e.point.comment);
 
               m.setLabel(l);
+<<<<<<< HEAD
+              map.addOverlay(m);
+=======
               map.addOverlay(m);*/
-              var opts = {
- 					width : 350,     // 信息窗口宽度
- 					height: 125,     // 信息窗口高度
- 					title : "<a href='/callsign?name=" + e.point.source + "' target='_blank'>" + e.point.source + "</a>"  // 信息窗口标题
-				}
-			  var table = "<table border='0' > <tr>" + "<td width='200px'>经度: " + p.lng + "</td>" + "<td>纬度: " + p.lat + "</td></tr>" + "<tr>" + "<td width='200px'>路径: " + e.point.path + "</td>" + "<td>目的地: " + e.point.des + "</td></tr></table>" + "时间: " + e.point.time +
+              var opts = {    
+ 					width : 350,     // 信息窗口宽度    
+ 					height: 125,     // 信息窗口高度    
+ 					title : "<a href='/callsign?name=" + e.point.source + "' target='_blank'>" + e.point.source + "</a>"  // 信息窗口标题   
+				}  
+			  var table = "<table border='0' > <tr>" + "<td width='200px'>经度: " + p.lng + "</td>" + "<td>纬度: " + p.lat + "</td></tr>" + "<tr>" + "<td width='200px'>路径: " + e.point.path + "</td>" + "<td>目的地: " + e.point.des + "</td></tr></table>" + "时间: " + e.point.time + 
 			  				"<br>注释: " + e.point.comment ;
 			  var s = "经度: " + p.lng + " | 纬度: " + p.lat + "<br>路径: " + e.point.path + " | 目的地: " + e.point.des + "<br>时间: " + e.point.time + "<br>注释: " + e.point.comment;
-			  var m = new BMap.InfoWindow(table, opts);  // 创建信息窗口对象
+			  var m = new BMap.InfoWindow(table, opts);  // 创建信息窗口对象    
 			  map.openInfoWindow(m, e.point);      // 打开信息窗口
+>>>>>>> 865f43fb868ab2fa20b212217b2c86f5a7bf4665
 
             });
-
 			var digipeater = [];
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      ＴＨＩＳ ＰＡＲＴ ＣＡＮ ＮＯＴ ＢＥ　ＲＥＭＯＶＥＤ
             pointCollection.addEventListener('mouseover',function (e){
@@ -507,99 +510,6 @@ function refreshRoute() {
     });
 }
 
-function login_post(){
-  $.post('/login', {
-    "email" : $("#email").val(),
-    "pw": $("#pw").val(),
-  }, function(data) {
-    if (data.code==0){
-      $('#login_button').toggle();
-      $('#logout_button').toggle();
-      $('#signup_button').toggle();
-      $('#change_pw_button').toggle();
-      $('#login_form').hide();
-      $('#signup_form').hide();
-      $("#login-result").html("");
-      $.get('/getSavedPosition',function(data){
-        var point = new BMap.Point(data.py,data.px);
-        map.setCenter(point);
-      })
-    }else{
-      
-    }
-    $("#login-result").html(data.message);
-  });
-  return false;
-} 
-
-function signup_post(){
-  $.post('/register', {
-    "email" : $("#email_signup").val(),
-    "pw": $("#pw_signup").val(),
-    "repw": $("#repw").val()
-  }, function(data) {
-    if (data.code==0){
-      $("#signup-result").html("");
-    }else{
-      
-    }
-    $("#signup-result").html(data.message);
-  });
-  return false;
-} 
-
-function change_pw_post(){
-  $.post('/changePassword', {
-    "opw" : $("#opw").val(),
-    "npw": $("#npw").val(),
-    "renpw": $("#renpw").val()
-  }, function(data) {
-    if (data.code==0){
-      $("#change_pw-result").html("");
-    }else{
-      
-    }
-    $("#change_pw-result").html(data.message);
-  });
-  return false;
-} 
-
-function logout(){
-  var center = map.getCenter();
-  $.post('/post_position',{
-    "px":center.lat,
-    "py":center.lng
-  },function(){
-
-  })
-  $.get('/logout', function(data) {
-    if (data.code==0){
-      $('#login_button').toggle();
-      $('#logout_button').toggle();
-      $('#signup_button').toggle();
-      $('#change_pw_button').toggle();
-      $('#change_pw_form').hide();
-      $("#login-result").html("");
-      var center = map.getCenter();
-      
-    }else{
-      
-    }
-    //$("#change_pw-result").html(data.message);
-  });
-  return false;
-} 
-
-$(window).unload(function(){
-  var center = map.getCenter();
-  $.post('/post_position',{
-    "px":center.lat,
-    "py":center.lng
-  },function(){
-
-  })
-});
-
 </script>
 </head>
 
@@ -637,79 +547,45 @@ $(window).unload(function(){
         <div class='button' onclick="submit()">Show on Map!</div>
         <hr width=80% style="margin:auto">
         <!--User Panel-->
-        <div class="button" id="login_button" onclick="$('#login_form').toggle()">Login</div>
-        <div id="login_form" hidden>
-          <table class='timeSelect'>
-              <tr>
-                  <td>Email</td>
-                  <td>
-                      <input class='timeSelectInput' id="email" type="text" width="100px" required></input>
-                  </td>
-              </tr>
-              <tr>
-                  <td>Password</td>
-                  <td>
-                      <input class='timeSelectInput' id="pw" type="password" width="100px" required></input>
-                  </td>
-              </tr>    
-          </table>
-          <div id="login-result" align="center"></div>
-          <div class='button' onclick="login_post()">Submit</div>
-          <hr width=80% style="margin:auto">
+        <div id='icon'>
+            <img src="/joker.jpeg" width="100" alt="Sample Logo" style="position:absolute; z-index:2" />
+            <img src="/maskLogOut.png" width="100" alt="Log-out" style="position:absolute; z-index:4;
+                                opacity:0;filter:alpha(opacity=0)"
+                                onmouseover="this.style.opacity=0.8;this.filters.alpha.opacity=80"
+                                onmouseout="this.style.opacity=0;this.filters.alpha.opacity=0" />
+            <img src="/mask.png" width="100" style="position:relative; z-index:3" />
         </div>
-        <div class="button" id="signup_button" onclick="$('#signup_form').toggle()">Sign up</div>
-        <div id="signup_form" hidden>
-          <table class='timeSelect'>
-              <tr>
-                  <td>Email</td>
-                  <td>
-                      <input class='timeSelectInput' id="email_signup" type="text" width="100px" required></input>
-                  </td>
-              </tr>
-              <tr>
-                  <td>Password</td>
-                  <td>
-                      <input class='timeSelectInput' id="pw_signup" type="password" width="100px" required></input>
-                  </td>
-              </tr> 
-              <tr>
-                  <td>Confirm Password</td>
-                  <td>
-                      <input class='timeSelectInput' id="repw" type="password" width="100px" required></input>
-                  </td>
-              </tr>     
-          </table>
-          <div id="signup-result" align="center"></div>
-          <div class='button' onclick="signup_post()">Submit</div>
+        <div id='userName'>
+            <input id='userName' type="text" name="Meow" width="200px" value="哥谭市蝙蝠侠粉丝团团长">
         </div>
-
-        <div class="button" id="logout_button" onclick="logout()" hidden>Log out</div>
+        <form   id      = "uploadForm"
+                enctype = "multipart/form-data"
+                action  = "/photoUpload"
+                method  = "post" class='middle'>
+                <div class='button'>Change Banner
+                    <input id='buttonFile' type="file"   name="userPhoto" onchange="submit()"/>
+                    <!--use onchange to perform the upload-->
+                </div>
+        </form>
+        <div class='button'>Change Password</div>
+        <hr width=80% style="margin:auto"><table class='timeSelect'>
+                <tr>
+                    <td>User Name<p></p></td>
+                    <td>
+                        <input class='timeSelectInput' id='email' type="text" name="Meow" width="80px" value="Email">
+                        <p></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Password</td>
+                    <td>
+                        <input class='timeSelectInput' id='password' type="password" name="Meow" width="80px" value="Password">
+                    </td>
+                </tr>
+            </table>
+            <div class='button'>Log in</div>
+            <div class='button'>Sign in</div>
         <!--Please add the user control and date/time/function select panel here-->
-        <div class="button" id="change_pw_button" onclick="$('#change_pw_form').toggle()" hidden>Change password</div>
-        <div id="change_pw_form" hidden>
-          <table class='timeSelect'>
-              <tr>
-                  <td>old Password</td>
-                  <td>
-                      <input class='timeSelectInput' id="opw" type="password" width="100px" required></input>
-                  </td>
-              </tr> 
-              <tr>
-                  <td>new Password</td>
-                  <td>
-                      <input class='timeSelectInput' id="npw" type="password" width="100px" required></input>
-                  </td>
-              </tr> 
-              <tr>
-                  <td>Confirm new Password</td>
-                  <td>
-                      <input class='timeSelectInput' id="renpw" type="password" width="100px" required></input>
-                  </td>
-              </tr>     
-          </table>
-          <div id="change_pw-result" align="center"></div>
-          <div class='button' onclick="change_pw_post()">Submit</div>
-        </div>
     </aside>
     <div id='wrap'>
         <label id='sideMenuControl' for='sideToggle'>=</label>
