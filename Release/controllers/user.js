@@ -153,7 +153,7 @@ exports.getSavedPosition = function(req, res, next) {
                 if (err) {
                     console.log('err');
                     throw err;
-                } else if (row[0].mapCenterX.length === 0)
+                } else if (!row[0].mapCenterX)
                     next()
                 else return res.json({
                     code: 0,
