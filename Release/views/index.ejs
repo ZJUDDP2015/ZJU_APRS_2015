@@ -508,7 +508,7 @@ function refreshRoute() {
 }
 
 function login_post(){
-  $.post('http://localhost:3001/login/', {
+  $.post('/login', {
     "email" : $("#email").val(),
     "pw": $("#pw").val(),
   }, function(data) {
@@ -520,7 +520,7 @@ function login_post(){
       $('#login_form').hide();
       $('#signup_form').hide();
       $("#login-result").html("");
-      $.get('http://localhost:3001/getSavedPosition/',function(data){
+      $.get('/getSavedPosition',function(data){
         var point = new BMap.Point(data.py,data.px);
         map.setCenter(point);
       })
@@ -533,7 +533,7 @@ function login_post(){
 } 
 
 function signup_post(){
-  $.post('http://localhost:3001/register/', {
+  $.post('/register', {
     "email" : $("#email_signup").val(),
     "pw": $("#pw_signup").val(),
     "repw": $("#repw").val()
@@ -549,7 +549,7 @@ function signup_post(){
 } 
 
 function change_pw_post(){
-  $.post('http://localhost:3001/changePassword/', {
+  $.post('/changePassword', {
     "opw" : $("#opw").val(),
     "npw": $("#npw").val(),
     "renpw": $("#renpw").val()
@@ -566,13 +566,13 @@ function change_pw_post(){
 
 function logout(){
   var center = map.getCenter();
-  $.post('http://localhost:3001/post_position/',{
+  $.post('/post_position',{
     "px":center.lat,
     "py":center.lng
   },function(){
 
   })
-  $.get('http://localhost:3001/logout/', function(data) {
+  $.get('/logout', function(data) {
     if (data.code==0){
       $('#login_button').toggle();
       $('#logout_button').toggle();
@@ -592,7 +592,7 @@ function logout(){
 
 $(window).unload(function(){
   var center = map.getCenter();
-  $.post('http://localhost:3001/post_position/',{
+  $.post('/post_position',{
     "px":center.lat,
     "py":center.lng
   },function(){
