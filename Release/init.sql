@@ -1,5 +1,5 @@
 /*
-	Version:1.1.0
+	Version:1.1.1
 	If database upgraded, please run DB_upgrade\convert_(oldversion)to(newversion)
 	If version number is not available in your old init.sql, run convert_1.0.0to1.1.0 to upgrade to version 1.1.0
 */
@@ -55,7 +55,7 @@ ALTER TABLE `moving_object` ADD INDEX(`Time`);
 CREATE TABLE `user` (
 	id int(11) NOT NULL AUTO_INCREMENT,
 	email varchar(30) DEFAULT NULL,
-	password varchar(20) DEFAULT NULL,
+	password varchar(50) DEFAULT NULL,
 	mapCenterX varchar(20) DEFAULT NULL,
 	mapCenterY varchar(20) DEFAULT NULL,
 	bannerImage varchar(50) DEFAULT NULL,

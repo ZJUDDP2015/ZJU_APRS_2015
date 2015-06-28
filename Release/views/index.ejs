@@ -507,6 +507,99 @@ function refreshRoute() {
     });
 }
 
+function login_post(){
+  $.post('/login', {
+    "email" : $("#email").val(),
+    "pw": $("#pw").val(),
+  }, function(data) {
+    if (data.code==0){
+      $('#login_button').toggle();
+      $('#logout_button').toggle();
+      $('#signup_button').toggle();
+      $('#change_pw_button').toggle();
+      $('#login_form').hide();
+      $('#signup_form').hide();
+      $("#login-result").html("");
+      $.get('/getSavedPosition',function(data){
+        var point = new BMap.Point(data.py,data.px);
+        map.setCenter(point);
+      })
+    }else{
+      
+    }
+    $("#login-result").html(data.message);
+  });
+  return false;
+} 
+
+function signup_post(){
+  $.post('/register', {
+    "email" : $("#email_signup").val(),
+    "pw": $("#pw_signup").val(),
+    "repw": $("#repw").val()
+  }, function(data) {
+    if (data.code==0){
+      $("#signup-result").html("");
+    }else{
+      
+    }
+    $("#signup-result").html(data.message);
+  });
+  return false;
+} 
+
+function change_pw_post(){
+  $.post('/changePassword', {
+    "opw" : $("#opw").val(),
+    "npw": $("#npw").val(),
+    "renpw": $("#renpw").val()
+  }, function(data) {
+    if (data.code==0){
+      $("#change_pw-result").html("");
+    }else{
+      
+    }
+    $("#change_pw-result").html(data.message);
+  });
+  return false;
+} 
+
+function logout(){
+  var center = map.getCenter();
+  $.post('/post_position',{
+    "px":center.lat,
+    "py":center.lng
+  },function(){
+
+  })
+  $.get('/logout', function(data) {
+    if (data.code==0){
+      $('#login_button').toggle();
+      $('#logout_button').toggle();
+      $('#signup_button').toggle();
+      $('#change_pw_button').toggle();
+      $('#change_pw_form').hide();
+      $("#login-result").html("");
+      var center = map.getCenter();
+      
+    }else{
+      
+    }
+    //$("#change_pw-result").html(data.message);
+  });
+  return false;
+} 
+
+$(window).unload(function(){
+  var center = map.getCenter();
+  $.post('/post_position',{
+    "px":center.lat,
+    "py":center.lng
+  },function(){
+
+  })
+});
+
 </script>
 </head>
 
@@ -544,45 +637,79 @@ function refreshRoute() {
         <div class='button' onclick="submit()">Show on Map!</div>
         <hr width=80% style="margin:auto">
         <!--User Panel-->
-        <div id='icon'>
-            <img src="/joker.jpeg" width="100" alt="Sample Logo" style="position:absolute; z-index:2" />
-            <img src="/maskLogOut.png" width="100" alt="Log-out" style="position:absolute; z-index:4;
-                                opacity:0;filter:alpha(opacity=0)"
-                                onmouseover="this.style.opacity=0.8;this.filters.alpha.opacity=80"
-                                onmouseout="this.style.opacity=0;this.filters.alpha.opacity=0" />
-            <img src="/mask.png" width="100" style="position:relative; z-index:3" />
+        <div class="button" id="login_button" onclick="$('#login_form').toggle()">Login</div>
+        <div id="login_form" hidden>
+          <table class='timeSelect'>
+              <tr>
+                  <td>Email</td>
+                  <td>
+                      <input class='timeSelectInput' id="email" type="text" width="100px" required></input>
+                  </td>
+              </tr>
+              <tr>
+                  <td>Password</td>
+                  <td>
+                      <input class='timeSelectInput' id="pw" type="password" width="100px" required></input>
+                  </td>
+              </tr>    
+          </table>
+          <div id="login-result" align="center"></div>
+          <div class='button' onclick="login_post()">Submit</div>
+          <hr width=80% style="margin:auto">
         </div>
-        <div id='userName'>
-            <input id='userName' type="text" name="Meow" width="200px" value="哥谭市蝙蝠侠粉丝团团长">
+        <div class="button" id="signup_button" onclick="$('#signup_form').toggle()">Sign up</div>
+        <div id="signup_form" hidden>
+          <table class='timeSelect'>
+              <tr>
+                  <td>Email</td>
+                  <td>
+                      <input class='timeSelectInput' id="email_signup" type="text" width="100px" required></input>
+                  </td>
+              </tr>
+              <tr>
+                  <td>Password</td>
+                  <td>
+                      <input class='timeSelectInput' id="pw_signup" type="password" width="100px" required></input>
+                  </td>
+              </tr> 
+              <tr>
+                  <td>Confirm Password</td>
+                  <td>
+                      <input class='timeSelectInput' id="repw" type="password" width="100px" required></input>
+                  </td>
+              </tr>     
+          </table>
+          <div id="signup-result" align="center"></div>
+          <div class='button' onclick="signup_post()">Submit</div>
         </div>
-        <form   id      = "uploadForm"
-                enctype = "multipart/form-data"
-                action  = "/photoUpload"
-                method  = "post" class='middle'>
-                <div class='button'>Change Banner
-                    <input id='buttonFile' type="file"   name="userPhoto" onchange="submit()"/>
-                    <!--use onchange to perform the upload-->
-                </div>
-        </form>
-        <div class='button'>Change Password</div>
-        <hr width=80% style="margin:auto"><table class='timeSelect'>
-                <tr>
-                    <td>User Name<p></p></td>
-                    <td>
-                        <input class='timeSelectInput' id='email' type="text" name="Meow" width="80px" value="Email">
-                        <p></p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Password</td>
-                    <td>
-                        <input class='timeSelectInput' id='password' type="password" name="Meow" width="80px" value="Password">
-                    </td>
-                </tr>
-            </table>
-            <div class='button'>Log in</div>
-            <div class='button'>Sign in</div>
+
+        <div class="button" id="logout_button" onclick="logout()" hidden>Log out</div>
         <!--Please add the user control and date/time/function select panel here-->
+        <div class="button" id="change_pw_button" onclick="$('#change_pw_form').toggle()" hidden>Change password</div>
+        <div id="change_pw_form" hidden>
+          <table class='timeSelect'>
+              <tr>
+                  <td>old Password</td>
+                  <td>
+                      <input class='timeSelectInput' id="opw" type="password" width="100px" required></input>
+                  </td>
+              </tr> 
+              <tr>
+                  <td>new Password</td>
+                  <td>
+                      <input class='timeSelectInput' id="npw" type="password" width="100px" required></input>
+                  </td>
+              </tr> 
+              <tr>
+                  <td>Confirm new Password</td>
+                  <td>
+                      <input class='timeSelectInput' id="renpw" type="password" width="100px" required></input>
+                  </td>
+              </tr>     
+          </table>
+          <div id="change_pw-result" align="center"></div>
+          <div class='button' onclick="change_pw_post()">Submit</div>
+        </div>
     </aside>
     <div id='wrap'>
         <label id='sideMenuControl' for='sideToggle'>=</label>
