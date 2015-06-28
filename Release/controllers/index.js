@@ -120,20 +120,20 @@ exports.handleZoomoutData = function(req, res) {
         var Addsql_param;
         Addsql_param = [lat_num,lat_num+row_num*incre,lng_num,lng_num+col_num*incre , starttime, endtime];
         if (callsign == '') {
-            Addsql = "select Grid_latitude,Grid_longitude,count(*) as num from moving_object where Grid_latitude >=? && Grid_latitude <? && Grid_longitude >= ? && Grid_longitude <? && unix_timestamp(Time) > unix_timestamp(?) &&unix_timestamp(Time) < unix_timestamp(?) group by Grid_latitude,Grid_longitude";       
+            Addsql = "select Grid_latitude,Grid_longitude,count(*) as num from moving_object where Grid_latitude >=? && Grid_latitude <? && Grid_longitude >= ? && Grid_longitude <? && unix_timestamp(Time) > unix_timestamp(?) &&unix_timestamp(Time) < unix_timestamp(?) group by Grid_latitude,Grid_longitude";
         } else {
             Addsql = "select Grid_latitude,Grid_longitude,count(*) as num from moving_object where Grid_latitude >=? && Grid_latitude <? && Grid_longitude >= ? && Grid_longitude <? && unix_timestamp(Time) > unix_timestamp(?) &&unix_timestamp(Time) < unix_timestamp(?) &&Source=? group by Grid_latitude,Grid_longitude";
             Addsql_param.push(callsign);
         }
         for (i=0;i<row_num;++i)
-        	draw[i] = [];
+            draw[i] = [];
         client.query(Addsql, Addsql_param,function(err,rows){
             if (typeof(rows)!='undefined'){
-            	for (i=0;i<rows.length;++i){
-            		draw[Math.floor((rows[i].Grid_latitude-lat_num)/incre)][Math.floor((rows[i].Grid_longitude-lng_num)/incre)]=rows[i].num;
-            	}
-            	//console.log(Addsql_param)
-            	console.log("zoomout delay:"+(new Date().getTime()-start_time))
+                for (i=0;i<rows.length;++i){
+                    draw[Math.floor((rows[i].Grid_latitude-lat_num)/incre)][Math.floor((rows[i].Grid_longitude-lng_num)/incre)]=rows[i].num;
+                }
+                //console.log(Addsql_param)
+                console.log("zoomout delay:"+(new Date().getTime()-start_time))
                 return res.json(draw);
             }
         });

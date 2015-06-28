@@ -1,6 +1,7 @@
 var mysql = require('mysql');
 var request = require('request');
 var client = mysql.createConnection(require("../DBconfig.json"));
+var crypto = require('crypto');
 
 exports.register = function(req, res) {
     console.log(req.url);
@@ -38,8 +39,9 @@ exports.register = function(req, res) {
                     message: "Registered e-mail"
                 });
             } else {
+                hashedPassword = crypto.createHash('md5').update(req.body.pw).digest('hex');
                 client.query('INSERT INTO user(email, password)' +
-                    'VALUES(?,?)', [req.body.email, req.body.pw]);
+                    'VALUES(?,?)', [req.body.email, String(hashedPassword)]);
                 return res.json({
                     code: 0,
                     message: "Register success"
@@ -65,7 +67,8 @@ exports.login = function(req, res) {
                 throw err;
             }
             if (row[0]) {
-                if (row[0].password != req.body.pw)
+                hashedPassword = crypto.createHash('md5').update(req.body.pw).digest('hex');
+                if (row[0].password != String(hashedPassword))
                     return res.json({
                         code: 5,
                         message: "Wrong password"
@@ -90,16 +93,37 @@ exports.login = function(req, res) {
 exports.changePassword = function(req, res) {
     console.log(req.url);
     console.log('e-mail= ' + req.session.email);
-    console.log('old password= ' + req.opw);
-    console.log('new password= ' + req.npw);
+    console.log('old password= ' + req.body.opw);
+    console.log('new password= ' + req.body.npw);
+    console.log('new password= ' + req.body.renpw);
 
-    if (req.body.pw.length < 6) {
+    if (req.body.npw.length < 6) {
         return res.json({
             code: 2,
             message: "Password too short"
         });
     }
-    client.query('UPDATE user SET password=? WHERE email=?', [req.pw, req.session.email],
+    if (req.body.npw != req.body.renpw) {
+        return res.json({
+            code: 3,
+            message: "Password confirm error"
+        });
+    }
+    client.query('SELECT * FROM user WHERE email=?', [req.session.email],
+        function(err, row, fields) {
+            if (err) {
+                throw err;
+            }
+            if (row[0]) {
+                hashedPassword = crypto.createHash('md5').update(req.body.opw).digest('hex');
+                if (row[0].password != String(hashedPassword))
+                    return res.json({
+                        code: 5,
+                        message: "Wrong password"
+                    });
+        }
+    });
+    client.query('UPDATE user SET password=? WHERE email=?', [crypto.createHash('md5').update(req.body.npw).digest('hex'), req.session.email],
         function(err, row, fields) {
             if (err) {
                 throw err;
@@ -129,7 +153,7 @@ exports.getSavedPosition = function(req, res, next) {
                 if (err) {
                     console.log('err');
                     throw err;
-                } else if (row[0].mapCenterX.length === 0)
+                } else if (!row[0].mapCenterX)
                     next()
                 else return res.json({
                     code: 0,
