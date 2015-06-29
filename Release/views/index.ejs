@@ -516,6 +516,7 @@ function login_post(){
       $('#logout_button').toggle();
       $('#signup_button').toggle();
       $('#change_pw_button').toggle();
+      $('#uploadForm').toggle();
       $('#login_form').hide();
       $('#signup_form').hide();
       $("#login-result").html("");
@@ -573,6 +574,7 @@ function logout(){
   })
   $.get('/logout', function(data) {
     if (data.code==0){
+      $('#uploadForm').toggle();
       $('#login_button').toggle();
       $('#logout_button').toggle();
       $('#signup_button').toggle();
@@ -685,6 +687,16 @@ $(window).unload(function(){
         <div class="button" id="logout_button" onclick="logout()" hidden>Log out</div>
         <!--Please add the user control and date/time/function select panel here-->
         <div class="button" id="change_pw_button" onclick="$('#change_pw_form').toggle()" hidden>Change password</div>
+        <form   id      = "uploadForm"
+                enctype = "multipart/form-data"
+                action  = "/photoUpload"
+                method  = "post" class='middle'
+                hidden>
+                <div class='button'>Change Banner
+                    <input id='buttonFile' type="file"   name="userPhoto" onchange="submit()"/>
+                    <!--use onchange to perform the upload-->
+                </div>
+        </form>
         <div id="change_pw_form" hidden>
           <table class='timeSelect'>
               <tr>
