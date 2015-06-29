@@ -1,5 +1,5 @@
 /*
-	Version:1.1.1
+	Version:1.1.2
 	If database upgraded, please run DB_upgrade\convert_(oldversion)to(newversion)
 	If version number is not available in your old init.sql, run convert_1.0.0to1.1.0 to upgrade to version 1.1.0
 */
@@ -64,4 +64,11 @@ CREATE TABLE `user` (
 	bannerWordColor varchar(20) DEFAULT NULL,
 	bannerWordFont varchar(20) DEFAULT NULL,
 	PRIMARY KEY (id)
+);
+
+CREATE TABLE `raw_data` (
+	Source varchar(30),
+	Time datetime,
+	Data varchar(500),
+	PRIMARY KEY (Source,Time)
 );

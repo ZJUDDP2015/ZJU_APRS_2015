@@ -1,5 +1,5 @@
 var http = require("http");
-http.globalAgent.maxSockets = 500;
+//http.globalAgent.maxSockets = 500;
 
 function SendtoDB(object, url){
     var req=http.request({
@@ -15,12 +15,14 @@ function SendtoDB(object, url){
     });
     req.on('error', function(e) { 
     });
+    /*
     req.on('socket', function (socket) {
-        socket.setTimeout(1);
+<<<<<<< HEAD
+        socket.setTimeout(5);
         socket.on('timeout', function() {
             req.abort();
         });
-    });
+    });*/
     req.write(JSON.stringify(object));
     req.end();
 }

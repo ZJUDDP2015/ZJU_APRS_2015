@@ -454,21 +454,50 @@ function refreshRoute() {
               map.addOverlay(m);*/
               var opts = {
  					width : 350,     // 信息窗口宽度
- 					height: 125,     // 信息窗口高度
- 					title : "<a href='/callsign?name=" + e.point.source + "' target='_blank'>" + e.point.source + "</a>"  // 信息窗口标题
+ 					height: 165,     // 信息窗口高度
+ 					title : "呼号: " + e.point.source  // 信息窗口标题
 				}
-			  var table = "<table border='0' > <tr>" + "<td width='200px'>经度: " + p.lng + "</td>" + "<td>纬度: " + p.lat + "</td></tr>" + "<tr>" + "<td width='200px'>路径: " + e.point.path + "</td>" + "<td>目的地: " + e.point.des + "</td></tr></table>" + "时间: " + e.point.time +
-			  				"<br>注释: " + e.point.comment ;
-			  var s = "经度: " + p.lng + " | 纬度: " + p.lat + "<br>路径: " + e.point.path + " | 目的地: " + e.point.des + "<br>时间: " + e.point.time + "<br>注释: " + e.point.comment;
+			  var table = "<table border='0' > <tr>" + "<td width='200px'>经度: " + p.lng + "</td>" + "<td>纬度: " + p.lat + "</td></tr>" + "<tr>" + "<td width='200px'>路径: " + "<a href='/path?name=" + e.point.path + "' target='_blank'>" + e.point.path + "</a>" + "</td>" + "<td>目的地: " + e.point.des + "</td></tr></table>" + "时间: " + e.point.time +
+			  				"<br>注释: " + e.point.comment + "<br><br>" + "　　　 　　　　　　" + "<a href='/callsign?name=" + e.point.source + "' target='_blank'>" + "查看详细信息" + "</a>";
 			  var m = new BMap.InfoWindow(table, opts);  // 创建信息窗口对象
 			  map.openInfoWindow(m, e.point);      // 打开信息窗口
 
             });
 
-			var digipeater = [];
+  			var digipeater = [], pathline;
+        var curve;
+        var m;
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      ＴＨＩＳ ＰＡＲＴ ＣＡＮ ＮＯＴ ＢＥ　ＲＥＭＯＶＥＤ
             pointCollection.addEventListener('mouseover',function (e){
             	var out = "";
+
+              /*
+              var p = new BMap.Point(e.point.lng, e.point.lat);
+              m = new BMap.Marker(p);
+              var l = new BMap.Label("", {offset: new BMap.Size(-20, -20)});
+              l.setContent("Source:"+e.point.source);
+              setLabel(l);
+              m.setLabel(l);
+              map.addOverlay(m);
+              */
+
+              var p=new BMap.Point(e.point.lng,e.point.lat);
+              var opts = {
+                position : p,    // 指定文本标注所在的地理位置
+                offset   : new BMap.Size(30, -30)    //设置文本偏移量
+              }
+              m = new BMap.Label(""+e.point.source, opts);  // 创建文本标注对象
+              m.setStyle({
+                color : "black",
+                fontSize : "12px",
+                height : "20px",
+                lineHeight : "20px",
+                fontFamily:"微软雅黑"
+              });
+              map.addOverlay(m);
+
+
+
             	var paths = JSON.parse(e.point.path);
             	//alert(paths+' type:'+typeof(paths));
             	//alert(out+' type:'+typeof(out));
@@ -478,31 +507,34 @@ function refreshRoute() {
             	}*/
             	var pp = new BMap.Point(e.point.lng, e.point.lat);
 
-            	digipeater.push(pp);
-            	//这里的paths并不是数组（和说好的不一样），所以会报错
-            	for (var j in paths){
-            		//alert(paths[j]);
-            		if(typeof(callsignposition[paths[j]]) !== 'undefined' && paths[j]!=e.point.source){
-            			//console.log(callsignposition[paths[j]] !== 'undefined');
-            			pp = new BMap.Point(callsignposition[paths[j]].lng, callsignposition[paths[j]].lat);
-            			digipeater.push(pp);
-            		}
-            		//out += callsignposition[paths[j]].lng+' '+callsignposition[paths[j]].lat+'\n';
-            	}//------------------------------------* /
-            	//digipeater.push(new BMap.Point(callsignposition[paths].lng, callsignposition[paths].lat));
-            	//digipeater.push(new BMap.Point(pts[2].lng, pts[2].lat));
-            	if(digipeater.length>1){
-            		curve = new BMapLib.CurveLine(digipeater,{strokeColor:"blue", strokeWeight:3, strokeOpacity:0.5});
-                	map.addOverlay(curve); // add curve into the map
-                }
-                //alert(out);
-            })
-            pointCollection.addEventListener('mouseout',function (e){
-            	if(digipeater.length>1)
-            		map.removeOverlay(curve);
-            	digipeater = [];
-            })
-       }
+        	digipeater.push(pp);
+        	//这里的paths并不是数组（和说好的不一样），所以会报错
+        	for (var j in paths){
+        		//alert(paths[j]);
+        		if(typeof(callsignposition[paths[j]]) !== 'undefined' && paths[j]!=e.point.source){
+        			//console.log(callsignposition[paths[j]] !== 'undefined');
+        			pp = new BMap.Point(callsignposition[paths[j]].lng, callsignposition[paths[j]].lat);
+        			digipeater.push(pp);
+        		}
+        		//out += callsignposition[paths[j]].lng+' '+callsignposition[paths[j]].lat+'\n';
+        	}//------------------------------------* /
+        	//digipeater.push(new BMap.Point(callsignposition[paths].lng, callsignposition[paths].lat));
+        	//digipeater.push(new BMap.Point(pts[2].lng, pts[2].lat));
+        	if(digipeater.length>1){
+        		//curve = new BMapLib.CurveLine(digipeater,{strokeColor:"blue", strokeWeight:3, strokeOpacity:0.5});
+            //map.addOverlay(curve); // add curve into the map
+            pathline = new BMap.Polyline(digipeater,{strokeColor:"blue", strokeWeight:3, strokeOpacity:0.5});
+            map.addOverlay(pathline);
+          }
+            //alert(out);
+        })
+        pointCollection.addEventListener('mouseout',function (e){
+        	if(digipeater.length>1)
+        		map.removeOverlay(pathline);
+        	digipeater = [];
+          map.removeOverlay(m);
+        })
+      }
         //markerClusterer=new BMapLib.MarkerClusterer(map,{GridSize:10,markers:markers});
     });
 }
@@ -517,20 +549,24 @@ function login_post(){
       $('#logout_button').toggle();
       $('#signup_button').toggle();
       $('#change_pw_button').toggle();
+      $('#uploadForm').toggle();
       $('#login_form').hide();
       $('#signup_form').hide();
+      document.getElementById('bannerimg').src = "http://localhost:3001/uploads/" + $("#email").val() + ".png";
       $("#login-result").html("");
       $.get('/getSavedPosition',function(data){
-        var point = new BMap.Point(data.py,data.px);
-        map.setCenter(point);
+        if (typeof(data.py)!='undefined' && typeof(data.px)!='undefined'){
+            var point = new BMap.Point(data.py,data.px);
+            map.setCenter(point);
+        }
       })
     }else{
-      
+
     }
     $("#login-result").html(data.message);
   });
   return false;
-} 
+}
 
 function signup_post(){
   $.post('/register', {
@@ -541,12 +577,12 @@ function signup_post(){
     if (data.code==0){
       $("#signup-result").html("");
     }else{
-      
+
     }
     $("#signup-result").html(data.message);
   });
   return false;
-} 
+}
 
 function change_pw_post(){
   $.post('/changePassword', {
@@ -557,12 +593,12 @@ function change_pw_post(){
     if (data.code==0){
       $("#change_pw-result").html("");
     }else{
-      
+
     }
     $("#change_pw-result").html(data.message);
   });
   return false;
-} 
+}
 
 function logout(){
   var center = map.getCenter();
@@ -574,6 +610,7 @@ function logout(){
   })
   $.get('/logout', function(data) {
     if (data.code==0){
+      $('#uploadForm').toggle();
       $('#login_button').toggle();
       $('#logout_button').toggle();
       $('#signup_button').toggle();
@@ -581,14 +618,14 @@ function logout(){
       $('#change_pw_form').hide();
       $("#login-result").html("");
       var center = map.getCenter();
-      
+
     }else{
-      
+
     }
     //$("#change_pw-result").html(data.message);
   });
   return false;
-} 
+}
 
 $(window).unload(function(){
   var center = map.getCenter();
@@ -600,17 +637,19 @@ $(window).unload(function(){
   })
 });
 
+
+
 </script>
 </head>
 
 
 <body style="overflow:hidden" onload="init();">
     <div id="container" style="position: absolute; top:0; width:100%; height:100%; border:none; z-index:0"></div>
-    <input type='checkbox' id='sideToggle'>
+    <input type='checkbox' id='sideToggle'>s
     <aside>
         <div id='banner'>
             <!--Please Replace this part with BANNER-->
-            <img src="/uploads/default.png" width="180" alt="Sample Logo" />
+            <img src="http://localhost:3001/uploads/default.png" width="180" id='bannerimg' onerror="javascript:this.src='http://localhost:3001/uploads/default.png'" alt="Sample Logo" />
         </div>
         <p></p>
         <hr width=80% style="margin:auto">
@@ -651,7 +690,7 @@ $(window).unload(function(){
                   <td>
                       <input class='timeSelectInput' id="pw" type="password" width="100px" required></input>
                   </td>
-              </tr>    
+              </tr>
           </table>
           <div id="login-result" align="center"></div>
           <div class='button' onclick="login_post()">Submit</div>
@@ -671,13 +710,13 @@ $(window).unload(function(){
                   <td>
                       <input class='timeSelectInput' id="pw_signup" type="password" width="100px" required></input>
                   </td>
-              </tr> 
+              </tr>
               <tr>
                   <td>Confirm Password</td>
                   <td>
                       <input class='timeSelectInput' id="repw" type="password" width="100px" required></input>
                   </td>
-              </tr>     
+              </tr>
           </table>
           <div id="signup-result" align="center"></div>
           <div class='button' onclick="signup_post()">Submit</div>
@@ -686,6 +725,16 @@ $(window).unload(function(){
         <div class="button" id="logout_button" onclick="logout()" hidden>Log out</div>
         <!--Please add the user control and date/time/function select panel here-->
         <div class="button" id="change_pw_button" onclick="$('#change_pw_form').toggle()" hidden>Change password</div>
+        <form   id      = "uploadForm"
+                enctype = "multipart/form-data"
+                action  = "/photoUpload"
+                method  = "post" class='middle'
+                hidden>
+                <div class='button'>Change Banner
+                    <input id='buttonFile' type="file"   name="userPhoto" onchange="submit()"/>
+                    <!--use onchange to perform the upload-->
+                </div>
+        </form>
         <div id="change_pw_form" hidden>
           <table class='timeSelect'>
               <tr>
@@ -693,19 +742,19 @@ $(window).unload(function(){
                   <td>
                       <input class='timeSelectInput' id="opw" type="password" width="100px" required></input>
                   </td>
-              </tr> 
+              </tr>
               <tr>
                   <td>new Password</td>
                   <td>
                       <input class='timeSelectInput' id="npw" type="password" width="100px" required></input>
                   </td>
-              </tr> 
+              </tr>
               <tr>
                   <td>Confirm new Password</td>
                   <td>
                       <input class='timeSelectInput' id="renpw" type="password" width="100px" required></input>
                   </td>
-              </tr>     
+              </tr>
           </table>
           <div id="change_pw-result" align="center"></div>
           <div class='button' onclick="change_pw_post()">Submit</div>
@@ -714,6 +763,7 @@ $(window).unload(function(){
     <div id='wrap'>
         <label id='sideMenuControl' for='sideToggle'>=</label>
     </div>
+
 </body>
 
 </html>
