@@ -297,10 +297,6 @@ function refreshRoute() {
     	//callsignposition = [];
         //console.log(result);
         for (var i in result) {
-            $.getJSON("http://api.map.baidu.com/geoconv/v1/?coords="+result[i].lat+","+result[i].lon+"&from=3&to=5&ak=qE02zgmFr4DFG0me1Q6hL73t&output=json&callback=?", function(result){
-		result[i].lat = result.result[0].x;
-		result[i].lon = result.result[0].y;
-	    });	
             if (typeof(points[result[i].id]) == "undefined") {
                 points[result[i].id] = new Array();
                 points[result[i].id][0] = new BMap.Point(result[i].lat, result[i].lon);
@@ -468,45 +464,47 @@ function refreshRoute() {
 
             });
 
-			var digipeater = [];
-      var curve;
+  			var digipeater = [], pathline;
+        var curve;
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      ＴＨＩＳ ＰＡＲＴ ＣＡＮ ＮＯＴ ＢＥ　ＲＥＭＯＶＥＤ
-            pointCollection.addEventListener('mouseover',function (e){
-            	var out = "";
-            	var paths = JSON.parse(e.point.path);
-            	//alert(paths+' type:'+typeof(paths));
-            	//alert(out+' type:'+typeof(out));
-            	//alert(pts.length);
-            	/*for(var j in pts){
-            		out += pts[j].path +" "+pts[j].source+'\n';
-            	}*/
-            	var pp = new BMap.Point(e.point.lng, e.point.lat);
+        pointCollection.addEventListener('mouseover',function (e){
+        	var out = "";
+        	var paths = JSON.parse(e.point.path);
+        	//alert(paths+' type:'+typeof(paths));
+        	//alert(out+' type:'+typeof(out));
+        	//alert(pts.length);
+        	/*for(var j in pts){
+        		out += pts[j].path +" "+pts[j].source+'\n';
+        	}*/
+        	var pp = new BMap.Point(e.point.lng, e.point.lat);
 
-            	digipeater.push(pp);
-            	//这里的paths并不是数组（和说好的不一样），所以会报错
-            	for (var j in paths){
-            		//alert(paths[j]);
-            		if(typeof(callsignposition[paths[j]]) !== 'undefined' && paths[j]!=e.point.source){
-            			//console.log(callsignposition[paths[j]] !== 'undefined');
-            			pp = new BMap.Point(callsignposition[paths[j]].lng, callsignposition[paths[j]].lat);
-            			digipeater.push(pp);
-            		}
-            		//out += callsignposition[paths[j]].lng+' '+callsignposition[paths[j]].lat+'\n';
-            	}//------------------------------------* /
-            	//digipeater.push(new BMap.Point(callsignposition[paths].lng, callsignposition[paths].lat));
-            	//digipeater.push(new BMap.Point(pts[2].lng, pts[2].lat));
-            	if(digipeater.length>1){
-            		curve = new BMapLib.CurveLine(digipeater,{strokeColor:"blue", strokeWeight:3, strokeOpacity:0.5});
-                	map.addOverlay(curve); // add curve into the map
-                }
-                //alert(out);
-            })
-            pointCollection.addEventListener('mouseout',function (e){
-            	if(digipeater.length>1)
-            		map.removeOverlay(curve);
-            	digipeater = [];
-            })
-       }
+        	digipeater.push(pp);
+        	//这里的paths并不是数组（和说好的不一样），所以会报错
+        	for (var j in paths){
+        		//alert(paths[j]);
+        		if(typeof(callsignposition[paths[j]]) !== 'undefined' && paths[j]!=e.point.source){
+        			//console.log(callsignposition[paths[j]] !== 'undefined');
+        			pp = new BMap.Point(callsignposition[paths[j]].lng, callsignposition[paths[j]].lat);
+        			digipeater.push(pp);
+        		}
+        		//out += callsignposition[paths[j]].lng+' '+callsignposition[paths[j]].lat+'\n';
+        	}//------------------------------------* /
+        	//digipeater.push(new BMap.Point(callsignposition[paths].lng, callsignposition[paths].lat));
+        	//digipeater.push(new BMap.Point(pts[2].lng, pts[2].lat));
+        	if(digipeater.length>1){
+        		//curve = new BMapLib.CurveLine(digipeater,{strokeColor:"blue", strokeWeight:3, strokeOpacity:0.5});
+            //map.addOverlay(curve); // add curve into the map
+            pathline = new BMap.Polyline(digipeater,{strokeColor:"blue", strokeWeight:3, strokeOpacity:0.5});
+            map.addOverlay(pathline);
+          }
+            //alert(out);
+        })
+        pointCollection.addEventListener('mouseout',function (e){
+        	if(digipeater.length>1)
+        		map.removeOverlay(pathline);
+        	digipeater = [];
+        })
+      }
         //markerClusterer=new BMapLib.MarkerClusterer(map,{GridSize:10,markers:markers});
     });
 }
