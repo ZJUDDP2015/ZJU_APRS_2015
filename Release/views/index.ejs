@@ -297,6 +297,10 @@ function refreshRoute() {
     	//callsignposition = [];
         //console.log(result);
         for (var i in result) {
+            $.getJSON("http://api.map.baidu.com/geoconv/v1/?coords="+result[i].lat+","+result[i].lon+"&from=3&to=5&ak=qE02zgmFr4DFG0me1Q6hL73t&output=json&callback=?", function(result){
+		result[i].lat = result.result[0].x;
+		result[i].lon = result.result[0].y;
+	    });	
             if (typeof(points[result[i].id]) == "undefined") {
                 points[result[i].id] = new Array();
                 points[result[i].id][0] = new BMap.Point(result[i].lat, result[i].lon);
