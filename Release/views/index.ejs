@@ -466,17 +466,46 @@ function refreshRoute() {
 
   			var digipeater = [], pathline;
         var curve;
+        var m;
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      ＴＨＩＳ ＰＡＲＴ ＣＡＮ ＮＯＴ ＢＥ　ＲＥＭＯＶＥＤ
-        pointCollection.addEventListener('mouseover',function (e){
-        	var out = "";
-        	var paths = JSON.parse(e.point.path);
-        	//alert(paths+' type:'+typeof(paths));
-        	//alert(out+' type:'+typeof(out));
-        	//alert(pts.length);
-        	/*for(var j in pts){
-        		out += pts[j].path +" "+pts[j].source+'\n';
-        	}*/
-        	var pp = new BMap.Point(e.point.lng, e.point.lat);
+            pointCollection.addEventListener('mouseover',function (e){
+            	var out = "";
+
+              /*
+              var p = new BMap.Point(e.point.lng, e.point.lat);
+              m = new BMap.Marker(p);
+              var l = new BMap.Label("", {offset: new BMap.Size(-20, -20)});
+              l.setContent("Source:"+e.point.source);
+              setLabel(l);
+              m.setLabel(l);
+              map.addOverlay(m);
+              */
+
+              var p=new BMap.Point(e.point.lng,e.point.lat);
+              var opts = {
+                position : p,    // 指定文本标注所在的地理位置
+                offset   : new BMap.Size(30, -30)    //设置文本偏移量
+              }
+              m = new BMap.Label(""+e.point.source, opts);  // 创建文本标注对象
+              m.setStyle({
+                color : "black",
+                fontSize : "12px",
+                height : "20px",
+                lineHeight : "20px",
+                fontFamily:"微软雅黑"
+              });
+              map.addOverlay(m);
+
+
+
+            	var paths = JSON.parse(e.point.path);
+            	//alert(paths+' type:'+typeof(paths));
+            	//alert(out+' type:'+typeof(out));
+            	//alert(pts.length);
+            	/*for(var j in pts){
+            		out += pts[j].path +" "+pts[j].source+'\n';
+            	}*/
+            	var pp = new BMap.Point(e.point.lng, e.point.lat);
 
         	digipeater.push(pp);
         	//这里的paths并不是数组（和说好的不一样），所以会报错
@@ -503,6 +532,7 @@ function refreshRoute() {
         	if(digipeater.length>1)
         		map.removeOverlay(pathline);
         	digipeater = [];
+          map.removeOverlay(m);
         })
       }
         //markerClusterer=new BMapLib.MarkerClusterer(map,{GridSize:10,markers:markers});
@@ -524,8 +554,10 @@ function login_post(){
       $('#signup_form').hide();
       $("#login-result").html("");
       $.get('/getSavedPosition',function(data){
-        var point = new BMap.Point(data.py,data.px);
-        map.setCenter(point);
+        if (typeof(data.py)!='undefined' && typeof(data.px)!='undefined'){
+            var point = new BMap.Point(data.py,data.px);
+            map.setCenter(point);
+        }
       })
     }else{
 
