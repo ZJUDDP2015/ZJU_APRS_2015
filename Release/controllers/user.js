@@ -54,6 +54,8 @@ exports.login = function(req, res) {
     console.log('>>>>>>>>>>>>>>url= ' + req.url);
     console.log('>>>>>>>>>>>>>>e-mail= ' + req.body.email);
     console.log('>>>>>>>>>>>>>>password= ' + req.body.pw);
+    
+    exports.loginmail = req.body.email;
 
     if (req.body.email.length === 0) {
         return res.json({

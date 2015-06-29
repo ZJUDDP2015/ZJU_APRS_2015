@@ -519,6 +519,7 @@ function login_post(){
       $('#uploadForm').toggle();
       $('#login_form').hide();
       $('#signup_form').hide();
+      document.getElementById('bannerimg').src = "http://localhost:3001/uploads/" + $("#email").val() + ".png";
       $("#login-result").html("");
       $.get('/getSavedPosition',function(data){
         var point = new BMap.Point(data.py,data.px);
@@ -601,17 +602,19 @@ $(window).unload(function(){
   })
 });
 
+
+
 </script>
 </head>
 
 
 <body style="overflow:hidden" onload="init();">
     <div id="container" style="position: absolute; top:0; width:100%; height:100%; border:none; z-index:0"></div>
-    <input type='checkbox' id='sideToggle'>
+    <input type='checkbox' id='sideToggle'>s
     <aside>
         <div id='banner'>
             <!--Please Replace this part with BANNER-->
-            <img src="/uploads/default.png" width="180" alt="Sample Logo" />
+            <img src="http://localhost:3001/uploads/default.png" width="180" id='bannerimg' alt="Sample Logo" />
         </div>
         <p></p>
         <hr width=80% style="margin:auto">
@@ -725,6 +728,7 @@ $(window).unload(function(){
     <div id='wrap'>
         <label id='sideMenuControl' for='sideToggle'>=</label>
     </div>
+
 </body>
 
 </html>

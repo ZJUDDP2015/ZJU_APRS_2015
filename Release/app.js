@@ -9,8 +9,10 @@ var multer = require('multer');
 
 var index = require('./routes/index');
 var data = require('./routes/data');
+var user = require('./controllers/user.js');
 
 var app = express();
+var done=false;
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -36,18 +38,25 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index);
 app.use('/data', data);
 
-app.use(multer({
-    dest: './public/uploads/',
-    rename: function(fieldname, filename) {
-        return "default";
-    },
-    onFileUploadStart: function(file) {
-        console.log(file.originalname + ' is starting ...')
-    },
-    onFileUploadComplete: function(file) {
-        console.log(file.fieldname + ' uploaded to  ' + file.path)
-    }
+app.use(multer({ dest: './public/uploads/',
+ rename: function (fieldname, filename) {
+    return user.loginmail;
+  },
+onFileUploadStart: function (file) {
+  console.log(file.originalname + ' is starting ...')
+},
+onFileUploadComplete: function (file) {
+  console.log(file.fieldname + ' uploaded to  ' + file.path)
+  done=true;
+}
 }));
+
+app.post('/photoUpload',function(req,res){
+  if(done==true){
+    res.redirect("http://localhost:3001"); // CHANGE     IT     INTO     SEVER     ADDRESS
+  }
+});
+
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
