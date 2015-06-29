@@ -556,8 +556,10 @@ function login_post(){
       $('#signup_form').hide();
       $("#login-result").html("");
       $.get('/getSavedPosition',function(data){
-        var point = new BMap.Point(data.py,data.px);
-        map.setCenter(point);
+        if (typeof(data.py)!='undefined' && typeof(data.px)!='undefined'){
+            var point = new BMap.Point(data.py,data.px);
+            map.setCenter(point);
+        }
       })
     }else{
 
