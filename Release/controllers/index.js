@@ -1,12 +1,9 @@
 var express = require('express');
-var Promise = require("bluebird");
 var mysql = require('mysql');
 var url = require('url');
 var fs = require('fs');
 var client = mysql.createConnection(require("../DBconfig.json"));
 var connection;
-
-Promise.promisifyAll(fs);
 
 function toMysqlFormat(date) {
     return date.getFullYear() + "-" + twoDigits(1 + date.getMonth()) + "-" + twoDigits(date.getDate()) + " " + twoDigits(date.getHours()) + ":" + twoDigits(date.getMinutes()) + ":" + twoDigits(date.getSeconds());
