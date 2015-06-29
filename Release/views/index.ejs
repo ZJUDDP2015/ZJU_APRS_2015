@@ -454,12 +454,11 @@ function refreshRoute() {
               map.addOverlay(m);*/
               var opts = {
  					width : 350,     // 信息窗口宽度
- 					height: 125,     // 信息窗口高度
- 					title : "<a href='/callsign?name=" + e.point.source + "' target='_blank'>" + e.point.source + "</a>"  // 信息窗口标题
+ 					height: 165,     // 信息窗口高度
+ 					title : "呼号: " + e.point.source  // 信息窗口标题
 				}
-			  var table = "<table border='0' > <tr>" + "<td width='200px'>经度: " + p.lng + "</td>" + "<td>纬度: " + p.lat + "</td></tr>" + "<tr>" + "<td width='200px'>路径: " + e.point.path + "</td>" + "<td>目的地: " + e.point.des + "</td></tr></table>" + "时间: " + e.point.time +
-			  				"<br>注释: " + e.point.comment ;
-			  var s = "经度: " + p.lng + " | 纬度: " + p.lat + "<br>路径: " + e.point.path + " | 目的地: " + e.point.des + "<br>时间: " + e.point.time + "<br>注释: " + e.point.comment;
+			  var table = "<table border='0' > <tr>" + "<td width='200px'>经度: " + p.lng + "</td>" + "<td>纬度: " + p.lat + "</td></tr>" + "<tr>" + "<td width='200px'>路径: " + "<a href='/path?name=" + e.point.path + "' target='_blank'>" + e.point.path + "</a>" + "</td>" + "<td>目的地: " + e.point.des + "</td></tr></table>" + "时间: " + e.point.time +
+			  				"<br>注释: " + e.point.comment + "<br><br>" + "　　　 　　　　　　" + "<a href='/callsign?name=" + e.point.source + "' target='_blank'>" + "查看详细信息" + "</a>";
 			  var m = new BMap.InfoWindow(table, opts);  // 创建信息窗口对象
 			  map.openInfoWindow(m, e.point);      // 打开信息窗口
 
