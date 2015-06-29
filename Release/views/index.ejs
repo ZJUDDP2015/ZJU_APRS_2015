@@ -465,7 +465,11 @@ function refreshRoute() {
             });
 
 			var digipeater = [];
+<<<<<<< HEAD
       var m;
+=======
+      var curve;
+>>>>>>> 2fd4bc123f55e729d90a5750be4b9267f6c23d4b
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      ＴＨＩＳ ＰＡＲＴ ＣＡＮ ＮＯＴ ＢＥ　ＲＥＭＯＶＥＤ
             pointCollection.addEventListener('mouseover',function (e){
             	var out = "";
@@ -556,12 +560,12 @@ function login_post(){
         map.setCenter(point);
       })
     }else{
-      
+
     }
     $("#login-result").html(data.message);
   });
   return false;
-} 
+}
 
 function signup_post(){
   $.post('/register', {
@@ -572,12 +576,12 @@ function signup_post(){
     if (data.code==0){
       $("#signup-result").html("");
     }else{
-      
+
     }
     $("#signup-result").html(data.message);
   });
   return false;
-} 
+}
 
 function change_pw_post(){
   $.post('/changePassword', {
@@ -588,12 +592,12 @@ function change_pw_post(){
     if (data.code==0){
       $("#change_pw-result").html("");
     }else{
-      
+
     }
     $("#change_pw-result").html(data.message);
   });
   return false;
-} 
+}
 
 function logout(){
   var center = map.getCenter();
@@ -613,14 +617,14 @@ function logout(){
       $('#change_pw_form').hide();
       $("#login-result").html("");
       var center = map.getCenter();
-      
+
     }else{
-      
+
     }
     //$("#change_pw-result").html(data.message);
   });
   return false;
-} 
+}
 
 $(window).unload(function(){
   var center = map.getCenter();
@@ -683,7 +687,7 @@ $(window).unload(function(){
                   <td>
                       <input class='timeSelectInput' id="pw" type="password" width="100px" required></input>
                   </td>
-              </tr>    
+              </tr>
           </table>
           <div id="login-result" align="center"></div>
           <div class='button' onclick="login_post()">Submit</div>
@@ -703,13 +707,13 @@ $(window).unload(function(){
                   <td>
                       <input class='timeSelectInput' id="pw_signup" type="password" width="100px" required></input>
                   </td>
-              </tr> 
+              </tr>
               <tr>
                   <td>Confirm Password</td>
                   <td>
                       <input class='timeSelectInput' id="repw" type="password" width="100px" required></input>
                   </td>
-              </tr>     
+              </tr>
           </table>
           <div id="signup-result" align="center"></div>
           <div class='button' onclick="signup_post()">Submit</div>
@@ -735,19 +739,19 @@ $(window).unload(function(){
                   <td>
                       <input class='timeSelectInput' id="opw" type="password" width="100px" required></input>
                   </td>
-              </tr> 
+              </tr>
               <tr>
                   <td>new Password</td>
                   <td>
                       <input class='timeSelectInput' id="npw" type="password" width="100px" required></input>
                   </td>
-              </tr> 
+              </tr>
               <tr>
                   <td>Confirm new Password</td>
                   <td>
                       <input class='timeSelectInput' id="renpw" type="password" width="100px" required></input>
                   </td>
-              </tr>     
+              </tr>
           </table>
           <div id="change_pw-result" align="center"></div>
           <div class='button' onclick="change_pw_post()">Submit</div>
