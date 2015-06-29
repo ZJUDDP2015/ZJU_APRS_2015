@@ -12,6 +12,10 @@ sql.connect(function(err) {
         console.log('db connect error', err);
 });
 
+exports.rawData = function(req, res) {
+    console.log(req)
+    res.send("Success");
+}
 
 exports.weather = function(req, res) {
     //console.log(req.body)

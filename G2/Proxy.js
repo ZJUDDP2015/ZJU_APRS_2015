@@ -42,6 +42,7 @@ function Reconnect(){
 
   proxy.on('data',function(data){
     var myDate = new Date();
+    var dataStr = data.toString();
     var array = data.toString().split('\r\n');
     var i = 0;
     for(i = 0; i < array.length - 1; i++) {
@@ -51,7 +52,7 @@ function Reconnect(){
       if(header && info && (header.indexOf('>') != -1)) {
         var Rtn;
         if (info[0] == '!') { // Position without Timestamp and no APRS Messaging
-          Rtn = router.MvOb_without_Timestamp(myDate, header, info);
+          Rtn = router.MvOb_without_Timestamp(myDate, header, info, dataStr);
           if (Rtn.handle) {
             logger.file_write(array[i] + '\r\n' + JSON.stringify(Rtn.res) + '\r\n', './log/MvOb.log', myDate);
             if ((Rtn.res.Latitude > 90) || (Rtn.res.Latitude < -90))
@@ -60,7 +61,7 @@ function Reconnect(){
               logger.file_write('[MicE] ' + array[i] + '\r\n' + JSON.stringify(Rtn.res) + '\r\n', './log/China.log', myDate);
           }
           else {
-            Rtn = router.Wthr_without_Timestamp_no_Message(myDate, header, info);
+            Rtn = router.Wthr_without_Timestamp_no_Message(myDate, header, info, dataStr);
             if (Rtn.handle)
               logger.file_write(array[i] + '\r\n' + JSON.stringify(Rtn.res) + '\r\n', './log/Wthr.log', myDate);
             else
@@ -68,7 +69,7 @@ function Reconnect(){
           }
         }
         else if (info[0] == '=') { // Position without Timestamp with APRS Messaging
-          Rtn = router.MvOb_without_Timestamp(myDate, header, info);
+          Rtn = router.MvOb_without_Timestamp(myDate, header, info, dataStr);
           if (Rtn.handle) {
             logger.file_write(array[i] + '\r\n' + JSON.stringify(Rtn.res) + '\r\n', './log/MvOb.log', myDate);
             if ((Rtn.res.Latitude > 90) || (Rtn.res.Latitude < -90))
@@ -77,7 +78,7 @@ function Reconnect(){
               logger.file_write('[MicE] ' + array[i] + '\r\n' + JSON.stringify(Rtn.res) + '\r\n', './log/China.log', myDate);
           }
           else {
-            Rtn = router.Wthr_without_Timestamp_with_Message(myDate, header, info);
+            Rtn = router.Wthr_without_Timestamp_with_Message(myDate, header, info, dataStr);
             if (Rtn.handle)
               logger.file_write(array[i] + '\r\n' + JSON.stringify(Rtn.res) + '\r\n', './log/Wthr.log', myDate);
             else
@@ -85,7 +86,7 @@ function Reconnect(){
           }
         }
         else if (info[0] == '/' || info[0] == '@') { // Position with timestamp
-          Rtn = router.MvOb_with_Timestamp(myDate, header, info);
+          Rtn = router.MvOb_with_Timestamp(myDate, header, info, dataStr);
           if (Rtn.handle) {
             logger.file_write(array[i] + '\r\n' + JSON.stringify(Rtn.res) + '\r\n', './log/MvOb.log', myDate);
             if ((Rtn.res.Latitude > 90) || (Rtn.res.Latitude < -90))
@@ -94,7 +95,7 @@ function Reconnect(){
               logger.file_write('[MicE] ' + array[i] + '\r\n' + JSON.stringify(Rtn.res) + '\r\n', './log/China.log', myDate);
           }
           else {
-            Rtn = router.Wthr_with_Timestamp(myDate, header, info);
+            Rtn = router.Wthr_with_Timestamp(myDate, header, info, dataStr);
             if (Rtn.handle)
               logger.file_write(array[i] + '\r\n' + JSON.stringify(Rtn.res) + '\r\n', './log/Wthr.log', myDate);
             else
@@ -102,7 +103,7 @@ function Reconnect(){
           }
         }
         else if (info[0] == ';') { // object
-          Rtn = router.MvOb_Object(myDate, header, info);
+          Rtn = router.MvOb_Object(myDate, header, info, dataStr);
           if (Rtn.handle) {
             logger.file_write(array[i] + '\r\n' + JSON.stringify(Rtn.res) + '\r\n', './log/MvOb.log', myDate);
             if ((Rtn.res.Latitude > 90) || (Rtn.res.Latitude < -90))
@@ -111,7 +112,7 @@ function Reconnect(){
               logger.file_write('[MicE] ' + array[i] + '\r\n' + JSON.stringify(Rtn.res) + '\r\n', './log/China.log', myDate);
           }
           else {
-            Rtn = router.Wthr_Object(myDate, header, info);
+            Rtn = router.Wthr_Object(myDate, header, info, dataStr);
             if (Rtn.handle)
               logger.file_write(array[i] + '\r\n' + JSON.stringify(Rtn.res) + '\r\n', './log/Wthr.log', myDate);
             else
@@ -119,7 +120,7 @@ function Reconnect(){
           }
         }
         else if (info[0] == ')') { // item
-          Rtn = router.MvOb_Item(myDate, header, info);
+          Rtn = router.MvOb_Item(myDate, header, info, dataStr);
           if (Rtn.handle) {
             logger.file_write(array[i] + '\r\n' + JSON.stringify(Rtn.res) + '\r\n', './log/MvOb.log', myDate);
             if ((Rtn.res.Latitude > 90) || (Rtn.res.Latitude < -90))
@@ -131,7 +132,7 @@ function Reconnect(){
             logger.file_write('[MvOb] ' + array[i] + '\r\n', './log/Discarded.log', myDate);
         }
         else if (info[0] == "'" || info[0] == '`') { // Mic-E encoded moving objects
-          Rtn = router.MicE_Handle(myDate, array[i]);
+          Rtn = router.MicE_Handle(myDate, array[i], dataStr);
           if (Rtn.handle) {
             logger.file_write(array[i] + '\r\n' + JSON.stringify(Rtn.res) + '\r\n', './log/MicE.log', myDate);
             if ((Rtn.res.Latitude > 90) || (Rtn.res.Latitude < -90))
@@ -143,14 +144,14 @@ function Reconnect(){
             logger.file_write('[MicE] ' + array[i] + '\r\n', './log/Discarded.log', myDate);
         }
         else if (info[0] == '#' || info[0] == '$' || info[0] == '*') {
-          Rtn = router.Wthr_Peet_Bros_or_rawGPS(myDate, header, info);
+          Rtn = router.Wthr_Peet_Bros_or_rawGPS(myDate, header, info, dataStr);
           if (Rtn.handle)
             logger.file_write(array[i] + '\r\n' + JSON.stringify(Rtn.res) + '\r\n', './log/Wthr.log', myDate);
           else
             logger.file_write('[Wthr] ' + array[i] + '\r\n', './log/Discarded.log', myDate);
         }
         else if (info[0] == '_') {
-          Rtn = router.Wthr_Weather_Report(myDate, header, info);
+          Rtn = router.Wthr_Weather_Report(myDate, header, info, dataStr);
           if (Rtn.handle)
             logger.file_write(array[i] + '\r\n' + JSON.stringify(Rtn.res) + '\r\n', './log/Wthr.log', myDate);
           else
