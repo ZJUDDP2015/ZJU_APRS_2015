@@ -485,7 +485,7 @@ function refreshRoute() {
                 position : p,    // 指定文本标注所在的地理位置
                 offset   : new BMap.Size(30, -30)    //设置文本偏移量
               }
-              m = new BMap.Label("Source:"+e.point.source, opts);  // 创建文本标注对象
+              m = new BMap.Label(""+e.point.source, opts);  // 创建文本标注对象
               m.setStyle({
                 color : "black",
                 fontSize : "12px",
