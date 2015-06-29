@@ -297,6 +297,10 @@ function refreshRoute() {
     	//callsignposition = [];
         //console.log(result);
         for (var i in result) {
+            $.getJSON("http://api.map.baidu.com/geoconv/v1/?coords="+result[i].lat+","+result[i].lon+"&from=3&to=5&ak=qE02zgmFr4DFG0me1Q6hL73t&output=json&callback=?", function(result){
+		result[i].lat = result.result[0].x;
+		result[i].lon = result.result[0].y;
+	    });	
             if (typeof(points[result[i].id]) == "undefined") {
                 points[result[i].id] = new Array();
                 points[result[i].id][0] = new BMap.Point(result[i].lat, result[i].lon);
@@ -454,12 +458,11 @@ function refreshRoute() {
               map.addOverlay(m);*/
               var opts = {
  					width : 350,     // 信息窗口宽度
- 					height: 125,     // 信息窗口高度
- 					title : "<a href='/callsign?name=" + e.point.source + "' target='_blank'>" + e.point.source + "</a>"  // 信息窗口标题
+ 					height: 165,     // 信息窗口高度
+ 					title : "呼号: " + e.point.source  // 信息窗口标题
 				}
-			  var table = "<table border='0' > <tr>" + "<td width='200px'>经度: " + p.lng + "</td>" + "<td>纬度: " + p.lat + "</td></tr>" + "<tr>" + "<td width='200px'>路径: " + e.point.path + "</td>" + "<td>目的地: " + e.point.des + "</td></tr></table>" + "时间: " + e.point.time +
-			  				"<br>注释: " + e.point.comment ;
-			  var s = "经度: " + p.lng + " | 纬度: " + p.lat + "<br>路径: " + e.point.path + " | 目的地: " + e.point.des + "<br>时间: " + e.point.time + "<br>注释: " + e.point.comment;
+			  var table = "<table border='0' > <tr>" + "<td width='200px'>经度: " + p.lng + "</td>" + "<td>纬度: " + p.lat + "</td></tr>" + "<tr>" + "<td width='200px'>路径: " + "<a href='/path?name=" + e.point.path + "' target='_blank'>" + e.point.path + "</a>" + "</td>" + "<td>目的地: " + e.point.des + "</td></tr></table>" + "时间: " + e.point.time +
+			  				"<br>注释: " + e.point.comment + "<br><br>" + "　　　 　　　　　　" + "<a href='/callsign?name=" + e.point.source + "' target='_blank'>" + "查看详细信息" + "</a>";
 			  var m = new BMap.InfoWindow(table, opts);  // 创建信息窗口对象
 			  map.openInfoWindow(m, e.point);      // 打开信息窗口
 
@@ -518,6 +521,7 @@ function login_post(){
       $('#logout_button').toggle();
       $('#signup_button').toggle();
       $('#change_pw_button').toggle();
+      $('#uploadForm').toggle();
       $('#login_form').hide();
       $('#signup_form').hide();
       $("#login-result").html("");
@@ -575,6 +579,7 @@ function logout(){
   })
   $.get('/logout', function(data) {
     if (data.code==0){
+      $('#uploadForm').toggle();
       $('#login_button').toggle();
       $('#logout_button').toggle();
       $('#signup_button').toggle();
@@ -687,6 +692,16 @@ $(window).unload(function(){
         <div class="button" id="logout_button" onclick="logout()" hidden>Log out</div>
         <!--Please add the user control and date/time/function select panel here-->
         <div class="button" id="change_pw_button" onclick="$('#change_pw_form').toggle()" hidden>Change password</div>
+        <form   id      = "uploadForm"
+                enctype = "multipart/form-data"
+                action  = "/photoUpload"
+                method  = "post" class='middle'
+                hidden>
+                <div class='button'>Change Banner
+                    <input id='buttonFile' type="file"   name="userPhoto" onchange="submit()"/>
+                    <!--use onchange to perform the upload-->
+                </div>
+        </form>
         <div id="change_pw_form" hidden>
           <table class='timeSelect'>
               <tr>
