@@ -7,6 +7,7 @@ var WthrStream = fs.createWriteStream('./log/Wthr.log', {flags:'a'});
 var DscdStream = fs.createWriteStream('./log/Discarded.log', {flags:'a'});
 var LErrStream = fs.createWriteStream('./log/LatErr.log', {flags:'a'});
 var ChnaStream = fs.createWriteStream('./log/China.log', {flags:'a'});
+var rawErrStream = fs.createWriteStream('./log/rawErr.log', {flags:'a'});
 
 function file_write(content, file, myDate) {
   if (file == './log/Received.log')
@@ -23,6 +24,8 @@ function file_write(content, file, myDate) {
     LErrStream.write('['+myDate.toUTCString()+']'+content);
   if (file == './log/China.log')
     ChnaStream.write('['+myDate.toUTCString()+']'+content);
+  if (file == './log/rawErr.log')
+    rawErrStream.write('['+myDate.toUTCString()+']'+content);
 }
 
 exports.file_write = file_write;

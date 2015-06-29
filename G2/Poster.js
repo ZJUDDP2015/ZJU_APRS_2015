@@ -16,10 +16,11 @@ function SendtoDB(object, url){
     req.on('error', function(e) { 
     });
     req.on('socket', function (socket) {
-        socket.setTimeout(1);
-        socket.on('timeout', function() {
-            req.abort();
-        });
+            socket.setTimeout(1);
+            socket.on('timeout', function() {
+                req.abort();
+            });
+	console.log('problem with request: ' + e.message); 
     });
     req.write(JSON.stringify(object));
     req.end();

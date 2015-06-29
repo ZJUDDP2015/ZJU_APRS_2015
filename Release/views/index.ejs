@@ -464,10 +464,40 @@ function refreshRoute() {
 
             });
 
-			var digipeater = [];
+  			var digipeater = [], pathline;
+        var curve;
+        var m;
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      ＴＨＩＳ ＰＡＲＴ ＣＡＮ ＮＯＴ ＢＥ　ＲＥＭＯＶＥＤ
             pointCollection.addEventListener('mouseover',function (e){
             	var out = "";
+
+              /*
+              var p = new BMap.Point(e.point.lng, e.point.lat);
+              m = new BMap.Marker(p);
+              var l = new BMap.Label("", {offset: new BMap.Size(-20, -20)});
+              l.setContent("Source:"+e.point.source);
+              setLabel(l);
+              m.setLabel(l);
+              map.addOverlay(m);
+              */
+
+              var p=new BMap.Point(e.point.lng,e.point.lat);
+              var opts = {
+                position : p,    // 指定文本标注所在的地理位置
+                offset   : new BMap.Size(30, -30)    //设置文本偏移量
+              }
+              m = new BMap.Label(""+e.point.source, opts);  // 创建文本标注对象
+              m.setStyle({
+                color : "black",
+                fontSize : "12px",
+                height : "20px",
+                lineHeight : "20px",
+                fontFamily:"微软雅黑"
+              });
+              map.addOverlay(m);
+
+
+
             	var paths = JSON.parse(e.point.path);
             	//alert(paths+' type:'+typeof(paths));
             	//alert(out+' type:'+typeof(out));
@@ -477,31 +507,34 @@ function refreshRoute() {
             	}*/
             	var pp = new BMap.Point(e.point.lng, e.point.lat);
 
-            	digipeater.push(pp);
-            	//这里的paths并不是数组（和说好的不一样），所以会报错
-            	for (var j in paths){
-            		//alert(paths[j]);
-            		if(typeof(callsignposition[paths[j]]) !== 'undefined' && paths[j]!=e.point.source){
-            			//console.log(callsignposition[paths[j]] !== 'undefined');
-            			pp = new BMap.Point(callsignposition[paths[j]].lng, callsignposition[paths[j]].lat);
-            			digipeater.push(pp);
-            		}
-            		//out += callsignposition[paths[j]].lng+' '+callsignposition[paths[j]].lat+'\n';
-            	}//------------------------------------* /
-            	//digipeater.push(new BMap.Point(callsignposition[paths].lng, callsignposition[paths].lat));
-            	//digipeater.push(new BMap.Point(pts[2].lng, pts[2].lat));
-            	if(digipeater.length>1){
-            		curve = new BMapLib.CurveLine(digipeater,{strokeColor:"blue", strokeWeight:3, strokeOpacity:0.5});
-                	map.addOverlay(curve); // add curve into the map
-                }
-                //alert(out);
-            })
-            pointCollection.addEventListener('mouseout',function (e){
-            	if(digipeater.length>1)
-            		map.removeOverlay(curve);
-            	digipeater = [];
-            })
-       }
+        	digipeater.push(pp);
+        	//这里的paths并不是数组（和说好的不一样），所以会报错
+        	for (var j in paths){
+        		//alert(paths[j]);
+        		if(typeof(callsignposition[paths[j]]) !== 'undefined' && paths[j]!=e.point.source){
+        			//console.log(callsignposition[paths[j]] !== 'undefined');
+        			pp = new BMap.Point(callsignposition[paths[j]].lng, callsignposition[paths[j]].lat);
+        			digipeater.push(pp);
+        		}
+        		//out += callsignposition[paths[j]].lng+' '+callsignposition[paths[j]].lat+'\n';
+        	}//------------------------------------* /
+        	//digipeater.push(new BMap.Point(callsignposition[paths].lng, callsignposition[paths].lat));
+        	//digipeater.push(new BMap.Point(pts[2].lng, pts[2].lat));
+        	if(digipeater.length>1){
+        		//curve = new BMapLib.CurveLine(digipeater,{strokeColor:"blue", strokeWeight:3, strokeOpacity:0.5});
+            //map.addOverlay(curve); // add curve into the map
+            pathline = new BMap.Polyline(digipeater,{strokeColor:"blue", strokeWeight:3, strokeOpacity:0.5});
+            map.addOverlay(pathline);
+          }
+            //alert(out);
+        })
+        pointCollection.addEventListener('mouseout',function (e){
+        	if(digipeater.length>1)
+        		map.removeOverlay(pathline);
+        	digipeater = [];
+          map.removeOverlay(m);
+        })
+      }
         //markerClusterer=new BMapLib.MarkerClusterer(map,{GridSize:10,markers:markers});
     });
 }
@@ -522,16 +555,18 @@ function login_post(){
       document.getElementById('bannerimg').src = "http://localhost:3001/uploads/" + $("#email").val() + ".png";
       $("#login-result").html("");
       $.get('/getSavedPosition',function(data){
-        var point = new BMap.Point(data.py,data.px);
-        map.setCenter(point);
+        if (typeof(data.py)!='undefined' && typeof(data.px)!='undefined'){
+            var point = new BMap.Point(data.py,data.px);
+            map.setCenter(point);
+        }
       })
     }else{
-      
+
     }
     $("#login-result").html(data.message);
   });
   return false;
-} 
+}
 
 function signup_post(){
   $.post('/register', {
@@ -542,12 +577,12 @@ function signup_post(){
     if (data.code==0){
       $("#signup-result").html("");
     }else{
-      
+
     }
     $("#signup-result").html(data.message);
   });
   return false;
-} 
+}
 
 function change_pw_post(){
   $.post('/changePassword', {
@@ -558,12 +593,12 @@ function change_pw_post(){
     if (data.code==0){
       $("#change_pw-result").html("");
     }else{
-      
+
     }
     $("#change_pw-result").html(data.message);
   });
   return false;
-} 
+}
 
 function logout(){
   var center = map.getCenter();
@@ -583,14 +618,14 @@ function logout(){
       $('#change_pw_form').hide();
       $("#login-result").html("");
       var center = map.getCenter();
-      
+
     }else{
-      
+
     }
     //$("#change_pw-result").html(data.message);
   });
   return false;
-} 
+}
 
 $(window).unload(function(){
   var center = map.getCenter();
@@ -655,7 +690,7 @@ $(window).unload(function(){
                   <td>
                       <input class='timeSelectInput' id="pw" type="password" width="100px" required></input>
                   </td>
-              </tr>    
+              </tr>
           </table>
           <div id="login-result" align="center"></div>
           <div class='button' onclick="login_post()">Submit</div>
@@ -675,13 +710,13 @@ $(window).unload(function(){
                   <td>
                       <input class='timeSelectInput' id="pw_signup" type="password" width="100px" required></input>
                   </td>
-              </tr> 
+              </tr>
               <tr>
                   <td>Confirm Password</td>
                   <td>
                       <input class='timeSelectInput' id="repw" type="password" width="100px" required></input>
                   </td>
-              </tr>     
+              </tr>
           </table>
           <div id="signup-result" align="center"></div>
           <div class='button' onclick="signup_post()">Submit</div>
@@ -707,19 +742,19 @@ $(window).unload(function(){
                   <td>
                       <input class='timeSelectInput' id="opw" type="password" width="100px" required></input>
                   </td>
-              </tr> 
+              </tr>
               <tr>
                   <td>new Password</td>
                   <td>
                       <input class='timeSelectInput' id="npw" type="password" width="100px" required></input>
                   </td>
-              </tr> 
+              </tr>
               <tr>
                   <td>Confirm new Password</td>
                   <td>
                       <input class='timeSelectInput' id="renpw" type="password" width="100px" required></input>
                   </td>
-              </tr>     
+              </tr>
           </table>
           <div id="change_pw-result" align="center"></div>
           <div class='button' onclick="change_pw_post()">Submit</div>
