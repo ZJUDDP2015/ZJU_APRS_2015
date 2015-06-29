@@ -464,22 +464,19 @@ function refreshRoute() {
 
             });
 
-			var digipeater = [];
-<<<<<<< HEAD
-      var m;
-=======
-      var curve;
->>>>>>> 2fd4bc123f55e729d90a5750be4b9267f6c23d4b
+  			var digipeater = [], pathline;
+        var curve;
+        var m;
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      ＴＨＩＳ ＰＡＲＴ ＣＡＮ ＮＯＴ ＢＥ　ＲＥＭＯＶＥＤ
             pointCollection.addEventListener('mouseover',function (e){
             	var out = "";
-              
+
               /*
               var p = new BMap.Point(e.point.lng, e.point.lat);
               m = new BMap.Marker(p);
               var l = new BMap.Label("", {offset: new BMap.Size(-20, -20)});
               l.setContent("Source:"+e.point.source);
-              setLabel(l);       
+              setLabel(l);
               m.setLabel(l);
               map.addOverlay(m);
               */
@@ -497,10 +494,10 @@ function refreshRoute() {
                 lineHeight : "20px",
                 fontFamily:"微软雅黑"
               });
-              map.addOverlay(m);   
+              map.addOverlay(m);
 
 
-            
+
             	var paths = JSON.parse(e.point.path);
             	//alert(paths+' type:'+typeof(paths));
             	//alert(out+' type:'+typeof(out));
@@ -510,33 +507,34 @@ function refreshRoute() {
             	}*/
             	var pp = new BMap.Point(e.point.lng, e.point.lat);
 
-            	digipeater.push(pp);
-            	//这里的paths并不是数组（和说好的不一样），所以会报错
-            	for (var j in paths){
-            		//alert(paths[j]);
-            		if(typeof(callsignposition[paths[j]]) !== 'undefined' && paths[j]!=e.point.source){
-            			//console.log(callsignposition[paths[j]] !== 'undefined');
-            			pp = new BMap.Point(callsignposition[paths[j]].lng, callsignposition[paths[j]].lat);
-            			digipeater.push(pp);
-            		}
-            		//out += callsignposition[paths[j]].lng+' '+callsignposition[paths[j]].lat+'\n';
-            	}//------------------------------------* /
-            	//digipeater.push(new BMap.Point(callsignposition[paths].lng, callsignposition[paths].lat));
-            	//digipeater.push(new BMap.Point(pts[2].lng, pts[2].lat));
-            	if(digipeater.length>1){
-            		curve = new BMapLib.CurveLine(digipeater,{strokeColor:"blue", strokeWeight:3, strokeOpacity:0.5});
-                	map.addOverlay(curve); // add curve into the map
-                }
-                //alert(out);
-            })
-
-            pointCollection.addEventListener('mouseout',function (e){
-            	if(digipeater.length>1)
-            		map.removeOverlay(curve);
-            	digipeater = [];
-              map.removeOverlay(m);
-            })
-       }
+        	digipeater.push(pp);
+        	//这里的paths并不是数组（和说好的不一样），所以会报错
+        	for (var j in paths){
+        		//alert(paths[j]);
+        		if(typeof(callsignposition[paths[j]]) !== 'undefined' && paths[j]!=e.point.source){
+        			//console.log(callsignposition[paths[j]] !== 'undefined');
+        			pp = new BMap.Point(callsignposition[paths[j]].lng, callsignposition[paths[j]].lat);
+        			digipeater.push(pp);
+        		}
+        		//out += callsignposition[paths[j]].lng+' '+callsignposition[paths[j]].lat+'\n';
+        	}//------------------------------------* /
+        	//digipeater.push(new BMap.Point(callsignposition[paths].lng, callsignposition[paths].lat));
+        	//digipeater.push(new BMap.Point(pts[2].lng, pts[2].lat));
+        	if(digipeater.length>1){
+        		//curve = new BMapLib.CurveLine(digipeater,{strokeColor:"blue", strokeWeight:3, strokeOpacity:0.5});
+            //map.addOverlay(curve); // add curve into the map
+            pathline = new BMap.Polyline(digipeater,{strokeColor:"blue", strokeWeight:3, strokeOpacity:0.5});
+            map.addOverlay(pathline);
+          }
+            //alert(out);
+        })
+        pointCollection.addEventListener('mouseout',function (e){
+        	if(digipeater.length>1)
+        		map.removeOverlay(pathline);
+        	digipeater = [];
+          map.removeOverlay(m);
+        })
+      }
         //markerClusterer=new BMapLib.MarkerClusterer(map,{GridSize:10,markers:markers});
     });
 }
@@ -554,10 +552,13 @@ function login_post(){
       $('#uploadForm').toggle();
       $('#login_form').hide();
       $('#signup_form').hide();
+      document.getElementById('bannerimg').src = "http://localhost:3001/uploads/" + $("#email").val() + ".png";
       $("#login-result").html("");
       $.get('/getSavedPosition',function(data){
-        var point = new BMap.Point(data.py,data.px);
-        map.setCenter(point);
+        if (typeof(data.py)!='undefined' && typeof(data.px)!='undefined'){
+            var point = new BMap.Point(data.py,data.px);
+            map.setCenter(point);
+        }
       })
     }else{
 
@@ -636,17 +637,19 @@ $(window).unload(function(){
   })
 });
 
+
+
 </script>
 </head>
 
 
 <body style="overflow:hidden" onload="init();">
     <div id="container" style="position: absolute; top:0; width:100%; height:100%; border:none; z-index:0"></div>
-    <input type='checkbox' id='sideToggle'>
+    <input type='checkbox' id='sideToggle'>s
     <aside>
         <div id='banner'>
             <!--Please Replace this part with BANNER-->
-            <img src="/uploads/default.png" width="180" alt="Sample Logo" />
+            <img src="http://localhost:3001/uploads/default.png" width="180" id='bannerimg' onerror="javascript:this.src='http://localhost:3001/uploads/default.png'" alt="Sample Logo" />
         </div>
         <p></p>
         <hr width=80% style="margin:auto">
@@ -760,6 +763,7 @@ $(window).unload(function(){
     <div id='wrap'>
         <label id='sideMenuControl' for='sideToggle'>=</label>
     </div>
+
 </body>
 
 </html>

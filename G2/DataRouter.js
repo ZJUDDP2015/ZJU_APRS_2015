@@ -351,7 +351,6 @@ function MicE_Handle(myDate, d_msg, dataStr){
     var Rtn = {};
     var raw = {};
     var haha = miceDecoder.decode(d_msg, myDate);
-    
     if (JSON.stringify(haha) != undefined) {
       raw["Callsign"] = haha.Source;
       raw["Timestamp"] = myDate.getTime();

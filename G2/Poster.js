@@ -17,6 +17,7 @@ function SendtoDB(object, url){
     });
     /*
     req.on('socket', function (socket) {
+<<<<<<< HEAD
         socket.setTimeout(5);
         socket.on('timeout', function() {
             req.abort();
