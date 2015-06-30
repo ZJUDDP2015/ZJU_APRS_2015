@@ -12,6 +12,15 @@ sql.connect(function(err) {
         console.log('db connect error', err);
 });
 
+exports.rawData = function(req, res) {
+    var data = [req.body.Callsign,req.body.Timestamp/1000,req.body.Data];
+    var query = 'INSERT INTO `raw_data`(`Source`, `Time`, `Data`) VALUES (?,FROM_UNIXTIME(?),?)';
+    sql.query(query,data,function(err, rows, fields) {
+        if (err) console.log('cannot save raw data:'+req.body);
+        //else console.log('rawdata saved');
+    });
+    res.send("Success");
+}
 
 exports.weather = function(req, res) {
     //console.log(req.body)
@@ -42,7 +51,7 @@ exports.weather = function(req, res) {
         ')';
 
     sql.query(insert,function(err, rows, fields) {
-            if (err) console.log(insert);
+            if (err) console.log('cannot save weather data:'+insert);
             else ++saved// console.log('weather_save_cnt:' + (++w_save_cnt));
         });
 
@@ -71,7 +80,7 @@ exports.moving_object = function(req, res) {
         Grid_lng +
         ')';
     sql.query(insert, function(err, rows, fields) {
-            if (err) console.log(insert);
+            if (err) console.log('cannot save moving object data:'+insert);
             else ++saved//console.log('MovingObject_save_cnt:' + (++o_save_cnt))
         });
 

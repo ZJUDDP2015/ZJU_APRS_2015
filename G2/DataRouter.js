@@ -5,7 +5,7 @@ var poster = require("./Poster.js")
 var logger = require("./Logger.js");
 var fs = require("fs");
 
-function MvOb_without_Timestamp(myDate, header, info) {
+function MvOb_without_Timestamp(myDate, header, info, dataStr) {
   var object={};
   var com_obj={};
   var symbol="";
@@ -13,6 +13,7 @@ function MvOb_without_Timestamp(myDate, header, info) {
   var c="";
   var s="";
   var Rtn = {};
+  var raw = {};
 
   object["Path"] = headerHandler.getPath(header);
   object["Source"] = header.split('>')[0]; //source of the report
@@ -49,6 +50,9 @@ function MvOb_without_Timestamp(myDate, header, info) {
         com_obj["Comment"] = info.slice(20);
       }
     }
+    raw["Callsign"] = object["Source"];
+    raw["Timestamp"] = myDate.getTime();
+    raw["Data"] = dataStr;
   } else { //compressed data
     object["Latitude"] = infoHandler.decodeLat(info.slice(2, 6));
     object["Longitude"] = infoHandler.decodeLong(info.slice(6, 10));
@@ -71,6 +75,11 @@ function MvOb_without_Timestamp(myDate, header, info) {
       infoHandler.setSymbol(com_obj, symbol, object["Destination"]);
     object["Comment"] = JSON.stringify(com_obj);
     poster.SendtoDB(object, "/data/moving_object");
+    if (raw) {
+      poster.SendtoDB(raw, "/data/rawData");
+    } else {
+      logger.file_write("[Raw] Empty\r\n" + JSON.stringify(object) + "\r\n", "./log/rawErr.log", myDate);
+    }
     Rtn.handle = true;
     Rtn.res = object;
   } else {
@@ -79,7 +88,7 @@ function MvOb_without_Timestamp(myDate, header, info) {
   return Rtn;
 }
 
-function MvOb_with_Timestamp(myDate, header, info) {
+function MvOb_with_Timestamp(myDate, header, info, dataStr) {
   var object={};
   var com_obj={};
   var symbol="";
@@ -87,6 +96,7 @@ function MvOb_with_Timestamp(myDate, header, info) {
   var c="";
   var s="";
   var Rtn = {};
+  var raw = {};
 
   object["Path"] = headerHandler.getPath(header);
   object["Source"] = header.split('>')[0]; //source of the report
@@ -138,6 +148,9 @@ function MvOb_with_Timestamp(myDate, header, info) {
     if (c != ' ' && ((com_obj["Type"].charCode - 33) % 32 >= 16 && (com_obj["Type"].charCode - 33) % 32 <= 23)) {
       object["Altitude"] = infoHandler.decodeAltitude(c, s);
     }
+    raw["Callsign"] = object["Source"];
+    raw["Timestamp"] = myDate.getTime();
+    raw["Data"] = dataStr;
   }
   if (symbol.localeCompare("/_") != false) //not weather or Mic-E data
   {
@@ -145,6 +158,11 @@ function MvOb_with_Timestamp(myDate, header, info) {
       infoHandler.setSymbol(com_obj, symbol, object["Destination"]);
     object["Comment"] = JSON.stringify(com_obj);
     poster.SendtoDB(object, "/data/moving_object");
+    if (raw) {
+      poster.SendtoDB(raw, "/data/rawData");
+    } else {
+      logger.file_write("[Raw] Empty\r\n" + JSON.stringify(object) + "\r\n", "./log/rawErr.log", myDate);
+    }
     Rtn.handle = true;
     Rtn.res = object;
   } else {
@@ -153,7 +171,7 @@ function MvOb_with_Timestamp(myDate, header, info) {
   return Rtn;
 }
 
-function MvOb_Object(myDate, header, info) {
+function MvOb_Object(myDate, header, info, dataStr) {
   var object={};
   var com_obj={};
   var symbol="";
@@ -161,11 +179,11 @@ function MvOb_Object(myDate, header, info) {
   var c="";
   var s="";
   var Rtn = {};
+  var raw = {};
 
   object["Path"] = headerHandler.getPath(header);
   object["Source"] = header.split('>')[0]; //source of the report
   object["Destination"] = header.split('>')[1].split(',')[0];  //destination of the report
-
   if (info[18] != '/') { //non-compressed
     object["Name"] = info.slice(1, 10);
     object["Time"] = infoHandler.getTime(info.slice(11, 18));
@@ -221,12 +239,20 @@ function MvOb_Object(myDate, header, info) {
     }
     com_obj["Comment"] = info.slice(30);
   }
+  raw["Callsign"] = object["Source"];
+  raw["Timestamp"] = myDate.getTime();
+  raw["Data"] = dataStr;
   if (symbol.localeCompare("/_") != false) //not weather or Mic-E data
   {
     if (object["Destination"])
       infoHandler.setSymbol(com_obj, symbol, object["Destination"]);
     object["Comment"] = JSON.stringify(com_obj);
     poster.SendtoDB(object, "/data/moving_object");
+    if (raw) {
+      poster.SendtoDB(raw, "/data/rawData");
+    } else {
+      logger.file_write("[Raw] Empty\r\n" + JSON.stringify(object) + "\r\n", "./log/rawErr.log", myDate);
+    }
     Rtn.handle = true;
     Rtn.res = object;
   } else {
@@ -235,7 +261,7 @@ function MvOb_Object(myDate, header, info) {
   return Rtn;
 }
 
-function MvOb_Item(myDate, header, info) {
+function MvOb_Item(myDate, header, info, dataStr) {
   var object={};
   var com_obj={};
   var symbol="";
@@ -243,11 +269,11 @@ function MvOb_Item(myDate, header, info) {
   var c="";
   var s="";
   var Rtn = {};
+  var raw = {};
 
   object["Path"] = headerHandler.getPath(header);
   object["Source"] = header.split('>')[0]; //source of the report
   object["Destination"] = header.split('>')[1].split(',')[0];  //destination of the report
-
   var item_front = info.split('!' || '_')[0];
   var item_back = info.slice(item_front.length);
   if (item_back[1] != '/') { //non-compressed
@@ -299,12 +325,20 @@ function MvOb_Item(myDate, header, info) {
     }
     com_obj["Comment"] = item_back.slice(14);
   }
+  raw["Callsign"] = object["Source"];
+  raw["Timestamp"] = myDate.getTime();
+  raw["Data"] = dataStr;
   if (symbol.localeCompare("/_") != false) //not weather or Mic-E data
   {
     if (object["Destination"])
       infoHandler.setSymbol(com_obj, symbol, object["Destination"]);
     object["Comment"] = JSON.stringify(com_obj);
     poster.SendtoDB(object, "/data/moving_object");
+    if (raw) {
+      poster.SendtoDB(raw, "/data/rawData");
+    } else {
+      logger.file_write("[Raw] Empty\r\n" + JSON.stringify(object) + "\r\n", "./log/rawErr.log", myDate);
+    }
     Rtn.handle = true;
     Rtn.res = object;
   } else {
@@ -313,11 +347,20 @@ function MvOb_Item(myDate, header, info) {
   return Rtn;
 }
 
-function MicE_Handle(myDate, d_msg){
+function MicE_Handle(myDate, d_msg, dataStr){
     var Rtn = {};
+    var raw = {};
     var haha = miceDecoder.decode(d_msg, myDate);
     if (JSON.stringify(haha) != undefined) {
+      raw["Callsign"] = haha.Source;
+      raw["Timestamp"] = myDate.getTime();
+      raw["Data"] = dataStr;
       poster.SendtoDB(haha, "/data/moving_object");
+      if (raw) {
+        poster.SendtoDB(raw, "/data/rawData");
+      } else {
+        logger.file_write("[Raw] Empty\r\n" + JSON.stringify(haha) + "\r\n", "./log/rawErr.log", myDate);
+      }
       Rtn.handle = true;
       Rtn.res = haha;
     }
@@ -327,7 +370,7 @@ function MicE_Handle(myDate, d_msg){
     return Rtn;
 }
 
-function Wthr_with_Timestamp(myDate, header, info) {
+function Wthr_with_Timestamp(myDate, header, info, dataStr) {
   var ObjName;
   var time;
   var latitute;
@@ -338,6 +381,7 @@ function Wthr_with_Timestamp(myDate, header, info) {
   var SoftwareIdentifier;
   var MachineIdentifier;
   var Rtn = {};
+  var raw = {};
 
   if (info.charAt(16) == '/') {
     //Complete Weather data with Lat/Long and Time Stamp
@@ -377,10 +421,18 @@ function Wthr_with_Timestamp(myDate, header, info) {
     MachineIdentifierConverted: MachineIdentifier
   }
 
+  raw["Callsign"] = header.split('>')[0];
+  raw["Timestamp"] = myDate.getTime();
+  raw["Data"] = dataStr;
   var receivedObject = infoHandler.Wthr_dataDecoding(myDate, weatherDataGroup);
   if (JSON.stringify(receivedObject) != undefined) {
     receivedObject.Path = headerHandler.getPath(header);
     poster.SendtoDB(receivedObject, "/data/weather");
+    if (raw) {
+      poster.SendtoDB(raw, "/data/rawData");
+    } else {
+      logger.file_write("[Raw] Empty\r\n" + JSON.stringify(receivedObject) + "\r\n", "./log/rawErr.log", myDate);
+    }
     Rtn.handle = true;
     Rtn.res = receivedObject;
   }
@@ -390,7 +442,7 @@ function Wthr_with_Timestamp(myDate, header, info) {
   return Rtn;
 }
 
-function Wthr_without_Timestamp_no_Message(myDate, header, info) {
+function Wthr_without_Timestamp_no_Message(myDate, header, info, dataStr) {
   var ObjName;
   var time;
   var latitute;
@@ -401,6 +453,7 @@ function Wthr_without_Timestamp_no_Message(myDate, header, info) {
   var SoftwareIdentifier;
   var MachineIdentifier;
   var Rtn = {};
+  var raw = {};
 
   var newWeatherData;
   if (info.charAt(2) != '!') {
@@ -443,11 +496,19 @@ function Wthr_without_Timestamp_no_Message(myDate, header, info) {
     SoftwareIdentifierConverted: SoftwareIdentifier,
     MachineIdentifierConverted: MachineIdentifier
   }
+  raw["Callsign"] = header.split('>')[0];
+  raw["Timestamp"] = myDate.getTime();
+  raw["Data"] = dataStr;
 
   var receivedObject = infoHandler.Wthr_dataDecoding(myDate, weatherDataGroup);
   if (JSON.stringify(receivedObject) != undefined) {
     receivedObject.Path = headerHandler.getPath(header);
     poster.SendtoDB(receivedObject, "/data/weather");
+    if (raw) {
+      poster.SendtoDB(raw, "/data/rawData");
+    } else {
+      logger.file_write("[Raw] Empty\r\n" + JSON.stringify(receivedObject) + "\r\n", "./log/rawErr.log", myDate);
+    }
     Rtn.handle = true;
     Rtn.res = receivedObject;
   }
@@ -457,7 +518,7 @@ function Wthr_without_Timestamp_no_Message(myDate, header, info) {
   return Rtn;
 }
 
-function Wthr_without_Timestamp_with_Message(myDate, header, info) {
+function Wthr_without_Timestamp_with_Message(myDate, header, info, dataStr) {
   var ObjName;
   var time;
   var latitute;
@@ -468,6 +529,7 @@ function Wthr_without_Timestamp_with_Message(myDate, header, info) {
   var SoftwareIdentifier;
   var MachineIdentifier;
   var Rtn = {};
+  var raw = {};
 
   var newWeatherData;
   if (info.charAt(9) == '/') {
@@ -506,11 +568,19 @@ function Wthr_without_Timestamp_with_Message(myDate, header, info) {
     SoftwareIdentifierConverted: SoftwareIdentifier,
     MachineIdentifierConverted: MachineIdentifier
   }
+  raw["Callsign"] = header.split('>')[0];
+  raw["Timestamp"] = myDate.getTime();
+  raw["Data"] = dataStr;
 
   var receivedObject = infoHandler.Wthr_dataDecoding(myDate, weatherDataGroup);
   if (JSON.stringify(receivedObject) != undefined) {
     receivedObject.Path = headerHandler.getPath(header);
     poster.SendtoDB(receivedObject, "/data/weather");
+    if (raw) {
+      poster.SendtoDB(raw, "/data/rawData");
+    } else {
+      logger.file_write("[Raw] Empty\r\n" + JSON.stringify(receivedObject) + "\r\n", "./log/rawErr.log", myDate);
+    }
     Rtn.handle = true;
     Rtn.res = receivedObject;
   }
@@ -520,7 +590,7 @@ function Wthr_without_Timestamp_with_Message(myDate, header, info) {
   return Rtn;
 }
 
-function Wthr_Object(myDate, header, info) {
+function Wthr_Object(myDate, header, info, dataStr) {
   var ObjName;
   var time;
   var latitute;
@@ -531,6 +601,7 @@ function Wthr_Object(myDate, header, info) {
   var SoftwareIdentifier;
   var MachineIdentifier;
   var Rtn = {};
+  var raw = {};
 
   var newWeatherData;
   ObjName = info.substring(1, 10);
@@ -565,11 +636,19 @@ function Wthr_Object(myDate, header, info) {
     SoftwareIdentifierConverted: SoftwareIdentifier,
     MachineIdentifierConverted: MachineIdentifier
   }
+  raw["Callsign"] = header.split('>')[0];
+  raw["Timestamp"] = myDate.getTime();
+  raw["Data"] = dataStr;
 
   var receivedObject = infoHandler.Wthr_dataDecoding(myDate, weatherDataGroup);
   if (JSON.stringify(receivedObject) != undefined) {
     receivedObject.Path = headerHandler.getPath(header);
     poster.SendtoDB(receivedObject, "/data/weather");
+    if (raw) {
+      poster.SendtoDB(raw, "/data/rawData");
+    } else {
+      logger.file_write("[Raw] Empty\r\n" + JSON.stringify(receivedObject) + "\r\n", "./log/rawErr.log", myDate);
+    }
     Rtn.handle = true;
     Rtn.res = receivedObject;
   }
@@ -579,7 +658,7 @@ function Wthr_Object(myDate, header, info) {
   return Rtn;
 }
 
-function Wthr_Peet_Bros_or_rawGPS(myDate, header, info) {
+function Wthr_Peet_Bros_or_rawGPS(myDate, header, info, dataStr) {
   var ObjName;
   var time;
   var latitute;
@@ -590,6 +669,7 @@ function Wthr_Peet_Bros_or_rawGPS(myDate, header, info) {
   var SoftwareIdentifier;
   var MachineIdentifier;
   var Rtn = {};
+  var raw = {};
 
   var rawWeatherData = info.substring(1, info.length);
 
@@ -612,11 +692,19 @@ function Wthr_Peet_Bros_or_rawGPS(myDate, header, info) {
     SoftwareIdentifierConverted: SoftwareIdentifier,
     MachineIdentifierConverted: MachineIdentifier
   }
+  raw["Callsign"] = header.split('>')[0];
+  raw["Timestamp"] = myDate.getTime();
+  raw["Data"] = dataStr;
 
   var receivedObject = infoHandler.Wthr_dataDecoding(myDate, weatherDataGroup);
   if (JSON.stringify(receivedObject) != undefined) {
     receivedObject.Path = headerHandler.getPath(header);
     poster.SendtoDB(receivedObject, "/data/weather");
+    if (raw) {
+      poster.SendtoDB(raw, "/data/rawData");
+    } else {
+      logger.file_write("[Raw] Empty\r\n" + JSON.stringify(receivedObject) + "\r\n", "./log/rawErr.log", myDate);
+    }
     Rtn.handle = true;
     Rtn.res = receivedObject;
   }
@@ -626,7 +714,7 @@ function Wthr_Peet_Bros_or_rawGPS(myDate, header, info) {
   return Rtn;
 }
 
-function Wthr_Weather_Report(myDate, header, info) {
+function Wthr_Weather_Report(myDate, header, info, dataStr) {
   var ObjName;
   var time;
   var latitute;
@@ -637,6 +725,7 @@ function Wthr_Weather_Report(myDate, header, info) {
   var SoftwareIdentifier;
   var MachineIdentifier;
   var Rtn = {};
+  var raw = {};
 
   var rawWeatherData = info.substring(10, info.length);
 
@@ -659,11 +748,19 @@ function Wthr_Weather_Report(myDate, header, info) {
     SoftwareIdentifierConverted: SoftwareIdentifier,
     MachineIdentifierConverted: MachineIdentifier
   }
+  raw["Callsign"] = header.split('>')[0];
+  raw["Timestamp"] = myDate.getTime();
+  raw["Data"] = dataStr;
 
   var receivedObject = infoHandler.Wthr_dataDecoding(myDate, weatherDataGroup);
   if (JSON.stringify(receivedObject) != undefined) {
     receivedObject.Path = headerHandler.getPath(header);
     poster.SendtoDB(receivedObject, "/data/weather");
+    if (raw) {
+      poster.SendtoDB(raw, "/data/rawData");
+    } else {
+      logger.file_write("[Raw] Empty\r\n" + JSON.stringify(receivedObject) + "\r\n", "./log/rawErr.log", myDate);
+    }
     Rtn.handle = true;
     Rtn.res = receivedObject;
   }

@@ -9,14 +9,9 @@ router.get('/', function(req, res) {
     })
 });
 
-router.get('/callsign', function(req, res) {
+router.get('/rowData60', function(req, res) {
     var callsign = req.query.name;
     indexController.createCallsignEjs(callsign, res);
-});
-
-router.post('/photoUpload', function(req, res) {
-    console.log(req.files);
-    res.end("File uploaded.");
 });
 
 router.post('/login', userController.login);

@@ -1,0 +1,21 @@
+<html lang="en">
+    <head>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title><%= title %></title>
+    </head>
+    <body>
+        <div><h1> BA5AW-9 </h1></div>
+        <div><h2> The latest position: </h2></div>
+        <ul>
+            <li> Longitude: <%= pos.Longitude %></li>
+            <li> Latitude: <%=  pos.Latitude %></li>
+        </ul>
+        <div><h2> The data of the last 60 minutes: </h2></div>
+        <ul>
+            <% for(var i=0; i<data.length; i++) {%>
+            	<li><%= JSON.stringify(data[i]) %></li>
+            <% } %>
+        </ul>
+    </body>
+</html>

@@ -54,6 +54,8 @@ exports.login = function(req, res) {
     console.log('>>>>>>>>>>>>>>url= ' + req.url);
     console.log('>>>>>>>>>>>>>>e-mail= ' + req.body.email);
     console.log('>>>>>>>>>>>>>>password= ' + req.body.pw);
+    
+    exports.loginmail = req.body.email;
 
     if (req.body.email.length === 0) {
         return res.json({
@@ -78,7 +80,8 @@ exports.login = function(req, res) {
                     console.log('!!!!!!!!!!!!!!!Email Set!!!!!!!!!!!!!!!!!!!! ' + req.session.email + ' ' + req.body.email);
                     return res.json({
                         code: 0,
-                        message: "Login success"
+                        message: "Login success",
+                        userEmail: req.session.email
                     });
                 }
             } else {
@@ -137,6 +140,7 @@ exports.changePassword = function(req, res) {
 
 exports.logout = function(req, res) {
     req.session.destroy(function(err) {
+        console.log('         log out success');
         if (!err) {
             return res.json({
                 code: 0,
@@ -155,12 +159,15 @@ exports.getSavedPosition = function(req, res, next) {
                     throw err;
                 } else if (!row[0].mapCenterX)
                     next()
-                else return res.json({
-                    code: 0,
-                    message: "Location get success",
-                    px: row[0].mapCenterX,
-                    py: row[0].mapCenterY
-                });
+                else {
+                    console.log("          get location");
+                    return res.json({
+                        code: 0,
+                        message: "Location get success",
+                        px: row[0].mapCenterX,
+                        py: row[0].mapCenterY
+                    });
+                }
             });
     } else {
         next();
@@ -189,10 +196,13 @@ exports.postPosition = function(req, res) {
             function(err, row, fields) {
                 if (err) {
                     throw err;
-                } else return res.json({
-                    code: 0,
-                    message: "Update position success"
-                });
+                } else{
+                    console.log("            update position");
+                    return res.json({
+                        code: 0,
+                        message: "Update position success"
+                    });
+                }
             });
     } else return res.json({
         code: 8,
@@ -202,13 +212,17 @@ exports.postPosition = function(req, res) {
 
 exports.sessionVerify = function(req, res) {
     if (req.session.email) {
-        console.log('verify! ' + req.session.email);
+        console.log('          verify! ' + req.session.email);
         return res.json({
             code: 7,
-            message: "Logged in"
+            message: "Logged in",
+            userEmail: req.session.email
         });
-    } else return res.json({
-        code: 8,
-        message: "Not logged in"
-    });
+    } else {
+        console.log('          unverify!');
+        return res.json({
+            code: 8,
+            message: "Not logged in"
+        });
+    }
 }
