@@ -13,10 +13,10 @@ sql.connect(function(err) {
 });
 
 exports.rawData = function(req, res) {
-    var data = [req.body.Callsign,req.body.Timestamp/1000,req.body.Data];
-    var query = 'INSERT INTO `raw_data`(`Source`, `Time`, `Data`) VALUES (?,FROM_UNIXTIME(?),?)';
+    var data = [req.body.Callsign, toMysqlFormat(req.body.Timestamp), req.body.Data];
+    var query = 'INSERT INTO `raw_data`(`Source`, `Time`, `Data`) VALUES (?, ?, ?)';
     sql.query(query,data,function(err, rows, fields) {
-        if (err) console.log('cannot save raw data:'+req.body);
+        if (err) console.log(err);
         //else console.log('rawdata saved');
     });
     res.send("Success");

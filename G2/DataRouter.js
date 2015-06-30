@@ -5,6 +5,16 @@ var poster = require("./Poster.js")
 var logger = require("./Logger.js");
 var fs = require("fs");
 
+function toMysqlFormat(date) {
+    return date.getFullYear() + "-" + twoDigits(1 + date.getMonth()) + "-" + twoDigits(date.getDate()) + " " + twoDigits(date.getHours()) + ":" + twoDigits(date.getMinutes()) + ":" + twoDigits(date.getSeconds());
+};
+
+function twoDigits(d) {
+    if (0 <= d && d < 10) return "0" + d.toString();
+    if (-10 < d && d < 0) return "-0" + (-1 * d).toString();
+    return d.toString();
+};
+
 function MvOb_without_Timestamp(myDate, header, info, dataStr) {
   var object={};
   var com_obj={};
@@ -51,7 +61,7 @@ function MvOb_without_Timestamp(myDate, header, info, dataStr) {
       }
     }
     raw["Callsign"] = object["Source"];
-    raw["Timestamp"] = myDate.getTime();
+    raw["Timestamp"] = myDate;
     raw["Data"] = dataStr;
   } else { //compressed data
     object["Latitude"] = infoHandler.decodeLat(info.slice(2, 6));
@@ -149,7 +159,7 @@ function MvOb_with_Timestamp(myDate, header, info, dataStr) {
       object["Altitude"] = infoHandler.decodeAltitude(c, s);
     }
     raw["Callsign"] = object["Source"];
-    raw["Timestamp"] = myDate.getTime();
+    raw["Timestamp"] = myDate;
     raw["Data"] = dataStr;
   }
   if (symbol.localeCompare("/_") != false) //not weather or Mic-E data
@@ -240,7 +250,7 @@ function MvOb_Object(myDate, header, info, dataStr) {
     com_obj["Comment"] = info.slice(30);
   }
   raw["Callsign"] = object["Source"];
-  raw["Timestamp"] = myDate.getTime();
+  raw["Timestamp"] = myDate;
   raw["Data"] = dataStr;
   if (symbol.localeCompare("/_") != false) //not weather or Mic-E data
   {
@@ -326,7 +336,7 @@ function MvOb_Item(myDate, header, info, dataStr) {
     com_obj["Comment"] = item_back.slice(14);
   }
   raw["Callsign"] = object["Source"];
-  raw["Timestamp"] = myDate.getTime();
+  raw["Timestamp"] = myDate;
   raw["Data"] = dataStr;
   if (symbol.localeCompare("/_") != false) //not weather or Mic-E data
   {
@@ -353,7 +363,7 @@ function MicE_Handle(myDate, d_msg, dataStr){
     var haha = miceDecoder.decode(d_msg, myDate);
     if (JSON.stringify(haha) != undefined) {
       raw["Callsign"] = haha.Source;
-      raw["Timestamp"] = myDate.getTime();
+      raw["Timestamp"] = myDate;
       raw["Data"] = dataStr;
       poster.SendtoDB(haha, "/data/moving_object");
       if (raw) {
@@ -422,7 +432,7 @@ function Wthr_with_Timestamp(myDate, header, info, dataStr) {
   }
 
   raw["Callsign"] = header.split('>')[0];
-  raw["Timestamp"] = myDate.getTime();
+  raw["Timestamp"] = myDate;
   raw["Data"] = dataStr;
   var receivedObject = infoHandler.Wthr_dataDecoding(myDate, weatherDataGroup);
   if (JSON.stringify(receivedObject) != undefined) {
@@ -497,7 +507,7 @@ function Wthr_without_Timestamp_no_Message(myDate, header, info, dataStr) {
     MachineIdentifierConverted: MachineIdentifier
   }
   raw["Callsign"] = header.split('>')[0];
-  raw["Timestamp"] = myDate.getTime();
+  raw["Timestamp"] = myDate;
   raw["Data"] = dataStr;
 
   var receivedObject = infoHandler.Wthr_dataDecoding(myDate, weatherDataGroup);
@@ -569,7 +579,7 @@ function Wthr_without_Timestamp_with_Message(myDate, header, info, dataStr) {
     MachineIdentifierConverted: MachineIdentifier
   }
   raw["Callsign"] = header.split('>')[0];
-  raw["Timestamp"] = myDate.getTime();
+  raw["Timestamp"] = myDate;
   raw["Data"] = dataStr;
 
   var receivedObject = infoHandler.Wthr_dataDecoding(myDate, weatherDataGroup);
@@ -637,7 +647,7 @@ function Wthr_Object(myDate, header, info, dataStr) {
     MachineIdentifierConverted: MachineIdentifier
   }
   raw["Callsign"] = header.split('>')[0];
-  raw["Timestamp"] = myDate.getTime();
+  raw["Timestamp"] = myDate;
   raw["Data"] = dataStr;
 
   var receivedObject = infoHandler.Wthr_dataDecoding(myDate, weatherDataGroup);
@@ -693,7 +703,7 @@ function Wthr_Peet_Bros_or_rawGPS(myDate, header, info, dataStr) {
     MachineIdentifierConverted: MachineIdentifier
   }
   raw["Callsign"] = header.split('>')[0];
-  raw["Timestamp"] = myDate.getTime();
+  raw["Timestamp"] = myDate;
   raw["Data"] = dataStr;
 
   var receivedObject = infoHandler.Wthr_dataDecoding(myDate, weatherDataGroup);
@@ -749,7 +759,7 @@ function Wthr_Weather_Report(myDate, header, info, dataStr) {
     MachineIdentifierConverted: MachineIdentifier
   }
   raw["Callsign"] = header.split('>')[0];
-  raw["Timestamp"] = myDate.getTime();
+  raw["Timestamp"] = myDate;
   raw["Data"] = dataStr;
 
   var receivedObject = infoHandler.Wthr_dataDecoding(myDate, weatherDataGroup);
