@@ -1,5 +1,5 @@
 /*
-	Version:1.1.2
+	Version:1.2.0
 	If database upgraded, please run DB_upgrade\convert_(oldversion)to(newversion)
 	If version number is not available in your old init.sql, run convert_1.0.0to1.1.0 to upgrade to version 1.1.0
 */
@@ -11,6 +11,8 @@ USE aprs;
 CREATE TABLE IF NOT EXISTS weather (
 	id int NOT NULL AUTO_INCREMENT,
 	Type int,
+	Time datetime,
+	SymbolCode char(1),
 	Month int,
 	Day int,
 	Hour int,
@@ -30,6 +32,7 @@ CREATE TABLE IF NOT EXISTS weather (
 	Barometric int,
 	LUMINOSITY INT,
 	Path varchar(100),
+	Source varchar(12),
 	PRIMARY KEY(id)
 );
 

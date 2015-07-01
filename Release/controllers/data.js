@@ -27,7 +27,7 @@ exports.weather = function(req, res) {
     //console.log(req.body.data);
     ++received
 
-    var insert = 'insert into weather (Type,Month,Day,Hour,Min,Sec,Lat,Longi,WindDirection,WindSpeed,WeatherUnit,Gust,Temp,RainLastHr,RainLast24Hr,RainSinceMid,Humidity,Barometric,Luminosity,Path) values(' +
+    var insert = 'insert into weather (Type,Month,Day,Hour,Min,Sec,Lat,Longi,WindDirection,WindSpeed,WeatherUnit,Gust,Temp,RainLastHr,RainLast24Hr,RainSinceMid,Humidity,Barometric,Luminosity,Path,Time,Source,SymbolCode) values(' +
         mysql.escape(req.body.Type) + ', ' +
         mysql.escape(req.body.Month) + ', ' +
         mysql.escape(req.body.Day) + ', ' +
@@ -47,9 +47,11 @@ exports.weather = function(req, res) {
         mysql.escape(req.body.Humidity) + ', ' +
         mysql.escape(req.body.Barometric) + ', ' +
         mysql.escape(req.body.Luminosity) + ', ' +
-        mysql.escape(req.body.Path) +
+        mysql.escape(req.body.Path) + ', ' + 
+        mysql.escape(req.body.MixedDates) + ', ' + 
+        mysql.escape(req.body.Source) + ', ' + 
+        mysql.escape(req.body.SymbolCode) + 
         ')';
-
     sql.query(insert,function(err, rows, fields) {
             if (err) console.log('cannot save weather data:'+insert);
             else ++saved// console.log('weather_save_cnt:' + (++w_save_cnt));
