@@ -691,7 +691,7 @@ $(window).load(function(){
         $('#login_button').hide();
         $('#signup_button').hide();
         $('#userEmail').html(data.userEmail);
-        document.getElementById('bannerimg').src = "http://localhost:3001/uploads/" + document.getElementById('userEmail').innerHTML + ".png";
+        document.getElementById('bannerimg').src = "./uploads/" + document.getElementById('userEmail').innerHTML + ".png";
         $('#login-result').html("");
 
         $.get('/getSavedPosition',function(data){
