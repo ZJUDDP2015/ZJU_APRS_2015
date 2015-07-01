@@ -25,7 +25,7 @@ router.get('/', function(req, res) {
     })
 });
 
-router.get('/callsn', function(req, res) {
+router.get('/path', function(req, res) {
     var callsign_name = req.query.name;
   //indexController.createCallsignEjs(callsign, res);
     res.render('index',{
