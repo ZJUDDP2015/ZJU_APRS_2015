@@ -304,13 +304,13 @@ function refreshRoute() {
             count++;
         }
         st = st + "&from=3&to=5&ak=qE02zgmFr4DFG0me1Q6hL73t&output=json&callback=?";
-        console.log(st);
+        //console.log(st);
         $.getJSON(st, function(answer){
             for (var i in result) {
                 result[i].lat = answer.result[i].x;
                 result[i].lon = answer.result[i].y;
 
-                console.log(result[i].lat+" "+result[i].lon);
+                //console.log(result[i].lat+" "+result[i].lon);
             }
             //callsignposition = [];
             map.removeOverlay(heatmapOverlay);
@@ -417,11 +417,14 @@ function refreshRoute() {
                         }
                         */
                     }
+                    //console.log(result[i].id);
                     if (typeof(symbol[result[i].id]) == "undefined") {
-                        //console.log(result[i].symbol);
+                        console.log("symbol");
+                        console.log((result[i].symbol));
                         symbol[result[i].id] = result[i].symbol;
                         var pt = points[result[i].id][0];
                         var s=Symbol[symbol[result[i].id]];
+                        console.log(s);
                         //alert("Great");
                         if (typeof(s)!="undefined")
                         {
