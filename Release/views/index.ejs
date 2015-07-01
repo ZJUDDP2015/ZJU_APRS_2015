@@ -528,11 +528,11 @@ function refreshRoute() {
                       }
 
                       table = "<table bordor='0'><tr>" + "<td width='200px'>经度: " + p.lng + "</td>" + "<td>纬度: " + p.lat + "</td></tr></table>" + "<table border='0'><tr>" +
-                      "<td width = '200px'>风向: " + e.WindDirection + "</td>" + "<td width = '200px'>风速: " + e.WindSpeed + "</td>" +
-                      "<td>风级: " + e.Gust + "</td></tr>" + "<tr><td width = '200px'>1小时降水: " + e.RainLastHr + "</td>" +
-                      "<td width = '200px'>24小时降水: " + e.RainLast24Hr + "</td>" + "<td>降水: " + e.RainSinceMid + "</td></tr>" +
-                      "<tr><td width = '200px'>湿度: " + e.Humidity + "</td>" + "<td width = '200px'>气压: " + e.Barometric + "</td>" +
-                      "<td>光照: " + e.LUMINOSITY + "</td></tr></table>" + "<br>" + "　　　　　　　　　 　　　　　　" + "<a href='/callsign?name=" + e.point.source + "' target='_blank'>" + "查看详细信息" + "</a>";
+                      "<td width = '200px'>风向: " + e.point.WindDirection + "</td>" + "<td width = '200px'>风速: " + e.point.WindSpeed + "</td>" +
+                      "<td>风级: " + e.point.Gust + "</td></tr>" + "<tr><td width = '200px'>1小时降水: " + e.point.RainLastHr + "</td>" +
+                      "<td width = '200px'>24小时降水: " + e.point.RainLast24Hr + "</td>" + "<td>午后降水: " + e.point.RainSinceMid + "</td></tr>" +
+                      "<tr><td width = '200px'>湿度: " + e.point.Humidity + "</td>" + "<td width = '200px'>气压: " + e.point.Barometric + "</td>" +
+                      "<td>光照: " + e.point.Luminosity + "</td></tr></table>" + "<br>" + "　　　　　　　　　 　　　　　　" + "<a href='/callsign?name=" + e.point.source + "' target='_blank'>" + "查看详细信息" + "</a>";
                     }
                     else {
                       opts = {
