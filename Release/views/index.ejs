@@ -332,6 +332,22 @@ function refreshRoute() {
                     points[result[i].id][0].des = result[i].des;
                     points[result[i].id][0].comment = result[i].comment;
 
+                    // Weather  ------------------------------------------------------
+                    points[result[i].id][0].IsWeather = result[i].IsWeather;
+                    points[result[i].id][0].symbol= result[i].symbol;
+                    points[result[i].id][0].WindDirection = result[i].WindDirection;
+                    points[result[i].id][0].WindSpeed = result[i].WindSpeed;
+                    points[result[i].id][0].WeatherUnit = result[i].WeatherUnit;
+                    points[result[i].id][0].Gust = result[i].Gust;
+                    points[result[i].id][0].Temp = result[i].Temp;
+                    points[result[i].id][0].RainLastHr = result[i].RainLastHr;
+                    points[result[i].id][0].RainLast24Hr = result[i].RainLast24Hr;
+                    points[result[i].id][0].RainSinceMid = result[i].RainSinceMid;
+                    points[result[i].id][0].Humidity = result[i].Humidity;
+                    points[result[i].id][0].Barometric = result[i].Barometric;
+                    points[result[i].id][0].Luminosity = result[i].Luminosity;
+                    // Weather  ------------------------------------------------------
+
                     if ((typeof(callsignposition[result[i].id]) == 'undefined') || (result[i].time>callsignposition[result[i].id].time))
                       callsignposition[result[i].id] = {'lat':result[i].lon,'lng':result[i].lat,'time':result[i].time};
                       //<iy> create callsign index
@@ -364,6 +380,24 @@ function refreshRoute() {
                         points[result[i].id][points[result[i].id].length - 1].time = result[i].time;
                         points[result[i].id][points[result[i].id].length - 1].des = result[i].des;
                         points[result[i].id][points[result[i].id].length - 1].comment = result[i].comment;
+
+
+                        // Weather  ------------------------------------------------------
+                        points[result[i].id][points[result[i].id].length - 1].IsWeather = result[i].IsWeather;
+                        points[result[i].id][points[result[i].id].length - 1].symbol= result[i].symbol;
+                        points[result[i].id][points[result[i].id].length - 1].WindDirection = result[i].WindDirection;
+                        points[result[i].id][points[result[i].id].length - 1].WindSpeed = result[i].WindSpeed;
+                        points[result[i].id][points[result[i].id].length - 1].WeatherUnit = result[i].WeatherUnit;
+                        points[result[i].id][points[result[i].id].length - 1].Gust = result[i].Gust;
+                        points[result[i].id][points[result[i].id].length - 1].Temp = result[i].Temp;
+                        points[result[i].id][points[result[i].id].length - 1].RainLastHr = result[i].RainLastHr;
+                        points[result[i].id][points[result[i].id].length - 1].RainLast24Hr = result[i].RainLast24Hr;
+                        points[result[i].id][points[result[i].id].length - 1].RainSinceMid = result[i].RainSinceMid;
+                        points[result[i].id][points[result[i].id].length - 1].Humidity = result[i].Humidity;
+                        points[result[i].id][points[result[i].id].length - 1].Barometric = result[i].Barometric;
+                        points[result[i].id][points[result[i].id].length - 1].Luminosity = result[i].Luminosity;
+                        // Weather  ------------------------------------------------------
+
                         if ((callsignposition[result[i].id] == undefined) || (result[i].time>callsignposition[result[i].id].time))
                           callsignposition[result[i].id] = {'lat':result[i].lon,'lng':result[i].lat,'time':result[i].time};
                           //<iy> create callsign index
@@ -481,11 +515,24 @@ function refreshRoute() {
                     map.addOverlay(m);*/
                     var opts = {
                         width : 350,     // 信息窗口宽度
-                        height: 165,     // 信息窗口高度
+                        height: 365,     // 信息窗口高度
                         title : "呼号: " + e.point.source  // 信息窗口标题
                     }
-                    var table = "<table border='0' > <tr>" + "<td width='200px'>经度: " + p.lng + "</td>" + "<td>纬度: " + p.lat + "</td></tr>" + "<tr>" + "<td width='200px'>路径: " + "<a href='/path?name=" + e.point.path + "' target='_blank'>" + e.point.path + "</a>" + "</td>" + "<td>目的地: " + e.point.des + "</td></tr></table>" + "时间: " + e.point.time +
-                                "<br>注释: " + e.point.comment + "<br><br>" + "　　　 　　　　　　" + "<a href='/callsign?name=" + e.point.source + "' target='_blank'>" + "查看详细信息" + "</a>";
+
+                    var table;
+                    if (e.point.IsWeather) {
+                      var table = "<table bordor='0'><tr>" + "<td width='200px'>经度: " + p.lng + "</td>" + "<td>纬度: " + p.lat + "</td></tr>" + "<tr>" +
+                      "<td width = '100px'>风向: " + e.WindDirection + "</td>" + "<td width = '100px'>风速: " + e.WindSpeed + "</td>" +
+                      "<td>风级: " + e.Gust + "</td></tr>" + "<tr><td width = '100px'>1小时降水: " + e.RainLastHr + "</td>" +
+                      "<td width = '100px'>24小时降水: " + e.RainLast24Hr + "</td>" + "<td>降水: " + e.RainSinceMid + "</td></tr>" +
+                      "<tr><td width = '100px'>湿度: " + e.Humidity + "</td>" + "<td width = '100px'>气压: " + e.Barometric + "</td>" +
+                      "<td width = '100px'>光照: " + e.LUMINOSITY + "</td></tr></table>";
+                    }
+                    else {
+                      var table = "<table border='0' > <tr>" + "<td width='200px'>经度: " + p.lng + "</td>" + "<td>纬度: " + p.lat + "</td></tr>" + "<tr>" + "<td width='200px'>路径: " + "<a href='/path?name=" + e.point.path + "' target='_blank'>" + e.point.path + "</a>" + "</td>" + "<td>目的地: " + e.point.des + "</td></tr></table>" + "时间: " + e.point.time +
+                                  "<br>注释: " + e.point.comment + "<br><br>" + "　　　 　　　　　　" + "<a href='/callsign?name=" + e.point.source + "' target='_blank'>" + "查看详细信息" + "</a>";
+                    }
+
                     var m = new BMap.InfoWindow(table, opts);  // 创建信息窗口对象
                     map.openInfoWindow(m, e.point);      // 打开信息窗口
                 });

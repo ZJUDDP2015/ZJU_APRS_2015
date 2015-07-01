@@ -1,12 +1,9 @@
 var express = require('express');
-var Promise = require("bluebird");
 var mysql = require('mysql');
 var url = require('url');
 var fs = require('fs');
 var client = mysql.createConnection(require("../DBconfig.json"));
 var connection;
-
-Promise.promisifyAll(fs);
 
 function toMysqlFormat(date) {
     return date.getFullYear() + "-" + twoDigits(1 + date.getMonth()) + "-" + twoDigits(date.getDate()) + " " + twoDigits(date.getHours()) + ":" + twoDigits(date.getMinutes()) + ":" + twoDigits(date.getSeconds());
@@ -26,39 +23,18 @@ exports.createCallsignEjs = function(callsign, res) {
     var sql_60_param = [callsign, currentT, currentT];
     var sql_recent = "select Longitude, Latitude from moving_object where Source=? order by Time desc LIMIT 1";
     var sql_recent_param = [callsign];
-    var filename = __dirname + '/../views/callsign.ejs';
+    var lastPos = {};
 
     client.connect(function(err, results) {
         client.query(sql_recent, sql_recent_param, function(err, rows) {
-            fs.writeFileAsync(filename, "")
-            .then(fs.appendFileSync(filename, '<html lang="en">\r\n'))
-            .then(fs.appendFileSync(filename, '<head>\r\n'))
-            .then(fs.appendFileSync(filename, '<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />\r\n'))
-            .then(fs.appendFileSync(filename, '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />\r\n'))
-            .then(fs.appendFileSync(filename, '<title><%= title %></title>\r\n'))
-            .then(fs.appendFileSync(filename, '</head>\r\n'))
-            .then(fs.appendFileSync(filename, '<body>\r\n'))
-            .then(fs.appendFileSync(filename, '<div><h1> ' + callsign + ' </h1></div>\r\n'))
-            .then(fs.appendFileSync(filename, '<div><h2> Last position: Latitude = ' + rows[0].Latitude + '; Longitude' + rows[0].Longitude + ' </h2></div>\r\n'))
-            .then(fs.appendFileSync(filename, '<div><h2> data during the last 60 minutes: </h2></div>'))
-            .then(function() {
-                client.query(sql_60, sql_60_param, function(err, rows) {
-                    console.log(rows);
-                    if (rows.length == 0) {
-                        fs.appendFileSync(filename, '<div> This station has no data in 60 minutes! </div>');
-                    }
-                    else {
-                        for (i=0; i < rows.length; ++i) {
-                            console.log(i);
-                            var writeBuffer = new Buffer(JSON.stringify(rows[i]))
-                            fs.appendFileSync(filename, '<div> ' + i + ':   ' + writeBuffer + '</div>\r\n');
-                        }
-                    }
-                    fs.appendFileSync(filename, '</body>\r\n');
-                    fs.appendFileSync(filename, '</html>\r\n');
-                    res.render("callsign", {
-                        title: 'Callsign'
-                    })
+            lastPos = rows[0];
+            console.log(lastPos);
+            client.query(sql_60, sql_60_param, function(err, rows) {
+                console.log(rows);
+                res.render("rawData", {
+                    title: callsign,
+                    pos: lastPos,
+                    data: rows
                 });
             })
         })
@@ -200,58 +176,9 @@ exports.handleData = function(req, res) {
                         comment: e.Comment
                     });
                 });
-                //return res.json(car);
+                return res.json(car);
             }
-
-            if (callsign == '') {
-                Addsql = "select *from weather where Latitude >? && Latitude <? && Longitude > ? && Longitude < ? && unix_timestamp(Time) > unix_timestamp(?) &&unix_timestamp(Time) < unix_timestamp(?) order by Time asc";
-                Addsql_param = [lat_limit.small_lat, lat_limit.big_lat, lon_limit.small_lon, lon_limit.big_lon, starttime, endtime];
-            } else {
-                Addsql = "select *from weather where Latitude >? && Latitude <? && Longitude > ? && Longitude < ? && unix_timestamp(Time) > unix_timestamp(?) &&unix_timestamp(Time) < unix_timestamp(?) &&Source=? order by Time asc";
-                Addsql_param = [lat_limit.small_lat, lat_limit.big_lat, lon_limit.small_lon, lon_limit.big_lon, starttime, endtime, callsign];
-            }
-
-            client.query(Addsql,Addsql_param,function (err,rows) {
-              if(rows){
-                console.log('Weather data');
-                rows.forEach(function (e) {
-                  var symbol = JSON.parse(e.Comment).Symbol;
-                  //console.log(symbol);
-                  if (symbol !== "" && symbol !== undefined && symbol[0] !== '\\' && symbol[0] !== '/') {
-                      symbol = "\\\\" + symbol[1];
-                  }
-
-                  car.push({
-                    IsWeather:true,
-                    id: e.Source,
-                    symbol: symbol,
-                    time: e.Time,
-                    lat: e.Lat,
-                    lon: e.Longi,
-                    path: e.Path,
-                    WindDirection: e.WindDirection,
-                    WindSpeed: e.WindSpeed,
-                    WeatherUnit: e.WeatherUnit,
-                    Gust: e.Gust,
-                    Temp: e.Temp,
-                    RainLastHr: e.RainLastHr,
-                    RainLast24Hr: e.RainLast24Hr,
-                    RainSinceMid: e.RainSinceMid,
-                    Humidity: e.Humidity,
-                    Barometric: e.Barometric,
-                    Luminosity: e.LUMINOSITY
-                    //
-                  });
-
-                });
-              }
-
-              return res.json(car);
-
-            });
-
-
-          });
+        });
     });
 };
 
