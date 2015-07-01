@@ -27,7 +27,10 @@ exports.createCallsignEjs = function(callsign, res) {
     var sql_recent = "select Longitude, Latitude from moving_object where Source=? order by Time desc LIMIT 1";
     var sql_recent_param = [callsign];
     var filename = __dirname + '/../views/callsign.ejs';
+<<<<<<< HEAD
     var lastPos = {};
+=======
+>>>>>>> 935afac4088142f7f69b765e66c536f0b4f11be6
 
     client.connect(function(err, results) {
         client.query(sql_recent, sql_recent_param, function(err, rows) {
@@ -62,6 +65,7 @@ exports.createCallsignEjs = function(callsign, res) {
                     })
                 });
             })
+<<<<<<< HEAD
         });
         client.query(sql_60, sql_60_param, function(err, rows) {
             console.log(rows);
@@ -72,6 +76,11 @@ exports.createCallsignEjs = function(callsign, res) {
         });
     });
 };
+=======
+        })
+    })
+}
+>>>>>>> 935afac4088142f7f69b765e66c536f0b4f11be6
 
 var getFormatedTime = function(month, day, hour, minute) {
     var stime = "2015";
@@ -211,14 +220,39 @@ exports.handleData = function(req, res) {
             }
 
             if (callsign == '') {
+<<<<<<< HEAD
+                Addsql = "select *from weather where Latitude >? && Latitude <? && Longitude > ? && Longitude < ? && unix_timestamp(Time) > unix_timestamp(?) &&unix_timestamp(Time) < unix_timestamp(?) order by Time asc";
+                Addsql_param = [lat_limit.small_lat, lat_limit.big_lat, lon_limit.small_lon, lon_limit.big_lon, starttime, endtime];
+            } else {
+                Addsql = "select *from weather where Latitude >? && Latitude <? && Longitude > ? && Longitude < ? && unix_timestamp(Time) > unix_timestamp(?) &&unix_timestamp(Time) < unix_timestamp(?) &&Source=? order by Time asc";
+=======
                 Addsql = "select *from weather where Lat >? && Lat <? && Longi > ? && Longi < ? && unix_timestamp(Time) > unix_timestamp(?) &&unix_timestamp(Time) < unix_timestamp(?) order by Time asc";
                 Addsql_param = [lat_limit.small_lat, lat_limit.big_lat, lon_limit.small_lon, lon_limit.big_lon, starttime, endtime];
             } else {
                 Addsql = "select *from weather where Lat >? && Lat <? && Longi > ? && Longi < ? && unix_timestamp(Time) > unix_timestamp(?) &&unix_timestamp(Time) < unix_timestamp(?) &&Source=? order by Time asc";
+>>>>>>> 935afac4088142f7f69b765e66c536f0b4f11be6
                 Addsql_param = [lat_limit.small_lat, lat_limit.big_lat, lon_limit.small_lon, lon_limit.big_lon, starttime, endtime, callsign];
             }
 
             client.query(Addsql,Addsql_param,function (err,rows) {
+<<<<<<< HEAD
+              if(rows){
+                console.log('Weather data');
+                rows.forEach(function (e) {
+                  var symbol = JSON.parse(e.Comment).Symbol;
+                  //console.log(symbol);
+                  if (symbol !== "" && symbol !== undefined && symbol[0] !== '\\' && symbol[0] !== '/') {
+                      symbol = "\\\\" + symbol[1];
+                  }
+
+                  car.push({
+                    IsWeather:true,
+                    id: e.Source,
+                    symbol: symbol,
+                    time: e.Time,
+                    lat: e.Lat,
+                    lon: e.Longi,
+=======
               console.log("get");
               if(rows){
                 console.log('Weather data');
@@ -237,6 +271,7 @@ exports.handleData = function(req, res) {
                     time: e.Time,
                     lat: e.Longi,
                     lon: e.Lat,
+>>>>>>> 935afac4088142f7f69b765e66c536f0b4f11be6
                     path: e.Path,
                     WindDirection: e.WindDirection,
                     WindSpeed: e.WindSpeed,
@@ -254,7 +289,11 @@ exports.handleData = function(req, res) {
 
                 });
               }
+<<<<<<< HEAD
+
+=======
               console.log(car);
+>>>>>>> 935afac4088142f7f69b765e66c536f0b4f11be6
               return res.json(car);
 
             });

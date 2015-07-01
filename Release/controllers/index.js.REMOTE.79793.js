@@ -27,7 +27,6 @@ exports.createCallsignEjs = function(callsign, res) {
     var sql_recent = "select Longitude, Latitude from moving_object where Source=? order by Time desc LIMIT 1";
     var sql_recent_param = [callsign];
     var filename = __dirname + '/../views/callsign.ejs';
-    var lastPos = {};
 
     client.connect(function(err, results) {
         client.query(sql_recent, sql_recent_param, function(err, rows) {
@@ -62,16 +61,9 @@ exports.createCallsignEjs = function(callsign, res) {
                     })
                 });
             })
-        });
-        client.query(sql_60, sql_60_param, function(err, rows) {
-            console.log(rows);
-            res.render("rawData", {
-                title: callsign,
-                data: rows
-            });
-        });
-    });
-};
+        })
+    })
+}
 
 var getFormatedTime = function(month, day, hour, minute) {
     var stime = "2015";
@@ -84,7 +76,7 @@ var getFormatedTime = function(month, day, hour, minute) {
     stime += ' ' + (hour < 10 ? '0' + hour : hour);
     stime += ':' + (minute < 10 ? '0' + minute : minute) + ':00';
     return stime;
-};
+}
 
 exports.handleZoomoutData = function(req, res) {
     var start_time=new Date().getTime();

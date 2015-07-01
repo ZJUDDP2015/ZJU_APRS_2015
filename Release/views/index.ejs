@@ -451,11 +451,14 @@ function refreshRoute() {
                         }
                         */
                     }
+                    //console.log(result[i].id);
                     if (typeof(symbol[result[i].id]) == "undefined") {
-                        //console.log(result[i].symbol);
+                        console.log("symbol");
+                        console.log((result[i].symbol));
                         symbol[result[i].id] = result[i].symbol;
                         var pt = points[result[i].id][0];
                         var s=Symbol[symbol[result[i].id]];
+                        console.log(s);
                         //alert("Great");
                         if (typeof(s)!="undefined")
                         {

@@ -177,8 +177,9 @@ exports.handleData = function(req, res) {
             var Addsql_param = [lat_limit.small_lat, lat_limit.big_lat, lon_limit.small_lon, lon_limit.big_lon, starttime, endtime, callsign];
         }
         //console.log(Addsql_param);
-        var car = [];
+
         client.query(Addsql, Addsql_param, function(err, rows) {
+            var car = [];
             if (rows) {
                 console.log("hello");
                 rows.forEach(function(e) {
@@ -211,32 +212,30 @@ exports.handleData = function(req, res) {
             }
 
             if (callsign == '') {
-                Addsql = "select *from weather where Lat >? && Lat <? && Longi > ? && Longi < ? && unix_timestamp(Time) > unix_timestamp(?) &&unix_timestamp(Time) < unix_timestamp(?) order by Time asc";
+                Addsql = "select *from weather where Latitude >? && Latitude <? && Longitude > ? && Longitude < ? && unix_timestamp(Time) > unix_timestamp(?) &&unix_timestamp(Time) < unix_timestamp(?) order by Time asc";
                 Addsql_param = [lat_limit.small_lat, lat_limit.big_lat, lon_limit.small_lon, lon_limit.big_lon, starttime, endtime];
             } else {
-                Addsql = "select *from weather where Lat >? && Lat <? && Longi > ? && Longi < ? && unix_timestamp(Time) > unix_timestamp(?) &&unix_timestamp(Time) < unix_timestamp(?) &&Source=? order by Time asc";
+                Addsql = "select *from weather where Latitude >? && Latitude <? && Longitude > ? && Longitude < ? && unix_timestamp(Time) > unix_timestamp(?) &&unix_timestamp(Time) < unix_timestamp(?) &&Source=? order by Time asc";
                 Addsql_param = [lat_limit.small_lat, lat_limit.big_lat, lon_limit.small_lon, lon_limit.big_lon, starttime, endtime, callsign];
             }
 
             client.query(Addsql,Addsql_param,function (err,rows) {
-              console.log("get");
               if(rows){
                 console.log('Weather data');
                 rows.forEach(function (e) {
-                  var symbol = "\\"+e.SymbolCode;
+                  var symbol = JSON.parse(e.Comment).Symbol;
                   //console.log(symbol);
-                  //if (symbol !== "" && symbol !== undefined && symbol[0] !== '\\' && symbol[0] !== '/') {
-                  //    symbol = "\\\\" + symbol[1];
-                  //}
+                  if (symbol !== "" && symbol !== undefined && symbol[0] !== '\\' && symbol[0] !== '/') {
+                      symbol = "\\\\" + symbol[1];
+                  }
 
                   car.push({
                     IsWeather:true,
-                    type:e.Type,
                     id: e.Source,
                     symbol: symbol,
                     time: e.Time,
-                    lat: e.Longi,
-                    lon: e.Lat,
+                    lat: e.Lat,
+                    lon: e.Longi,
                     path: e.Path,
                     WindDirection: e.WindDirection,
                     WindSpeed: e.WindSpeed,
@@ -254,7 +253,7 @@ exports.handleData = function(req, res) {
 
                 });
               }
-              console.log(car);
+
               return res.json(car);
 
             });
