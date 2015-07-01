@@ -36,7 +36,7 @@ router.get('/callsn', function(req, res) {
     console.log(starttime);
 });
 
-router.get('/rowData60', function(req, res) {
+router.get('/callsign', function(req, res) {
     var callsign = req.query.name;
     indexController.createCallsignEjs(callsign, res);
 });
