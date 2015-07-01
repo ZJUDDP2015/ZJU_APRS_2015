@@ -26,17 +26,12 @@ exports.createCallsignEjs = function(callsign, res) {
     var lastPos = {};
 
     client.connect(function(err, results) {
-        client.query(sql_recent, sql_recent_param, function(err, rows) {
-            lastPos = rows[0];
-            console.log(lastPos);
-            client.query(sql_60, sql_60_param, function(err, rows) {
-                console.log(rows);
-                res.render("rawData", {
-                    title: callsign,
-                    pos: lastPos,
-                    data: rows
-                });
-            })
+        client.query(sql_60, sql_60_param, function(err, rows) {
+            console.log(rows);
+            res.render("rawData", {
+                title: callsign,
+                data: rows
+            });
         })
     })
 }
