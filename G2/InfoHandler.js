@@ -185,11 +185,15 @@ function Wthr_dataDecoding(myDate, DataConvertedGroup) {
 		var tarData = new Object();
 		tarData.Type = 0;
 		// 0 - undefine ; 1 - DayHrMin(UTC/GMT) z ; 2 - DayHrMin(Local) / ; 3 HrMinSec(UTC/GMT) h ; 4 MonDayHrMin(UTC/GMT)
+		tarData.Year = 0;
 		tarData.Month = 0;
 		tarData.Day = 0;
 		tarData.Hour = 0;
 		tarData.Min = 0;
 		tarData.Sec = 0;
+		tarData.Dates = "";
+  		tarData.Times = "";
+		tarData.MixedDates = "";
 
 		//Split Time
 		tStr = DataConvertedGroup.TimeConverted;
@@ -199,6 +203,7 @@ function Wthr_dataDecoding(myDate, DataConvertedGroup) {
 				switch (tail) {
 						case 'z':
 								tarData.Type = 1;
+								tarData.Year = myDate.getUTCFullYear();
 								tarData.Month = myDate.getUTCMonth() + 1;
 								tarData.Day = parseInt(tStr.slice(0, 2));
 								tarData.Hour = parseInt(tStr.slice(2, 4));
@@ -206,6 +211,7 @@ function Wthr_dataDecoding(myDate, DataConvertedGroup) {
 								break;
 						case '/':
 								tarData.Type = 2;
+								tarData.Year = myDate.getUTCFullYear();
 								tarData.Month = myDate.getMonth() + 1;
 								tarData.Day = parseInt(tStr.slice(0, 2));
 								tarData.Hour = parseInt(tStr.slice(2, 4));
@@ -213,6 +219,9 @@ function Wthr_dataDecoding(myDate, DataConvertedGroup) {
 								break;
 						case 'h':
 								tarData.Type = 3;
+								tarData.Year = myDate.getUTCFullYear();
+								tarData.Month = myDate.getMonth() + 1;
+								tarData.Day = myDate.getUTCDate();
 								tarData.Hour = parseInt(tStr.slice(0, 2));
 								tarData.Min = parseInt(tStr.slice(2, 4));
 								tarData.Sec = parseInt(tStr.slice(4, 6));
@@ -220,6 +229,7 @@ function Wthr_dataDecoding(myDate, DataConvertedGroup) {
 				}
 		} else if (tStr.length == 8) {
 				tarData.Type = 4;
+				tarData.Month = myDate.getUTCFullYear();
 				tarData.Month = parseInt(tStr.slice(0, 2));
 				tarData.Day = parseInt(tStr.slice(2, 4));
 				tarData.Hour = parseInt(tStr.slice(4, 6));
@@ -228,6 +238,10 @@ function Wthr_dataDecoding(myDate, DataConvertedGroup) {
 				//console.log('Unknown Data');
 				//console.log(tStr);
 		}
+	
+		tarData.Dates = tarData.Year + '-' + tarData.Month + '-' + tarData.Day;
+  		tarData.Times = tarData.Hour + ':' + tarData.Min + ':' + tarData.Sec;
+		tarData.MixedDates = tarData.Dates + ' ' + tarData.Times;
 
 		//Latitude
 		tLat = DataConvertedGroup.latituteConverted;
@@ -411,6 +425,11 @@ function Wthr_dataDecoding(myDate, DataConvertedGroup) {
 		//wea.SnowfallLast24Hr = wStr.slice(wStr.indexOf('s')+1, wStr.indexOf('s')+4);  //in inches
 		//wea.RawRainCounter = wStr.slice(wStr.indexOf('#')+1, wStr.indexOf('#')+4);
 		//console.log(tarData);
+	
+		//Jerry Added
+		tarData.Source = DataConvertedGroup.CallSignData;
+		tarData.SymbolCode = '_';
+	
 		return tarData;
 }
 

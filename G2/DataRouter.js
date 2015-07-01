@@ -418,6 +418,9 @@ function Wthr_with_Timestamp(myDate, header, info, dataStr) {
   var newObj = infoHandler.Wthr_dealWithSoftIdentifier(WeatherData);
   WeatherData = newObj.weather;
   MachineIdentifier = newObj.machine;
+  
+  //Deal With Call Sign (2015-07-01 21:58:44 Jerry)
+  var headerSplit = header.split('>')[0];
 
   var weatherDataGroup = {
     objNameConverted: ObjName,
@@ -428,9 +431,9 @@ function Wthr_with_Timestamp(myDate, header, info, dataStr) {
     compressedWindInfoConverted: compressedWindInfo,
     WeatherDataConverted: WeatherData,
     SoftwareIdentifierConverted: SoftwareIdentifier,
-    MachineIdentifierConverted: MachineIdentifier
+    MachineIdentifierConverted: MachineIdentifier,
+	  CallSignData: headerSplit
   }
-
   raw["Callsign"] = header.split('>')[0];
   raw["Timestamp"] = myDate;
   raw["Data"] = dataStr;
@@ -495,6 +498,8 @@ function Wthr_without_Timestamp_no_Message(myDate, header, info, dataStr) {
     var rawWeatherData = info.substring(1, info.length);
   }
 
+	var headerSplit = header.split('>')[0];
+	
   var weatherDataGroup = {
     objNameConverted: ObjName,
     TimeConverted: time,
@@ -504,7 +509,8 @@ function Wthr_without_Timestamp_no_Message(myDate, header, info, dataStr) {
     compressedWindInfoConverted: compressedWindInfo,
     WeatherDataConverted: WeatherData,
     SoftwareIdentifierConverted: SoftwareIdentifier,
-    MachineIdentifierConverted: MachineIdentifier
+    MachineIdentifierConverted: MachineIdentifier,
+	CallSignData: headerSplit
   }
   raw["Callsign"] = header.split('>')[0];
   raw["Timestamp"] = myDate;
@@ -566,6 +572,8 @@ function Wthr_without_Timestamp_with_Message(myDate, header, info, dataStr) {
   var newObj = infoHandler.Wthr_dealWithSoftIdentifier(WeatherData);
   WeatherData = newObj.weather;
   MachineIdentifier = newObj.machine;
+	
+	var headerSplit = header.split('>')[0];
 
   var weatherDataGroup = {
     objNameConverted: ObjName,
@@ -576,7 +584,8 @@ function Wthr_without_Timestamp_with_Message(myDate, header, info, dataStr) {
     compressedWindInfoConverted: compressedWindInfo,
     WeatherDataConverted: WeatherData,
     SoftwareIdentifierConverted: SoftwareIdentifier,
-    MachineIdentifierConverted: MachineIdentifier
+    MachineIdentifierConverted: MachineIdentifier,
+	CallSignData: headerSplit
   }
   raw["Callsign"] = header.split('>')[0];
   raw["Timestamp"] = myDate;
@@ -634,6 +643,8 @@ function Wthr_Object(myDate, header, info, dataStr) {
   var newObj = infoHandler.Wthr_dealWithSoftIdentifier(WeatherData);
   WeatherData = newObj.weather;
   MachineIdentifier = newObj.machine;
+	
+	var headerSplit = header.split('>')[0];
 
   var weatherDataGroup = {
     objNameConverted: ObjName,
@@ -644,7 +655,8 @@ function Wthr_Object(myDate, header, info, dataStr) {
     compressedWindInfoConverted: compressedWindInfo,
     WeatherDataConverted: WeatherData,
     SoftwareIdentifierConverted: SoftwareIdentifier,
-    MachineIdentifierConverted: MachineIdentifier
+    MachineIdentifierConverted: MachineIdentifier,
+	  CallSignData: headerSplit
   }
   raw["Callsign"] = header.split('>')[0];
   raw["Timestamp"] = myDate;
@@ -690,6 +702,8 @@ function Wthr_Peet_Bros_or_rawGPS(myDate, header, info, dataStr) {
   compressedWindInfo = '';
   windInfo = '';
   WeatherData = '';
+	
+	var headerSplit = header.split('>')[0];
 
   var weatherDataGroup = {
     objNameConverted: ObjName,
@@ -700,7 +714,8 @@ function Wthr_Peet_Bros_or_rawGPS(myDate, header, info, dataStr) {
     compressedWindInfoConverted: compressedWindInfo,
     WeatherDataConverted: WeatherData,
     SoftwareIdentifierConverted: SoftwareIdentifier,
-    MachineIdentifierConverted: MachineIdentifier
+    MachineIdentifierConverted: MachineIdentifier,
+	  CallSignData: headerSplit
   }
   raw["Callsign"] = header.split('>')[0];
   raw["Timestamp"] = myDate;
@@ -746,6 +761,8 @@ function Wthr_Weather_Report(myDate, header, info, dataStr) {
   compressedWindInfo = '';
   windInfo = '';
   WeatherData = rawWeatherData.substring(8, rawWeatherData.length);
+	
+	var headerSplit = header.split('>')[0];
 
   var weatherDataGroup = {
     objNameConverted: ObjName,
@@ -756,7 +773,8 @@ function Wthr_Weather_Report(myDate, header, info, dataStr) {
     compressedWindInfoConverted: compressedWindInfo,
     WeatherDataConverted: WeatherData,
     SoftwareIdentifierConverted: SoftwareIdentifier,
-    MachineIdentifierConverted: MachineIdentifier
+    MachineIdentifierConverted: MachineIdentifier,
+	  CallSignData: headerSplit
   }
   raw["Callsign"] = header.split('>')[0];
   raw["Timestamp"] = myDate;
