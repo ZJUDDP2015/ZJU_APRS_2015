@@ -367,6 +367,35 @@ function refreshRoute() {
                         //console.log(points[result[i].id][j].lat + '  ' + points[result[i].id][j].lon + "   J")
                         //console.log(result[i].lat + '  ' +result[i].lon);
                         if ((points[result[i].id][j].lng == result[i].lat) && (points[result[i].id][j].lat == result[i].lon)) {
+
+                            // Refresh Weather info
+
+                            if (points[result[i].id][j].IsWeather) {
+                              points[result[i].id][j].path = result[i].path;
+                              points[result[i].id][j].source = result[i].id;
+                              points[result[i].id][j].time = result[i].time;
+                              points[result[i].id][j].des = result[i].des;
+                              points[result[i].id][j].comment = result[i].comment;
+
+
+                              // Weather  ------------------------------------------------------
+                              points[result[i].id][j].IsWeather = result[i].IsWeather;
+                              points[result[i].id][j].symbol= result[i].symbol;
+                              points[result[i].id][j].WindDirection = result[i].WindDirection;
+                              points[result[i].id][j].WindSpeed = result[i].WindSpeed;
+                              points[result[i].id][j].WeatherUnit = result[i].WeatherUnit;
+                              points[result[i].id][j].Gust = result[i].Gust;
+                              points[result[i].id][j].Temp = result[i].Temp;
+                              points[result[i].id][j].RainLastHr = result[i].RainLastHr;
+                              points[result[i].id][j].RainLast24Hr = result[i].RainLast24Hr;
+                              points[result[i].id][j].RainSinceMid = result[i].RainSinceMid;
+                              points[result[i].id][j].Humidity = result[i].Humidity;
+                              points[result[i].id][j].Barometric = result[i].Barometric;
+                              points[result[i].id][j].Luminosity = result[i].Luminosity;
+                              // Weather  ------------------------------------------------------
+                            }
+
+                            // Weather
                             same = 1;
                             break;
                         }
@@ -457,12 +486,12 @@ function refreshRoute() {
                     }
                     //console.log(result[i].id);
                     if (typeof(symbol[result[i].id]) == "undefined") {
-                        console.log("symbol");
-                        console.log((result[i].symbol));
+                        //console.log("symbol");
+                        //console.log((result[i].symbol));
                         symbol[result[i].id] = result[i].symbol;
                         var pt = points[result[i].id][0];
                         var s=Symbol[symbol[result[i].id]];
-                        console.log(s);
+                        //console.log(s);
                         //alert("Great");
                         if (typeof(s)!="undefined")
                         {
@@ -528,7 +557,7 @@ function refreshRoute() {
                       opts = {
                           width : 500,     // 信息窗口宽度
                           height: 155,     // 信息窗口高度
-                          title : "呼号: " + e.point.source  // 信息窗口标题
+                          title : "呼号: " + e.point.source + "　　　　　　时间: "  + e.point.time// 信息窗口标题
                       }
 
                       table = "<table bordor='0'><tr>" + "<td width='200px'>经度: " + p.lng + "</td>" + "<td>纬度: " + p.lat + "</td></tr></table>" + "<table border='0'><tr>" +
