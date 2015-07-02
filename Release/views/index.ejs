@@ -52,7 +52,7 @@
         callsign=document.getElementById('callSign').value;
     }
     function tracefunction()
-    {        
+    {
         points = [];
         symbol = [];
         line = [];
@@ -314,10 +314,10 @@ function refreshRoute() {
         st = st + "&from=3&to=5&ak=qE02zgmFr4DFG0me1Q6hL73t&output=json&callback=?";
         //console.log(st);
         $.getJSON(st, function(answer){
-            for (var i in result) {
+            for (var i in answer.result) {
+                //console.log(answer.result[i]);
                 result[i].lat = answer.result[i].x;
                 result[i].lon = answer.result[i].y;
-
                 //console.log(result[i].lat+" "+result[i].lon);
             }
             //callsignposition = [];
@@ -331,12 +331,15 @@ function refreshRoute() {
             //callsignposition = [];
             //console.log(result);
             for (var i in result) {
+                if (result[i].id == 'BA5AG-10') {
+                  console.log(result[i]);
+                }
                 if (typeof(points[result[i].id]) == "undefined") {
                     points[result[i].id] = new Array();
                     points[result[i].id][0] = new BMap.Point(result[i].lat, result[i].lon);
                     points[result[i].id][0].path = result[i].path;
                     points[result[i].id][0].source = result[i].id;
-                    points[result[i].id][0].time = result[i].time;
+                    points[result[i].id][0].time = new Date(result[i].time);
                     points[result[i].id][0].des = result[i].des;
                     points[result[i].id][0].comment = result[i].comment;
 
@@ -377,7 +380,7 @@ function refreshRoute() {
                             if (points[result[i].id][j].IsWeather) {
                               points[result[i].id][j].path = result[i].path;
                               points[result[i].id][j].source = result[i].id;
-                              points[result[i].id][j].time = result[i].time;
+                              points[result[i].id][j].time = new Date(result[i].time);
                               points[result[i].id][j].des = result[i].des;
                               points[result[i].id][j].comment = result[i].comment;
 
@@ -414,7 +417,7 @@ function refreshRoute() {
                         points[result[i].id][points[result[i].id].length] = new BMap.Point(result[i].lat, result[i].lon);
                         points[result[i].id][points[result[i].id].length - 1].path = result[i].path;
                         points[result[i].id][points[result[i].id].length - 1].source = result[i].id;
-                        points[result[i].id][points[result[i].id].length - 1].time = result[i].time;
+                        points[result[i].id][points[result[i].id].length - 1].time = new Date(result[i].time);
                         points[result[i].id][points[result[i].id].length - 1].des = result[i].des;
                         points[result[i].id][points[result[i].id].length - 1].comment = result[i].comment;
 
@@ -585,7 +588,7 @@ function refreshRoute() {
                       for (i = 0; i < JSON.parse(e.point.path).length; i++) {
                           if (i > 0) table += ", ";
                           table += "<a href='/path?name=" + JSON.parse(e.point.path)[i] + "' target='_blank'>" + JSON.parse(e.point.path)[i] + "</a>";
-                      } 
+                      }
                       table += "</td>" + "<td>目的地: " + e.point.des + "</td></tr></table>";
                       table += "时间: " + e.point.time;
                       table += "<br>注释: " + e.point.comment + "</br>";

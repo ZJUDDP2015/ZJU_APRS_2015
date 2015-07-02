@@ -119,17 +119,17 @@ exports.handleData = function(req, res) {
     var starttime = req.query.starttime;
     var endtime = req.query.endtime;
     var callsign = req.query.callsign;
-    console.log(starttime);
-    console.log(endtime);
-    console.log(callsign);
+    //console.log(starttime);
+    //console.log(endtime);
+    //console.log(callsign);
     if (starttime == '' || endtime == '') {
         starttime = getFormatedTime((new Date()).getMonth() + 1, (new Date()).getDate(), (new Date()).getHours() - 1, (new Date()).getMinutes()); //初始化时间(开始时间为当前一天前)
         endtime = getFormatedTime((new Date()).getMonth() + 1, (new Date()).getDate(), (new Date()).getHours(), (new Date()).getMinutes());
     }
 
     client.connect(function(err, results) {
-        console.log(starttime);
-        console.log(endtime);
+        //console.log(starttime);
+        //console.log(endtime);
         var Addsql;
         var Addsql_param;
         if (callsign == '') {
@@ -143,7 +143,7 @@ exports.handleData = function(req, res) {
         var car = [];
         client.query(Addsql, Addsql_param, function(err, rows) {
             if (rows) {
-                console.log("hello");
+                //console.log("hello");
                 rows.forEach(function(e) {
                     //console.log("fuck");
                     //console.log(e);
@@ -161,7 +161,7 @@ exports.handleData = function(req, res) {
                     //console.log(symbol[0]!='\\'&&symbol[0]!='/');
                     car.push({
                         id: e.Source,
-                        time: e.Time,
+                        time: e.Time.getTime(),
                         lat: e.Longitude,
                         lon: e.Latitude,
                         symbol: symbol,
@@ -182,22 +182,22 @@ exports.handleData = function(req, res) {
             }
 
             client.query(Addsql,Addsql_param,function (err,rows) {
-              console.log("get");
+              //console.log("get");
               if(rows){
-                console.log('Weather data');
+                //console.log('Weather data');
                 rows.forEach(function (e) {
                   var symbol = "\\"+e.SymbolCode;
                   //console.log(symbol);
                   //if (symbol !== "" && symbol !== undefined && symbol[0] !== '\\' && symbol[0] !== '/') {
                   //    symbol = "\\\\" + symbol[1];
                   //}
-
+                  //console.log(e.Time);
                   car.push({
                     IsWeather:true,
                     type:e.Type,
                     id: e.Source,
                     symbol: symbol,
-                    time: e.Time,
+                    time: e.Time.getTime(),
                     lat: e.Longi,
                     lon: e.Lat,
                     path: e.Path,
