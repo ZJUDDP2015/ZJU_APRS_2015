@@ -52,7 +52,11 @@
         callsign=document.getElementById('callSign').value;
     }
     function tracefunction()
-    {
+    {        
+        points = [];
+        symbol = [];
+        line = [];
+        pointpaths = [];
         trace=true;
         map.clearOverlays();
         starttime=document.getElementById('startTime').value;
