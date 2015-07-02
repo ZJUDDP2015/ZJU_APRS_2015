@@ -27,10 +27,11 @@ router.get('/', function(req, res) {
 
 router.get('/path', function(req, res) {
     var callsign_name = req.query.name;
+    var myDate = new Date();
   //indexController.createCallsignEjs(callsign, res);
     res.render('index',{
-        starttime: getFormatedTime((new Date()).getMonth() + 1, (new Date()).getDate(), (new Date()).getHours()-1, (new Date()).getMinutes()),//初始化时间(开始时间为当前一天前)
-        endtime: getFormatedTime((new Date()).getMonth() + 1, (new Date()).getDate(), (new Date()).getHours(), (new Date()).getMinutes()),
+        starttime: getFormatedTime(myDate.getUTCMonth() + 1, myDate.getUTCDate(), myDate.getUTCHours()-1, myDate.getUTCMinutes()),//初始化时间(开始时间为当前一天前)
+        endtime: getFormatedTime(myDate.getUTCMonth() + 1, myDate.getUTCDate(), myDate.getUTCHours(), myDate.getUTCMinutes()),
         callsign: callsign_name
     })
     console.log(starttime);

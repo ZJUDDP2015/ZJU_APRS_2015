@@ -6,7 +6,7 @@ var client = mysql.createConnection(require("../DBconfig.json"));
 var connection;
 
 function toMysqlFormat(date) {
-    return date.getFullYear() + "-" + twoDigits(1 + date.getMonth()) + "-" + twoDigits(date.getDate()) + " " + twoDigits(date.getHours()) + ":" + twoDigits(date.getMinutes()) + ":" + twoDigits(date.getSeconds());
+    return date.getUTCFullYear() + "-" + twoDigits(1 + date.getUTCMonth()) + "-" + twoDigits(date.getUTCDate()) + " " + twoDigits(date.getUTCHours()) + ":" + twoDigits(date.getUTCMinutes()) + ":" + twoDigits(date.getUTCSeconds());
 };
 
 function twoDigits(d) {
@@ -19,10 +19,7 @@ exports.createCallsignEjs = function(callsign, res) {
     var i;
     var myDate = new Date();
     var currentT = toMysqlFormat(myDate);
-    console.log("=============");
-    console.log(currentT);
-    console.log("==============");
-    var sql_60 = 'select * from raw_data where Source=? and Time <= ?  order by Time desc';
+    var sql_60 = 'select * from raw_data where Source=? and Time <= ? and Time >= DATE_ADD(?,INTERVAL -60 MINUTE) order by Time desc';
     var sql_60_param = [callsign, currentT, currentT];
     var lastPos = {};
 
