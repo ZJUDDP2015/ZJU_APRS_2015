@@ -496,7 +496,7 @@ function refreshRoute() {
                         //console.log("symbol");
                         //console.log((result[i].symbol));
                         symbol[result[i].id] = result[i].symbol;
-                        var pt = points[result[i].id][0];
+                        var pt = points[result[i].id][points[result[i].id].length-1];
                         var s=Symbol[symbol[result[i].id]];
                         //console.log(s);
                         //alert("Great");
