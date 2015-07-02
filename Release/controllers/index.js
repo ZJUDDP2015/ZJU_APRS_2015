@@ -19,8 +19,10 @@ exports.createCallsignEjs = function(callsign, res) {
     var i;
     var myDate = new Date();
     var currentT = toMysqlFormat(myDate);
+    console.log("=============");
     console.log(currentT);
-    var sql_60 = 'select * from raw_data where Source=? and Time <= ?  and Time >= DATE_ADD(?,INTERVAL -10800 MINUTE) order by Time desc';
+    console.log("==============");
+    var sql_60 = 'select * from raw_data where Source=? and Time <= ?  order by Time desc';
     var sql_60_param = [callsign, currentT, currentT];
     var lastPos = {};
 
