@@ -19,10 +19,9 @@ exports.createCallsignEjs = function(callsign, res) {
     var i;
     var myDate = new Date();
     var currentT = toMysqlFormat(myDate);
-    var sql_60 = 'select * from moving_object where Source=? and Time <= ?  and Time >= DATE_ADD(?,INTERVAL -60 MINUTE) order by Time desc';
+    console.log(currentT);
+    var sql_60 = 'select * from raw_data where Source=? and Time <= ?  and Time >= DATE_ADD(?,INTERVAL -10800 MINUTE) order by Time desc';
     var sql_60_param = [callsign, currentT, currentT];
-    var sql_recent = "select Longitude, Latitude from moving_object where Source=? order by Time desc LIMIT 1";
-    var sql_recent_param = [callsign];
     var lastPos = {};
 
     client.connect(function(err, results) {
