@@ -53,7 +53,7 @@ onFileUploadComplete: function (file) {
 
 app.post('/photoUpload',function(req,res){
   if(done==true){
-    res.redirect("http://localhost:3001"); // CHANGE     IT     INTO     SEVER     ADDRESS
+    res.redirect('./'); // CHANGE     IT     INTO     SEVER     ADDRESS
   }
 });
 
