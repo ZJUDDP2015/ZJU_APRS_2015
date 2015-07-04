@@ -32,9 +32,9 @@
 ## How to fetch data and store them into database
     1.cmd: node Release/BaiduMap/app.js
 
-    2.create a folder 'log' in G2
+    2.create a folder 'log' in Proxy
 
-    3.cmd: node G2/Proxy.js
+    3.cmd: node Proxy/Proxy.js
 
 ## How to access web page
     app.js has create a server listening port 3001
