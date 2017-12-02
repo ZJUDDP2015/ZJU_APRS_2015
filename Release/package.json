@@ -1,5 +1,5 @@
 {
-  "name": "Map",
+  "name": "map",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
@@ -9,7 +9,7 @@
     "cookie-parser": "^1.0.1",
     "crypto": "0.0.3",
     "debug": "^0.7.4",
-    "ejs": "^0.8.8",
+    "ejs": "^2.5.7",
     "express": "^4.0.0",
     "express-session": "^1.11.2",
     "morgan": "^1.0.1",
