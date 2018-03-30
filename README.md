@@ -1,42 +1,57 @@
 # ZJU_APRS_2015
 
-    This project fetch online aprs data and show them on Baidu map
+This project fetches online APRS(Automatic Packet Reporting System) data and displays them on Baidu map.
     
 ---
+
+## Usage
+
+### Newest code is in Release folder
+
+Go to Release folder first.
+
+```Shell
+cd Release
+```
+
+### Init database
+
+1. Start mysql database service
+
+2. Type command:
+
+```Shell
+mysql -u "Your username" < init.sql
+```
+
+### Upgrade database
+
+1. Read version number in `init.sql`
+
+2. If version number is different from your old `init.sql`, run `DB_upgrade\convert_(oldversion)to(newversion)` to upgrade to new version. (if convert file is not available, drop database and init it again)
+
+### Configurate your database setting
+
+1. Copy `DBconfig.default.json` and rename it to `DBconfig.json`
+
+2. Change `user` and `password` in `DBconfig.json`
     
-## Now all the updates should be in Release folder
-	So first we cd to Release folder
+### Package installation
 
-## How to init database
-    1.start mysql database service
-
-    2.cmd: mysql -u "Your username" <init.sql
-
-#How to upgrade database
-    1.read version number in init.sql
-
-    2.if version number is different from your old init.sql, run DB_upgrade\convert_(oldversion)to(newversion) to upgrade to new version(if convert file is not available, drop database and run init.sql)
-
-    3.or you can drop database and run init.sql
-
-## How to configurate your database setting
-    1.copy DBconfig.default.json and rename it DBconfig.json
-
-    2.change "user" and "password" in DBconfig.json
-    
-## Remember to "npm install" and "bower install"
-	 1.run cmd "npm install" in Release
+1. Go to `Release` and run command `npm install`
 	 
-	 2.run cmd "bower install" in Release/public 
+2. Go to `Release/public` and run command `bower install`
 
-## How to fetch data and store them into database
-    1.cmd: node Release/BaiduMap/app.js
+### Fetch data and store them into database
 
-    2.create a folder 'log' in Proxy
+1. Type in command: `node Release/BaiduMap/app.js`
 
-    3.cmd: node Proxy/Proxy.js
+2. Create a folder `log` in Proxy
 
-## How to access web page
-    app.js has create a server listening port 3001
+3. Type in command: `node Proxy/Proxy.js`
+
+### Access web page
+
+`app.js` has created a server listening on port 3001
     
-    web page url: localhost:3001
+web page url: `localhost:3001`
