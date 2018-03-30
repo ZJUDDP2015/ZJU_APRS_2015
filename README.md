@@ -1,8 +1,7 @@
 # ZJU_APRS_2015
 
 This project fetches online APRS(Automatic Packet Reporting System) data and displays them on Baidu map.
-    
----
+
 
 ## Usage
 
